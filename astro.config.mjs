@@ -8,13 +8,13 @@ import svelte from "@astrojs/svelte";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://TODO.com",
+  site: "https://cs362.alexulbrich.com/",
   integrations: [
     sitemap(),
     starlight({
-      title: "TODO",
+      title: "CS 362 Software Engineering II",
       social: {
-        github: "https://TODO.github.com",
+        github: "https://github.com/adulbrich/cs362",
       },
       head: [
         {
@@ -22,12 +22,11 @@ export default defineConfig({
           attrs: {
             src: "/knowledge/js/script.outbound-links.js",
             "data-api": "/knowledge/api/event",
-            "data-domain": "TODO",
+            "data-domain": "cs362.alexulbrich.com",
             defer: true,
           },
         },
       ],
-      // TODO
       sidebar: [
         {
           label: "Overview",
@@ -40,10 +39,6 @@ export default defineConfig({
         {
           label: "Lecture Notes",
           autogenerate: { directory: "lectures" },
-        },
-        {
-          label: "Studios",
-          autogenerate: { directory: "studios" },
         },
         {
           label: "Assignments",

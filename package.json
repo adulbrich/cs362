@@ -1,7 +1,7 @@
 {
-  "name": "TODO",
+  "name": "cs362",
   "type": "module",
-  "version": "TODO: format is YYYY.Term.Minor",
+  "version": "2025.SP.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

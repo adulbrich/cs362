@@ -2,27 +2,7 @@
 
 # Define array of lecture topics
 lecture_topics=(
-    "development-environment"
-    "git"
-    "cpp-basics"
-    "comments"
-    "expressions"
-    "operators"
-    "variables"
-    "constants"
-    "type-casting"
-    "shorthand-operators"
-    "functions"
-    "scope"
-    "booleans"
-    "if-statements"
-    "loops"
-    "characters"
-    "strings"
-    "string-functions"
-    "arrays"
-    "references"
-    "error-handling"
+    "TODO"
 )
 
 # Loop through topics and generate PDFs
@@ -38,7 +18,7 @@ for topic in "${lecture_topics[@]}"; do
     # Generate PDF
     if [[ -n "$next_topic" ]]; then
         npx starlight-to-pdf \
-            "https://<TODO>/lectures/$topic" \
+            "https://cs362.alexulbrich.com/lectures/$topic" \
             --last "/lectures/$next_topic" \
             --exclude "/lectures/$next_topic" \
             --footer ./footer.html \
@@ -48,7 +28,7 @@ for topic in "${lecture_topics[@]}"; do
             --margins '2cm 1cm 2cm 1cm'
     else
         npx starlight-to-pdf \
-            "https://<TODO>/lectures/$topic" \
+            "https://cs362.alexulbrich.com/lectures/$topic" \
             --last "/studios/introduction" \
             --exclude "/studios/introduction" \
             --footer ./footer.html \

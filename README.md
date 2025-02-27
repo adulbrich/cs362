@@ -21,7 +21,7 @@ To generate the documentation in PDF format, use [starlight-to-pdf](https://gith
 Here's the command to generate one large PDF.
 
 ```bash
-npx starlight-to-pdf <TODO site url> --footer ./footer.html --header ./header.html --filename <TODO file name> --no-contents --margins '2cm 1cm 2cm 1cm'
+npx starlight-to-pdf https://cs362.alexulbrich.com --footer ./footer.html --header ./header.html --filename cs362.pdf --no-contents --margins '2cm 1cm 2cm 1cm'
 ```
 
 To generate lecture notes in separate files (one per page), use the corresponding bash script:

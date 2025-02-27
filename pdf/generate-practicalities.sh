@@ -2,11 +2,7 @@
 
 # Define array of lecture topics
 practicalities=(
-    "demos"
-    "polya"
-    "style"
-    "vim"
-    "writing-with-ai"
+    "TODO"
 )
 
 # Loop through topics and generate PDFs
@@ -22,7 +18,7 @@ for topic in "${practicalities[@]}"; do
     # Generate PDF
     if [[ -n "$next_topic" ]]; then
         npx starlight-to-pdf \
-            "https://<TODO>/practicalities/$topic" \
+            "https://cs362.alexulbrich.com/practicalities/$topic" \
             --last "/practicalities/$next_topic" \
             --exclude "/practicalities/$next_topic" \
             --footer ./footer.html \
@@ -32,7 +28,7 @@ for topic in "${practicalities[@]}"; do
             --margins '2cm 1cm 2cm 1cm'
     else
         npx starlight-to-pdf \
-            "https://<TODO>/practicalities/$topic" \
+            "https://cs362.alexulbrich.com/practicalities/$topic" \
             --last "/lectures/introduction" \
             --exclude "/lectures/introduction" \
             --footer ./footer.html \
