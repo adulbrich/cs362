@@ -1,8 +1,72 @@
 ---
 title: Introduction
-description: TODO
+description: Explore software engineering beyond coding in CS362. Learn automated testing, CI/CD pipelines, and collaborative development practices to build reliable, production-ready software.
 sidebar:
   order: 0
 ---
 
-Coming Soon!
+{/* TODO: review original notes */}
+
+Welcome to CS 362, the second course in our software engineering series! In your previous CS courses, you've spent a lot of time honing your programming skills. Some classes, like CS 162 or CS 261, taught you general programming concepts, while others, like CS 290 or CS 492, dove into specific tools or languages. You've also explored CS theory, which gives you a solid foundation. But here's the thing: programming is just one piece of the puzzle when it comes to building great software.
+
+## Beyond Programming: The Reality of Software Development
+
+Let's start with a simple truth: knowing how to code is essential for software development. If you can't program, you can't create software—pretty straightforward, right? But here's where it gets interesting. It's easy to assume that being an awesome programmer—someone who writes elegant, efficient code—is enough to produce top-notch software. After all, that's what we've focused on in much of the CS curriculum.
+
+That assumption, though, doesn't hold up. Creating reliable, production-quality software takes more than elite coding skills. Why? Because no matter how good you are, you're still human. And humans mess up. A lot.
+
+Think about it: even the best developers write buggy code sometimes. They mistype build commands, upload the wrong file to a server, commit a secret key to a public repository, or accidentally overwrite a teammate's work. These aren't rare flukes—they're part of being human. So, in a way, CS 362 is about accepting that reality. Once we admit we're going to make mistakes, we can start building defenses against them.
+
+This becomes critical when you're working on software that people depend on—think apps with millions of users or systems that run for years. That's the kind of development you'll encounter after college, and it's what this course is preparing you for.
+
+## What This Course Is All About
+
+At its core, CS 362 is about strategies and processes to minimize the impact of our inevitable screw-ups on the users of our software, especially as projects grow bigger and more complex. We'll explore three key areas that every software engineer needs to master to create production-ready code:
+
+1. Software Testing
+2. Process Automation (Continuous Integration and Delivery/Deployment)
+3. Working with Other Developers on Shared Code
+
+This is a **technical** course, so expect to spend most of your time writing code, configuring tools, and using systems like GitHub. Let's break down each of these areas so you know what's coming.
+
+### Software Testing: Catching Problems Before Users Do
+
+Testing is one of the most powerful ways to ensure our software works as intended. You're probably already testing your code informally—running it by hand, tweaking inputs, and checking the output. That's a start, but in CS 362, we're stepping it up. We'll focus on *formalized, automated testing*, where you write code to test your code.
+
+Picture this: you create a script that feeds specific inputs into your program under controlled conditions and checks if the results match what you expect. That's the essence of automated testing. We'll cover three main flavors, each with a different scope:
+
+- **Unit Testing**: Tests tiny, isolated chunks of code—like a single function. Did it return the right value?  
+- **Integration Testing**: Checks how multiple pieces of your software work together—like two modules sharing data.  
+- **End-to-End Testing**: Validates big, connected flows—like a user signing up through your app's entire interface.  
+
+For each type, we'll learn tools (think testing frameworks), techniques (how to write effective tests), and best practices (what makes a test reliable). We'll even explore *test-driven development* (TDD), a method where you write tests *before* the code itself. It can be a game-changer for catching issues early.
+
+### Continuous Integration and Delivery/Deployment: Automating Away Mistakes
+
+Writing code is only part of software development. You also build it, test it, and ship it—often by typing commands or moving files around. Ever fat-fingered a command or uploaded the wrong version? Yeah, me too. Those manual steps are mistake magnets.
+
+That's where *continuous integration and continuous delivery/deployment* (CI/CD) come in. CI/CD is all about automating those repetitive tasks to cut down on human error. Here's how it works: you push code to a shared repository (like GitHub), and a pipeline automatically builds it, runs your tests, and either stages it for more checks or deploys it to users.
+
+Imagine this: you fix a bug, push your changes, and within minutes, your code is tested and live—all without you touching a terminal. That's CI/CD in action. In this course, we'll set up our own pipelines using GitHub, learning how to automate builds, tests, and deployments. It's a skill you'll see everywhere in the industry.
+
+### Working with Others: Collaboration Without Chaos
+
+So far in your CS journey, you've probably coded mostly solo—tackling assignments on your own. But if you've worked on a team project (maybe in CS 361), you know collaboration changes everything. Suddenly, you're not the only one touching the codebase. Everyone's contributing, and that's where things can get messy.
+
+Ever had a teammate misread your code and break something? Or accidentally undone someone's progress? Those headaches happen when developers aren't aligned. To avoid that, teams use structured workflows. You might've seen some in CS 361, but here, we're diving into *code review*.
+
+In code review, before your changes join the main codebase, at least one other developer checks them out. They spot bugs, suggest tweaks, and sign off when it's ready. We'll use GitHub for this—submitting changes via pull requests and reviewing them there. It's a standard setup in the real world.
+
+Beyond catching errors, code review spreads knowledge across the team. If only one person understands a chunk of code, you're in trouble when they're gone. This process keeps everyone in the loop.
+
+## Hands-On Learning
+
+This isn't a theory-heavy course with lots of exams. CS 362 is about doing. You'll write tests, build CI/CD pipelines, submit code for review, and review your peers' work. Our goal? Get you comfortable with tools and practices you'll use in industry—so when you land that first job, you're ready.
+
+We'll have four assignments mixing coding and tool setup, plus a final team project where you'll tie it all together. No essays or quizzes—just technical, hands-on work.
+
+Since code is central, we'll standardize on JavaScript. Why JS? It's widely used, plays nice with testing and CI/CD tools, and you've likely seen it before (maybe in CS 290). Don't worry if you're rusty—our examples will stick to simple, clear syntax you can pick up fast.
+
+## Wrapping Up
+
+CS 362 bridges the gap between coding as a student and engineering software as a pro. It's about owning our imperfections and building systems to handle them. By the end, you'll have practical skills to test rigorously, automate confidently, and collaborate smoothly. Let's get started!

@@ -1,0 +1,725 @@
+---
+title: Git and GitHub Basics
+description: Learn the basics of Git and GitHub for individual software development, including version control, repository management, and collaboration workflows.
+draft: true
+sidebar:
+  order: 1
+---
+
+Git and GitHub are essential tools in software development, used in nearly every significant software project worldwide.
+
+While conceptually straightforward, their extensive features can make them seem complex. Mastering these tools is crucial for contributing to real-world software projects, and we will use them extensively in this course. Therefore, we will begin by exploring Git and GitHub.
+
+Initially, we will focus on using these tools as an individual developer, without collaborators. Later, we will explore team-based project collaboration.
+
+Git and GitHub are separate tools, so we will examine each individually, starting with Git.
+
+## What is Git?
+
+Git is a version control system (VCS) that records changes to a set of files over time, providing access to previous versions.
+
+Using a VCS offers several benefits:
+
+- Reverting files to previous versions.
+- Comparing changes over time.
+- Synchronizing version history across multiple locations/collaborators.
+- Identifying when and by whom a change was made.
+
+Many VCSs exist, but Git differs in how it stores version history. Git represents version history as a series of snapshots of the project.
+
+When you record a new version (make a "commit"), Git stores a snapshot of all project files. The version history is a stream of these snapshots.
+
+Git stores these snapshots efficiently. If a file remains unchanged, a copy isn't included; instead, a link to the previous version is used.
+
+This stream of snapshots is stored in a Git repository (repo) within the project directory:
+
+![Git Repository Structure](https://git-scm.com/book/en/v2/images/snapshots.png)
+
+Representing data as snapshots enables powerful features like branches, which we will explore later.
+
+Another key difference is that Git is a distributed VCS. Every location with the version history fully mirrors the complete history, including every version/commit/snapshot.
+
+![Distributed Version Control](https://git-scm.com/book/en/v2/images/distributed.png)
+
+This can be both beneficial and challenging. A major benefit is that every **clone** acts as a complete backup, increasing resilience to machine failure.
+
+However, because every clone contains the full version history, care must be taken to ensure the snapshot streams don't diverge.
+
+If developers A and B make commits in their clones simultaneously, they create different versions of the project's history. These versions can be reconciled, but it can be challenging if they diverge significantly or conflict.
+
+Therefore, workflows are helpful for Git projects with collaborators to ensure easy reconciliation of work. We will discuss these workflows later.
+
+Finally, all version history data and most Git operations are local, allowing you to work on a Git project without an internet connection.
+
+Git has remote operations requiring a network connection (e.g., synchronizing copies), but a network is not needed until you explicitly execute one of these remote operations.
+
+We will explore how to use Git shortly.
+
+## What is GitHub?
+
+GitHub is a cloud hosting service for Git repositories, commonly used to back up code. Developers use Git commands to synchronize their code with a remote repository on GitHub as they make commits.
+
+However, GitHub offers more than just hosting. Its key features build upon hosted Git repositories to create a central point for collaboration.
+
+These tools are accessed through [GitHub's web client](https://github.com) and include bug/issue tracking, code review (via **pull requests**), task management, continuous integration, and social features.
+
+GitHub is commonly used for team-based code project collaboration. The code project is hosted in a repository on GitHub that becomes the central focal point for collaboration on that project.
+
+Each collaborator has their own clone of the central GitHub repository, and as they write code and make commits to their clone, they push those commits back to the central repository. Then, other developers can pull those commits from the central GitHub repository into their own clones to incorporate each other's commits into their own copy of the code.
+
+We will explore GitHub's collaboration tools and workflows for team-based projects later.
+
+## Basic Workflow
+
+Let's explore a basic workflow for an individual developer using Git and GitHub, including Git operations for making commits and synchronizing them.
+
+Git is a command-line program, so we will focus on the command-line form of Git operations. While I encourage you to become comfortable with the command-line version of Git to access its full functionality, GUI Git clients like GitHub Desktop and GitKraken are available. Many code editors, such as VS Code, also have GUI Git clients built into them. You are free to use any of these clients for this course.
+
+Note that if you want to use GitKraken for this course, you'll need to be able to work with private repos on GitHub, which requires GitKraken Pro. Normally, you have to pay for GitKraken Pro, but as long as you're a student, you can get GitKraken Pro (and lots of other cool stuff) for free through the GitHub Student Developer Pack.
+
+To use Git, you need a Git client installed on your development machine. The Pro Git book provides installation documentation for various platforms. Here are a few different notes:
+
+- Windows users will need to install Git for Windows, which provides a command-line version of Git (called Git shell) as well as a simple GUI version of Git.
+- Mac users may find it easiest to install a recent version of Git using Homebrew (`brew install git`).
+- If you like to use the ENGR servers (e.g., access.engr.oregonstate.edu) or Linux, the command-line version of Git should already be installed there.
+
+If you're installing or using Git for the first time on your development machine, you'll need to set some basic configuration information before you can use Git. At a minimum, you'll need to tell Git what your name and email address are. Git will use this information to assign you as the author of the commits you make on this machine. You can use Git's `config` operation to set your name and email address, e.g.:
+
+```shell
+git config --global user.name "Your Name"
+git config --global user.email "your_email@example.com"
+```
+
+If you already have a GitHub account, feel free to use your GitHub email address here.
+
+Now we're ready to start using Git. There are two basic ways we can begin with a Git-based project: we can create one from scratch, or we can start with an existing repo, e.g. from GitHub. We'll look at both of these methods here.
+
+### Creating a Git Repository from Scratch
+
+A Git repository is always associated with a directory, which works perfectly since code projects typically live in their own dedicated directories. Git allows you to selectively choose which files and subdirectories in your project to place under version control.
+
+To create a new Git repository, follow these steps:
+
+```shell
+mkdir my-project # create a new project
+cd my-project    # move into it
+git init         # initialize a Git repo
+```
+
+This command sets up an initial "database" that will store your project's version history and other Git-related information. This database is actually stored in a hidden directory called `.git/` inside your project directory.
+
+Directories that start with a `.` are hidden by default, but you can still view them:
+
+- In Unix terminals: use `ls -a` 
+- In Windows Command Prompt: use `dir /a:hd`
+
+:::caution
+Never manually modify anything inside the `.git/` directory. Only use Git commands to interact with this data. Manual modifications could corrupt your Git repository. Typically, you'll only need to check if the `.git/` directory exists to confirm a project has Git version control.
+:::
+
+### Adding Files and Making Our First Commit
+
+Now that our project directory is initialized as a Git repo, let's start to put some files under version control with Git. We'll need some files first, so let's create two files in our project directory called `cat.js` and `dog.js` (you can create these files however you want). Let's also add a little code to each of these files:
+
+ ```shell
+echo 'console.log("Meow!");' > cat.js
+echo 'console.log("Woof!");' > dog.js
+```
+
+Before going further, let's run another Git operation, the `status` operation, which will let us know the current state of our working directory (i.e. the project directory associated with our Git repo):
+
+```shell
+git status
+```
+
+If we run this operation in our terminal, it will print a status message that looks something like this:
+
+```text
+On branch master
+
+No commits yet
+
+Untracked files:
+(use "git add <file>..." to include in what will be committed)
+        cat.js
+        dog.js
+
+nothing added to commit but untracked files present (use "git add" to track)
+```
+
+At this point we can focus on the middle part of this status message, where it says we have “untracked files”. These are files that Git can see in our working directory but that aren't currently under version control by Git.
+
+If we want Git to start tracking the files we just created, we'll have to explicitly put them under version control. We can do this by running Git's `add` operation (as described in the status message above):
+
+```shell
+git add cat.js dog.js
+```
+
+Once we do this, we can run `git status` again, and we'll see that the status message will have changed:
+
+```text
+On branch master
+
+No commits yet
+
+Changes to be committed:
+(use "git rm --cached <file>..." to unstage)
+        new file:   cat.js
+        new file:   dog.js
+```
+
+Now, instead of saying we have untracked files, Git's status message tells us we have “changes to be committed”. In other words, while we've put our two new files under version control, we haven't yet made a commit (i.e. taken a snapshot) that includes those files. We can do this using Git's `commit` operation:
+
+```shell
+git commit
+```
+
+When you run `git commit` in your terminal Git will automatically open a text editor for you. The reason Git opens an editor is so you can type a commit message for the commit you're creating. A commit message is a brief description (usually one or two sentences) that concisely summarizes the changes being made in a commit. These messages are helpful when we are looking through a project's version history, since they help us remember the changes each commit represents. Every commit needs a commit message. For this commit, we'll type a message like this into the editor:
+
+```text
+Add cat and dog sounds
+```
+
+Once we save that message and exit out of the editor, Git will create the commit for us. If we run `git status` now, we'll see a message that should say something like “nothing to commit, working tree clean”.
+
+There are a couple different things to note about the way we entered the commit message. First, note that we can use `git config` to set the editor Git opens for us when we run `git commit`. For example, if we want Git to use `vim` as the default editor, we could run this command (you can replace `vim` with the command-line command for your favorite editor):
+
+```shell
+git config --system core.editor vim
+```
+
+Alternatively, if we didn't want to bother opening an editor, we could pass the `-m` option to `git commit` to specify our commit message directly on the command line. For example, we could have made a commit with the same commit message as the one we entered into the editor above by using this command (note that the commit message must be wrapped in quotes if it contains any spaces):
+
+```shell
+git commit -m "Add cat and dog sounds"
+```
+
+Now that we've made a commit, we can look at our project's commit history using Git's `log` operation:
+
+```shell
+git log
+```
+
+For now, since we've made just one commit, we'll only have one entry in the commit log, which will look like this:
+
+```text
+commit c4f570c3ce30fcf50f8f8a7736306030667e9337 (HEAD -> master)
+Author: Alexander Ulbrich <adulbrich@users.noreply.github.com>
+Date:   Thu Feb 27 21:04:30 2025 -0800
+
+    Add cat and dog sounds
+```
+
+There are a couple things to note about this entry in the commit log. First, note that it contains information about the author who made the commit along with a timestamp indicating exactly when the commit was made. In addition, the commit message we wrote is included in the log to help us remember what the commit represents.
+
+Finally, note that the commit has a long hexadecimal value associated with it, which is known as the commit hash. Here, the commit hash is:
+
+```text
+c4f570c3ce30fcf50f8f8a7736306030667e9337
+```
+
+There are a couple things to know about the commit hash:
+
+- The commit hash is a checksum computed based on the contents of the commit itself. This means that the commit hash verifies the integrity of the commit it's associated with.
+- The commit hash also serves as a unique identifier for the commit it's associated with. When we need to refer to a specific commit in certain Git operations, we will typically do so using the hash of that commit.
+
+### Making and Reviewing Changes with `git diff`
+
+Let's go ahead and make some changes to the files we created—after all, there aren't many software projects that are finished all at once. Specifically, let's slightly change what the cat says in `cat.js` and let's add some more barking in `dog.js`:
+
+```js
+// cat.js
+console.log("Purr...");
+```
+
+```js
+// dog.js
+console.log("Woof!");
+console.log("Bark!"); 
+```
+
+Before we commit these changes let's run `git status` again. This is typically a good thing to do before making a commit, so we know exactly what changes we've made since the last commit. Now, our status message will look something like this:
+
+```text
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   cat.js
+        modified:   dog.js
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+Now we see the status message tells us we have “changes not staged for commit”. We'll talk about what this means in just a second.
+
+First, though, let's get a more fine grained view of the changes we've made using Git's `diff` operation. This will generate a diff displaying all the differences between the current working directory and the last commit we made. It'll look like this:
+
+```diff
+diff --git a/cat.js b/cat.js
+index ab949dc..45819c5 100644
+--- a/cat.js
++++ b/cat.js
+@@ -1 +1 @@
+-console.log("Meow!");
++console.log("Purr...");
+diff --git a/dog.js b/dog.js
+index 9260ad6..5b62dbb 100644
+--- a/dog.js
++++ b/dog.js
+@@ -1 +1,2 @@
+ console.log("Woof!");
++console.log("Bark!");
+```
+
+Git produces a diff with a specific format known as unified format. The syntax here is somewhat cryptic because it's designed to be read by both humans and machines. Here's what to know about a Git diff.
+
+Each file under version control that has changed since the last commit will be represented in the diff. The representation of the changes of each file is designated with a 4-line header, e.g.:
+
+```diff
+diff --git a/dog.js b/dog.js
+index 9260ad6..5b62dbb 100644
+--- a/dog.js
++++ b/dog.js
+```
+
+The most important thing to recognize about this header is that it contains the name of the file it represents, here `dog.js`.
+
+After the header for a file will be one or more change hunks representing the specific changes made to the file. Each hunk begins with a line indicating line numbers of the file represented by the hunk, e.g.:
+
+```diff
+@@ -1 +1,2 @@
+```
+
+The range information here means that the hunk represents changes that start at line 1 of `cat.js` in the last commit (the last commit is symbolized with a `-` sign in the diff) and that range from line 1 to line 2 in the current working directory (the current working directory is symbolized with a `+` sign in the diff).
+
+Finally, the hunk will contain a representation of the changes themselves. This representation will include three different kinds of lines (in the output above, these lines are each colored differently, but not all Git implementations will produce colored output):
+
+- A line that starts with a `-` represents a deletion, i.e. a line that was present in the last commit but is no longer present in the working directory.
+- A line that starts with a `+` represents an addition, i.e. a line that is present in the current working directory that was not present in the last commit.
+- A line that starts with neither a `-` nor a `+` is a contextual line. These help provide some surrounding context for the actual changes.
+
+For example, the single change hunk associated with `dog.js` in the diff above represents the two lines we added since the last commit (along with a single contextual line):
+
+```diff
+ console.log("Woof!");
++console.log("Bark!");
+```
+
+As you can see in the single hunk associated with `cat.js` in the diff above, a modified line is represented as both a deletion and an addition:
+
+```diff
+-console.log("Meow!");
++console.log("Purr...");
+```
+
+### Staging and Committing Changes
+
+Before we commit our changes, it's important to understand that a file under version control with Git always exists in one of three different states:
+
+- Modified: A modified file is one that has been changed but is not yet committed.
+- Staged: A staged file is one that has been changed and that has been marked (as it currently exists) to be included in the next commit.
+- Committed: A committed file is one whose most recent changes have already been committed, i.e. one that doesn't have any changes since the last commit.
+
+This means that before a file can be committed, it must be staged. This is why the status message we saw just above said we had “changes not staged for commit.” We have two files that were modified but that hadn't yet been marked as staged.
+
+In general, we can think of a Git project as having three separate parts: the working directory, the staging area, and the Git repository itself (i.e. the `.git/` directory).
+
+We already understand what the working directory and the Git repository are. The purpose of the staging area is to allow us to pick and choose which modified files to include in the next commit.
+
+In particular, as we work on a project, we may make changes to many files at once. At some point, we may decide that we are ready to commit some of those changes but not ready to commit others. This is what the staging area allows us to do. The working directory, the staging area, and the Git repository interact like this:
+
+![Git Workflow](https://git-scm.com/book/en/v2/images/areas.png)
+
+We can stage a file using the `git add` operation. For example, if we decide we're ready to commit our changes to `dog.js` but not `cat.js`, we can stage only `dog.js` with this command:
+
+```shell
+git add dog.js
+```
+
+If we do this and then run `git status` again, the status message will reflect that only the changes to `dog.js` are staged:
+
+```
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   dog.js
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   cat.js
+```
+
+Now, we can commit our changes to `dog.js`. Let's give it a commit message like this:
+
+```shell
+git commit -m "Make dog bark too"
+```
+
+Now, we should be able to run `git log` and see our new commit included in the commit history. Running `git status` will give a status message that includes only the unstaged changes to `cat.js`. If we wanted to commit those changes, too, we could do so using the same two-step process of staging and committing we used just now to commit the changes to `dog.js`.
+
+## Mirroring a Local Git Repo on GitHub
+
+At the moment, the repo we've been working with lives only on our development machine. There are no remote copies of it. Let's work on changing that by mirroring our repo on GitHub.
+
+Start out by navigating to [github.com](https://github.com/) in your web browser. If you haven't done so yet, you'll need to sign up for a GitHub account and make sure you're logged in.
+
+Once you're logged into GitHub, there are several ways to create a new repo there.
+
+Go ahead and create a new repo on GitHub. GitHub will ask you for some information about the repo you're creating. Since we're starting with an existing repo (the one on our development machine), we'll have to be careful to set up our new GitHub repo correctly. Specifically, on the “create a new repository” page on GitHub, we want to specify the following settings so that no new files are created in the repo on GitHub:
+
+- Repository name: Typically, the repository name should match the name of the project directory, which in this case is `my-project`.
+- Description: You can set this if you want.
+- Public/private: You can choose either. A public repo will be visible to anyone. A private repository will be visible only to you (until you give other developers access).
+- Add a README file: leave unchecked
+- Add .gitignore: None
+- Choose a license: None
+
+After you create the repository with the above settings, GitHub will navigate you to a page representing your new repo.
+
+We're almost ready to push the commits from our development machine to the new repo we just created on GitHub. Before we do this, though, we need to decide how our development machine will communicate with GitHub. There are two options: SSH and HTTPS.
+
+At the top of the page representing your new repo on GitHub, you should see a box with buttons that allow you to toggle between these two modes of communication.
+
+Either communication option will require some setup with GitHub and on your development machine. We'll briefly explore this setup below.
+
+### Creating a Personal Access Token (PAT) 
+
+If we choose to communicate with GitHub using HTTPS, Git will prompt us to authenticate ourselves with GitHub when we execute a Git operation that communicates with GitHub.
+
+Importantly, GitHub does not support simple password-based authentication. Instead, if we want to use HTTPS communication, we'll have to generate a GitHub personal access token (PAT). This is a special string that acts as an alternative to a password and has specific permissions built into it.
+
+To use HTTPS communication, you'll need to start out by following the instructions in the [GitHub documentation for creating a PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens). These instructions give you a couple options about what kind of personal access token to create and what permissions to associate with the token. For this course, I'd recommend the following settings:
+
+- Type: personal access token (classic)
+- Scopes: repo
+
+The personal access token you create will be a long string something like. Make sure you copy this string and keep it somewhere secure. You should treat your personal access token like you would treat a password.
+
+Have this token ready. We'll use it in a minute when we want to push commits from our development machine to GitHub. In some environments, you may be prompted for your personal access token every time you want to use Git to communicate with GitHub. In other environments, Git will remember your personal access token after the first time you use it.
+
+### Setting up SSH Keys
+
+In order to be able to communicate with GitHub via SSH, we'll need to create an SSH key and register it with GitHub. An SSH key is an authentication credential that will be exchanged with GitHub when we connect with it via SSH. It serves as an alternative to a username and password. In fact, even though an SSH key typically has a password associated with it, we'll usually only need to enter that password once, and thus an SSH key can be used to perform “passwordless” authentication.
+
+There are several steps to follow to set up an SSH key and register it with GitHub. Follow these steps on your development machine:
+
+- First, check to see if you [already have existing SSH keys](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys).
+- If you don't already have an existing SSH key, [generate a new one and set your machine up to use it](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
+*   Next, [register your SSH key with GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
+*   If you want to, [test your SSH connection with GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection).
+
+### Setting our GitHub Repo as a Remote
+
+Once we're ready to communicate with GitHub using either HTTPS or SSH, we can now push the repository data from our development machine to GitHub.
+
+On the new repository page on GitHub, select either HTTPS or SSH, depending on which form of communication you want to use, and then copy the corresponding URL, which should look something like one of these two:
+
+```shell
+https://github.com/<username>/my_git_project.git # HTTPS
+git@github.com:<username>/my_git_project.git`    # SSH
+```
+
+In order to connect the local repository on our development machine with the one we just created on GitHub, we'll need to register the GitHub repo as a remote within our local repo. A Git remote is simply a repo that lives somewhere else that we want to keep synchronized with our local repo.
+
+To do this, we can use Git's `remote` operation, which allows us to view and manipulate remotes. We'll register our GitHub repo as a remote named `origin`, indicating that it will be the default remote we want to synchronize with. You can do this by running the following command, pasting in either the HTTPS URL or the SSH URL, depending on which form of communication you want to use:
+
+```shell
+git remote add origin <HTTPS_or_SSH_URL>
+```
+
+You can verify that the remote was correctly set up by running this command, which prints out all the remotes associated with a local repo along with their URLs:
+
+```shell
+git remote -v
+```
+
+This should print out a message that looks something like this (with your own HTTPS or SSH URL, of course):
+
+```text
+origin  https://github.com/<username>/my_git_project.git (fetch)
+origin  https://github.com/<username>/my_git_project.git (push)
+```
+
+Next, we'll make sure our local repository is using the correct default branch name. By convention, the name `main` should be used for the default branch:
+
+```shell
+git branch -M main
+```
+
+Finally, we can use Git's `push` operation to send the commit history from our local repo to the remote repo on GitHub:
+
+```shell
+git push -u origin main
+```
+
+This command specifically tells Git to send the changes from the current branch on our local repo (whose name we just set to `main`) to the branch named `main` on the remote named `origin`. The `-u` option makes a permanent connection between the local branch and the remote branch so that in the future, we'll be able to execute the `git push` command (as well as other commands, like `git pull`) without arguments.
+
+If the `push` operation successfully executes, the files you committed to your local repo should be visible on GitHub if you refresh the GitHub repo page in your browser.
+
+Take a minute to explore the repo page on GitHub to see what information is available there. For example, you should be able to view your project's entire commit history by clicking the commit history link in the GitHub repo.
+
+We'll explore other features available through this repository page on GitHub as we move through the course.
+
+## Starting with an Existing Repo on GitHub
+
+The other main way we might begin working on a Git project is to start with an existing remote repo, e.g. one on GitHub.
+
+In order to do this, we'll need to make a working copy of the remote repo on our development machine. In git terminology, this is called making a **clone** of the remote repo.
+
+To see how to do this, let's actually make a clone of the repo we created and mirrored on GitHub just above.
+
+If you want to do this on the same development machine where you created the original repo, you'll need to start out by navigating to a different directory on that machine. Alternatively, you can move to a different development machine for now (e.g. by connecting through `ssh` to one of the ENGR servers).
+
+We'll refer to whatever location you're going to make a clone of the repo at as “location #2”. We'll refer to the original location of the repo as “location #1”.
+
+On the home page for your project on GitHub, you should see a green “Code” button. If you click that button, it'll open a dropdown with options for cloning the repo (along with other options for working with the code).
+
+In the “clone” section of that dropdown, make sure you select the form of communication you want to use to clone the repo, either HTTPS or SSH, and copy the URL presented in the dropdown for that form of communication (it should be the same URL we used when we set up the remote above).
+
+At location #2, run this command to clone the repo, pasting in your HTTPS or SSH URL:
+
+```shell
+git clone <HTTPS_or_SSH_URL>
+```
+
+When this command completes, you'll have a clone of the repo at location #2. This clone will live in a directory whose name matches the name of the repo on GitHub (i.e. `my-project/`), and it will contain the project's complete version history.
+
+If you list the contents of that directory and look at the files, you'll see that they match the most recent commit we made at location #1 (remember, we didn't commit the modification we made to `cat.js`).
+
+Importantly, because we created this local repo by cloning a remote repo, Git will automatically set up a connection to the remote repo, giving it the name `origin` like we did when we manually set up a remote at location #1 above. You can see this if you navigate into the new repo and run `git remote -v`. Like we did manually above, Git will set up the branch `main` of the local repo to track the branch `main` of `origin`, so we can run `git push` and `git pull` without arguments.
+
+We can now work on this cloned repo at location #2 in exactly the same way we worked on the original repo at location #1. If we do continue to work in both locations, there will be a few extra considerations we'll need to make. We'll cover those next.
+
+## Working on a Git Repo in Two Different Locations
+
+If we want to work on two different instances of the same Git repo (e.g. on two different machines), we'll have to take a bit of extra care to make sure our commit history stays consistent between the two repos.
+
+In this case, we have two different clones of a repo (in location #1 and location #2) that are both connected to the same repo on GitHub.
+
+Let's make a new commit at location #2 and see how to deal with that commit at location #1. Specifically, let's make and commit the following modification (adding one more “woof”) at location #2:
+
+```js
+// dog.js
+console.log("Woof!");
+console.log("Bark!");
+console.log("Bark!");
+console.log("Bark!");
+```
+
+Once that change is committed, let's push it to the repo on GitHub by running `git push`.
+
+Now, let's say we want to go back to work at location #1. We know we made changes to the code at location #2 and pushed those changes to GitHub, so before we start to make changes at location #1, we need to make sure we have the most recent version of the code there by synchronizing the repo at location #1 with the one on GitHub. We can do this with Git's `pull` operation:
+
+```shell
+git pull
+```
+
+This will “pull” all of the commits from GitHub into the repo at location #1 and incorporate those commits into the working directory.
+
+A good rule of thumb when working on two different instances of the same Git repo is this:**Before you start working in a different location, pull all changes from GitHub to make sure you're working on the most up-to-date version of the code.**
+
+Following this rule of thumb will help to prevent conflicts from being introduced into the version history.
+
+Let's keep going a bit to see what might happen when we don't follow this rule of thumb.
+
+### Dealing with merge conflicts
+
+Let's remain at location #1 for a minute. Recall when we stopped working at location 1, we had actually made a modification to `cat.js` we didn't yet commit. You can run `git diff` there to see it:
+
+```diff
+diff --git a/cat.js b/cat.js
+index ab949dc..45819c5 100644
+--- a/cat.js
++++ b/cat.js
+@@ -1 +1 @@
+-console.log("Meow!");
++console.log("Purr...");
+```
+
+Let's commit and push this modification at location #1:
+
+```shell
+git add cat.js
+git commit
+git push
+```
+
+Now let's move back to location #2 and pretend we've forgotten to follow our rule of thumb about pulling before we start working there. 
+
+Specifically, before we pull at location #2, let's make a change to `cat.js` there, adding a new line to make the cat hiss (the first line of `cat.js` should not reflect the change we committed and pushed from location #1):
+
+```js
+// cat.js
+console.log("Meow!");
+console.log("Hiss!");
+```
+
+Now, let's say we remember at this point that we forgot to pull from GitHub before starting to work again at location #2, and we go ahead and run `git pull` there. If we do that, git will report an error to us:
+
+```text
+error: Your local changes to the following files would be overwritten by merge:
+	cat.js
+Please commit your changes or stash them before you merge.
+Aborting
+```
+
+As the error message tells us, we have two different options to handle this situation: commit our changes or stash them. One of these options will be fairly painless, and one will lead to some trouble. Let's briefly look at the painless option first, then we'll explore the one that will lead to trouble.
+
+The painless option here is to stash our changes. The term “stash” here has a specific meaning. In particular, Git has a `stash` operation we can use to record the current, modified state of the working directory and then roll the working directory back to the most recent commit:
+
+```shell
+git stash
+```
+
+If we run `git stash` at location #2, and look at our code, we'll see it now reflects the state it was in when we last committed at location #2. If we run `git status` at this point, it will report that our working directory is clean (i.e. it has no modifications). We could also see a record of our stashed changes if we wanted to:
+
+```shell
+git stash list
+```
+
+At this point, we could run `git pull` at location #2 if we wanted to, and it would successfully pull the most recent commits from GitHub. Then, we could reapply the changes we stashed and keep going from there. However, let's not do this yet. Instead, let's explore the more painful option we could have taken when we first tried to pull changes from GitHub.
+
+Without pulling, let's reapply the changes we stashed at location #2:
+
+```shell
+git stash pop
+```
+
+Note that the subcommand here is called `pop` because Git's stash functionality stores stashed changes in a stack. Each time we run `git stash`, it pushes a new set of changes on top of the stash stack. Running `git stash pop` pops the changes from the top of the stash stack and reapplies them.
+
+Now, let's commit those changes:
+
+```shell
+git add cat.js
+git commit -m "Cat hisses"
+```
+
+If we go one step further now and try to push the new commit to GitHub, we'll see an error message that looks something like this:
+
+```
+To https://github.com/<username>/my-project.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to 'https://github.com/adulbrich/my-project.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. If you want to integrate the remote changes,
+hint: use 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```
+
+The error message is slightly misleading in this particular situation. The real issue here is that we have now created two different versions of the commit history, one that lives at location #2 and another that lives both on GitHub and at location #1. We can see the two different commit histories if we run `git log` at both location #1 and location #2.
+
+If we try to run `git pull` at location #2 as suggested by the error message above, we'll get another error message that's more accurate:
+
+```text
+hint: You have divergent branches and need to specify how to reconcile them.
+hint: You can do so by running one of the following commands sometime before
+hint: your next pull:
+hint:
+hint:   git config pull.rebase false  # merge
+hint:   git config pull.rebase true   # rebase
+hint:   git config pull.ff only       # fast-forward only
+hint:
+hint: You can replace "git config" with "git config --global" to set a default
+hint: preference for all repositories. You can also pass --rebase, --no-rebase,
+hint: or --ff-only on the command line to override the configured default per
+hint: invocation.
+fatal: Need to specify how to reconcile divergent branches.
+```
+
+Again, we have a couple different options here for how to deal with the issue. We'll try to resolve it by merging the two commit histories together (we'll discuss rebase later):
+
+```shell
+git config pull.rebase false # this sets the pull to merge
+git pull
+```
+
+Alternatively, you can merge explicitly:
+
+```shell
+git merge origin/main
+```
+
+This command will specifically try to take the commit history from the `main` branch of the `origin` remote and join it together with the local `main` branch at location #2. Unfortunately, in both cases, Git will report a conflict:
+
+```text
+Auto-merging cat.js
+CONFLICT (content): Merge conflict in cat.js
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+Trying to run these again will not help:
+
+```text
+error: Merging is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+fatal: Exiting because of an unresolved conflict.
+```
+
+The underlying problem here is that the latest commit in each of the two different commit histories here have different versions of the same line of code. 
+
+This is known as a conflict, and it is preventing Git from being able to automatically merge the two commit histories together (which it can normally do if there are no conflicts). This means we must manually resolve the conflict to complete the merge.
+
+If we actually look at the contents of `cat.js` at location #2 at this point, we will see that Git has modified the file to highlight the conflict. Specifically, at location #2, `cat.js` currently looks like this:
+
+```js
+<<<<<<< HEAD
+console.log("Meow!");
+console.log("Hiss!");
+=======
+console.log("Purr...");
+>>>>>>> 1817ae01cb389bd5f48282e8b09f56a84e7f474e
+```
+
+The syntax here may be somewhat cumbersome, but it's presenting us with the two different sides of the conflict. The first version (between the `<<<<<<<` and the `=======`) is the local version, and the second version (between the `=======` and the `>>>>>>>`) is the version from `origin/main`.
+
+We need to edit the file to indicate how we want to resolve the conflict. We can do this however we want. For example, we could delete everything except the local version of the code to resolve the conflict in favor of the local commit history, or we could delete everything except the remote version of the code to resolve the conflict in favor of the remote commit history. Or, we could create a hybrid of the two versions of the code, with some pieces from the local version and others from the remote version.
+
+Many visual code editors have built-in tools to present this conflict to us in a more intuitive way. For example, in VS Code, we could use the built-in “merge editor” to view the conflict. Other visual editors have similar tools, and we can use them to click and type our way through the conflict.
+
+However we do it, let's resolve the merge conflict as a hybrid between the two version histories, taking the line of `cat.js` from the remote history and all lines from the local history:
+
+```js
+// cat.js
+console.log("Meow!")
+console.log("Hiss!")
+console.log("Purr...")
+```
+
+To complete the conflict resolution, we can mark the conflict as resolved by running `git add` and then running `git commit` to finalize the merge at location #2:
+
+```shell
+git add cat.js
+git commit
+```
+
+Here, when we run `git commit`, we will see that Git will give us the start of a commit message. We can add to this if we want.
+
+Now, we should be able to successfully push everything from location #2 to GitHub:
+
+```shell
+git push
+```
+
+And, just for good measure, we can go back to location #1 to make sure we can pull the merged commit history there:
+
+```shell
+git pull
+```
+
+Now, if we use `git log` to look at the commit histories at both locations, we should see that they are again the same. The commit history on GitHub should also be the same.
+
+Hopefully, this is the last time you ever have to worry about merge conflicts, but it probably won't be. In any case, if you do run into a merge conflict again, you should now have some idea about how to approach it.
+
+However, this should all make the importance of our rule of thumb above more clear. Let's repeat it again here for emphasis:
+
+> Before you start working in a different location, `pull` all changes from GitHub to make sure you're working on the most up-to-date version of the code.
+
+## Git cheat sheets
+
+One of the nicest kinds of resources you can have as you're continuing to learn how to use Git and GitHub is a Git cheat sheet, which just provides a basic summary of some of the most important Git commands. You can find a couple nice Git cheat sheets at these locations:
+
+- [GitHub's Git Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf)
+- [Atlassian's Git Cheat Sheet](https://www.atlassian.com/git/tutorials/atlassian-git-cheatsheet)
