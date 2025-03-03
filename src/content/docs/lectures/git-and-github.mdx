@@ -524,7 +524,7 @@ Following this rule of thumb will help to prevent conflicts from being introduce
 
 Let's keep going a bit to see what might happen when we don't follow this rule of thumb.
 
-### Dealing with merge conflicts
+### Dealing with Merge Conflicts
 
 Let's remain at location #1 for a minute. Recall when we stopped working at location 1, we had actually made a modification to `cat.js` we didn't yet commit. You can run `git diff` there to see it:
 
@@ -717,9 +717,146 @@ However, this should all make the importance of our rule of thumb above more cle
 
 > Before you start working in a different location, `pull` all changes from GitHub to make sure you're working on the most up-to-date version of the code.
 
-## Git cheat sheets
+## Cleaning Up Your Commit History
+
+One of the most important things to know about Git is that it's designed to help you keep a clean, organized commit history. This means that you should try to make sure that each commit you make represents a single, coherent change to your project. This will make it easier for you to understand your project's history and to collaborate with other developers. Employers might also look at your Git history to see how you work, so it's a good idea to keep it clean.
+
+One of the most common ways to clean up your commit history is to use Git's `rebase` operation. This operation allows you to rewrite your commit history by combining, splitting, or reordering commits.
+
+Let's start with a `git log` of our work so far:
+
+```text
+commit da7e2e995e86828a46779fb3ae2c06efa9e43ea3 (HEAD -> main, origin/main)
+Merge: 673e6b8 1817ae0
+Author: Alexander Ulbrich <adulbrich@users.noreply.github.com>
+Date:   Thu Feb 27 21:51:26 2025 -0800
+
+    Merge branch 'main' of https://github.com/adulbrich/my-project
+
+commit 673e6b830f9adb1cbce9aa200afe9dd40dfc0a4b
+Author: Alexander Ulbrich <adulbrich@users.noreply.github.com>
+Date:   Thu Feb 27 21:38:06 2025 -0800
+
+    Cat hisses
+
+commit 1817ae01cb389bd5f48282e8b09f56a84e7f474e
+Author: Alexander Ulbrich <adulbrich@users.noreply.github.com>
+Date:   Thu Feb 27 21:35:05 2025 -0800
+
+    Cat purrs now
+
+commit 3b0a84cd3767da40a9e9ed8d51722d589871a443
+Author: Alexander Ulbrich <adulbrich@users.noreply.github.com>
+Date:   Thu Feb 27 21:06:39 2025 -0800
+
+    Make dog bark too
+
+commit c4f570c3ce30fcf50f8f8a7736306030667e9337
+Author: Alexander Ulbrich <adulbrich@users.noreply.github.com>
+Date:   Thu Feb 27 21:04:30 2025 -0800
+
+    Add cat and dog sounds
+```
+
+This commit history is a bit messy. We have a merge commit that doesn't really represent a change to our project, and we have a couple commits that are related to the same change. Let's clean this up by using `rebase`.
+
+The first thing we'll do is run `git rebase -i HEAD~3`. This command tells Git to start an interactive rebase that will include the last four commits. When we run this command, Git will open an editor with a list of the last three commits in our commit history:
+
+```text
+pick 3b0a84c Make dog bark too
+pick 673e6b8 Cat hisses
+pick 1817ae0 Cat purrs now
+
+# Rebase c4f570c..da7e2e9 onto c4f570c (3 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup [-C | -c] <commit> = like "squash" but keep only the previous
+#                    commit's log message, unless -C is used, in which case
+#                    keep only this commit's message; -c is same as -C but
+#                    opens the editor
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+#         create a merge commit using the original merge commit's
+#         message (or the oneline, if no original merge commit was
+#         specified); use -c <commit> to reword the commit message
+# u, update-ref <ref> = track a placeholder for the <ref> to be updated
+#                       to this position in the new commits. The <ref> is
+#                       updated at the end of the rebase
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+```
+
+Notice that by design, the merge commit does not show up. When you use git rebase, it:
+
+- Temporarily sets aside your commits
+- Updates your branch to the latest version of the target branch
+- Reapplies your commits one by one on top of that updated base
+
+If we wanted to include our initial commit, we could have used `git rebase -i --root` instead.
+
+For now, let's clean up our commit history by squashing the last two commits into the first one. To do this, we'll change the file to look like this:
+
+```text
+pick 3b0a84c Make dog bark too
+squash 673e6b8 Cat hisses
+squash 1817ae0 Cat purrs now
+```
+
+When we save and close the file, Git will reapply the commits in the order we specified. It will then open an editor to allow us to create a new commit message that will represent the squashed commits. We can keep the default message or change it to something more descriptive.
+
+After we save and close the commit message, Git will have rewritten our commit history. We can verify this by running `git log` again:
+
+```text
+commit 600f9a073e36a932b870c9886229d02b2376ae21 (HEAD -> main)
+Author: Alexander Ulbrich <adulbrich@users.noreply.github.com>
+Date:   Thu Feb 27 21:06:39 2025 -0800
+
+    dog barks too, cat hisses and purrs
+
+commit c4f570c3ce30fcf50f8f8a7736306030667e9337
+Author: Alexander Ulbrich <adulbrich@users.noreply.github.com>
+Date:   Thu Feb 27 21:04:30 2025 -0800
+
+    Add cat and dog sounds
+```
+
+Depending on the situation, you might also want to use `rebase` to reorder commits, split commits, or even remove commits. You can do all of these things with the interactive rebase tool.
+
+If there are conflicts, you'll have to resolve them first before continuing. There are other `git rebase` flags such as `--continue`, `--abort`, and `--skip` that you can use to manage the rebase process. Read the messages that Git gives you during the rebase process to understand what you need to do.
+
+Once the rebase has been done on your local, you need to update the remote. Because you are rewriting history, a regular `git push` will be rejected. To overwrite the remote history but check that nobody else has pushed changes in the meantime, you can use:
+
+```shell
+git push --force-with-lease
+```
+
+:::caution[Rewriting History in a Shared Repo]
+If working with others, as we'll see later in the course, it's best practices to avoid rewriting history. This can cause problems for others who are working on the same branch. If you're working on a branch that *only* you are working on, it's generally safe to rewrite history with `rebase`. If you *really* have to re-write the main branch history, coordinate with your team first.
+:::
+
+## Git Cheat Sheets and Resources
 
 One of the nicest kinds of resources you can have as you're continuing to learn how to use Git and GitHub is a Git cheat sheet, which just provides a basic summary of some of the most important Git commands. You can find a couple nice Git cheat sheets at these locations:
 
 - [GitHub's Git Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf)
 - [Atlassian's Git Cheat Sheet](https://www.atlassian.com/git/tutorials/atlassian-git-cheatsheet)
+
+In addition, Julia Evans does a great job at explaining Git's quirks in her blog posts, such as:
+
+- [Confusing git terminology](https://jvns.ca/blog/2023/11/01/confusing-git-terminology/)
+- [git branches: intuition & reality](https://jvns.ca/blog/2023/11/23/branches-intuition-reality/)
+
+And of course, there's the [Pro Git book](https://git-scm.com/book/en/v2), which is a great resource for learning more about Git. Most visuals on this page are sourced from the book.

@@ -6,3 +6,15 @@
 Add additional Tailwind styles to this file, for example with @layer:
 https://tailwindcss.com/docs/adding-custom-styles#using-css-and-layer
 */
+
+.actions {
+    @apply gap-4;
+}
+
+.actions > a {
+    @apply rounded-lg;
+}
+
+.hero > img {
+    @apply rounded-lg;
+}
