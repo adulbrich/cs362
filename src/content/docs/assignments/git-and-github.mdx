@@ -5,4 +5,106 @@ sidebar:
   order: 1
 ---
 
-Coming Soon!
+import { Steps } from '@astrojs/starlight/components';
+
+In this first assignment, the goal is to gain experience with Git. This is also an opportunity to refresh your JavaScript skills from CS 290, as JavaScript will be the primary language for this course. If you're already familiar with Git and JavaScript, this should be straightforward.
+
+The following steps are designed to help you become comfortable with Git. Your grade will be **based on your Git usage**, not the final result.
+
+If you need a refresher on Git, please refer to the lecture notes.
+
+## Create a Local Git Repo and Make Some Commits
+
+While most of the time you might start with a remote repository on GitHub, this assignment will begin with a local repository. Your first task is to create a simple Node.js project and use Git to manage its development.
+
+:::note
+You are welcome to use any Git client, but **do not use the GitHub web interface to make commits** (via file uploads or edits). The goal is to become comfortable with Git itself.
+:::
+
+Here are the steps:
+
+<Steps>
+
+1. On your development machine, create a new project directory (e.g., `assignment-1/`).
+
+2. Initialize it as a Git repository using `git init`.
+
+3. In your `assignment-1/` directory, run `npm init` to initialize the project as an NPM package. Follow the prompts and provide reasonable answers (there are no wrong answers).
+
+    :::note
+    To use `npm`, ensure Node.js is installed. [Download it from the official site](https://nodejs.org/en/download) or use your package manager. A working, though old, version is available on the ENGR servers. I recommend using the LTS version and install/manage it through [nvm](https://github.com/nvm-sh/nvm).
+    :::
+
+4. The `npm init` command creates a `package.json` file. Add this file to version control and **COMMIT** it.
+
+5. Create a file named `.gitignore` in your `assignment-1/` directory.
+
+6. Add the following line to ignore the dependency cache created by NPM:
+
+    ```plaintext
+    node_modules/
+    ```
+
+7. Add the `.gitignore` file to version control and **COMMIT** it. This is a special file that [tells Git to ignore certain files and directories](https://git-scm.com/docs/gitignore). We often don't want to track build artifacts, dependencies, or other files that can be generated from the source code.
+
+8. Create a file named `asciiArt.js` in your `assignment-1/` directory. This file will contain your ASCII art generating program.
+
+9. Ensure your program can capture the string the user wants to convert to ASCII art. Allow the user to pass the string on the command line, like this:
+
+    ```bash
+    node asciiArt.js "This is the string to turn into ASCII art"
+    ```
+
+    In a Node.js program, access command-line arguments via `process.argv`. Capture the first argument after the program name and print it to the terminal using `console.log()`. Refer to the [Node.js documentation for details on `process.argv`](https://nodejs.org/docs/latest-v22.x/api/process.html#processargv).
+
+10. Add the initial version of `asciiArt.js` to version control and **COMMIT** it.
+
+11. Run the following command in your terminal to install the [Figlet library](https://github.com/patorjk/figlet.js):
+
+    ```bash
+    npm install figlet
+    ```
+
+    After installation, a `node_modules/` directory and a `package-lock.json` file will be created. Also, `package.json` will be modified.
+
+12. Modify `asciiArt.js` to use Figlet to generate ASCII art from the user-provided string and print the result. Refer to [Figlet's documentation page](https://github.com/patorjk/figlet.js).
+
+13. Once your program generates ASCII art successfully, **COMMIT** the following:
+
+    - Your modifications to `asciiArt.js`
+    - The modifications to `package.json` made when you installed Figlet
+    - The new [`package-lock.json` file](https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json)
+
+
+14. Run `git log` to print your project's commit history.
+
+15. Take a screenshot of the entire commit history and save it in your `assignment-1/` directory.
+
+16. Add the screenshot to version control and make a final **COMMIT**.
+
+    :::note
+    If using a Git client other than the command line, take a screenshot of the commit history provided by your client.
+    :::
+
+</Steps>
+
+## Mirror Your Local Repo on GitHub
+
+Your second task is to mirror your Git repo on GitHub. Here are the steps:
+
+<Steps>
+1. **Find and click the link to GitHub Classroom in the Canvas assignment.**
+    
+2. This link will direct you to a page where you'll select your name. This connects your real name with your GitHub username in our GitHub Classroom, helping the TAs and instructor find your code.
+
+3. After selecting your name, you'll be brought to a page with an "accept this assignment" button. Clicking this generates a private repo for you in the CS 362 GitHub Classroom. After a few seconds, the page will provide a link to that repo on GitHub.
+
+4. Follow the provided link to navigate to your repo. Copy either the HTTPS or SSH URL for the GitHub repo and use it to **set up that repo as a remote** for your local `/assignment-1` directory. 
+
+5. Push the commits from your local repo to GitHub.
+
+</Steps>
+
+Once you see all your commits on GitHub, your assignment is submitted.
+
+**Don't forget to check the grading rubric in the Canvas assignment.**

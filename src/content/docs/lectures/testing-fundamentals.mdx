@@ -1,0 +1,235 @@
+---
+title: Software Testing Fundamentals
+description: TBD
+draft: true
+sidebar:
+  order: 2
+---
+
+Testing has always been a critical aspect of software development.
+
+Even when you were first learning to program, before you knew much about formal software testing, you likely tested your code by inputting data and comparing the actual behavior against what you expected.
+
+This comparison of actual versus expected behavior is the core of software testing.
+
+Even **manual testing**, where a person (developer, tester, or end-user) runs code, manually enters input, and monitors the behavior, still plays a role in software development.
+
+However, today, "testing" usually refers to **automated testing**, where a suite of tests is executed against a codebase. Each test automatically runs part or all of the code and compares the actual behavior against the expected behavior.
+
+Automated testing is typically driven by developers, who design and implement the tests for the software they are building.
+
+Therefore, it's important to understand the fundamentals of automated software testing: why we test, what types of tests we can perform, and how they work at a high level. We will explore these fundamentals here.
+
+# Why Perform Software Testing?
+
+The primary goal of automated software testing is to prevent software bugs from reaching production and affecting users.
+
+The cost of software bugs can range from [minor annoyances](https://en.wikipedia.org/wiki/Minus_World) to [major frustrations](https://www.theverge.com/2022/12/23/23524555/google-calendar-ios-android-app-spam-events) to [significant discomfort](https://www.nytimes.com/2016/01/14/fashion/nest-thermostat-glitch-battery-dies-software-freeze.html) to [costly disasters](https://en.wikipedia.org/wiki/Ariane_flight_V88) and even [fatalities](https://en.wikipedia.org/wiki/Therac-25).
+
+Depending on the report, inadequate software testing costs the US economy anywhere from [tens of billions](https://www.computerworld.com/article/2575560/study--buggy-software-costs-users--vendors-nearly--60b-annually.html) to over [two trillion dollars annually](https://www.it-cisq.org/the-cost-of-poor-quality-software-in-the-us-a-2022-report/), not to mention serious non-economic impacts like loss of life.
+
+Beyond preventing damage, automated testing offers other compelling benefits, especially for developers.
+
+Well-designed automated tests give us confidence that our code will work as intended. This confidence allows us to *modify* our code without excessive worry about breaking it. Good tests enable us to add features, refactor code, and rely on the tests to quickly catch mistakes before they reach users.
+
+The process of implementing tests can also clarify what you want your software to *do*, leading to better-designed systems by forcing you to consider use cases, boundary conditions, and architecture decisions.
+
+Investing time in writing good tests upfront can save time later by reducing the effort needed to maintain your software.
+
+For these reasons, we want to become proficient software testers. As we learn, remember that while good tests increase our confidence, they don't guarantee bug-free code. As Edsger Dijkstra (of [Dijkstra's algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) fame) [said](https://en.wikiquote.org/wiki/Edsger_W._Dijkstra#1960s): *“Testing shows the presence, not the absence of bugs.”*
+
+# What Is A (Good) Software Test?
+
+Let's examine the characteristics of a good automated software test.
+
+Every good automated software test has these core features:
+
+- It focuses on **a single, specific behavior** within a software project, such as calling a function, invoking an API method, or interacting with a specific UI element (like a form or button).
+- It is based on **a specific input**, such as a set of function parameters, a value passed to an API, or a type of user interaction (like submitting a form).
+- The behavior being tested has **observable results**, such as a function's return value, an API method's response body, or a change in the UI after a form submission.
+- **We know the expected results** of the behavior for the specific input used in the test.
+- The test occurs within **a controlled environment**, such as a single, isolated process on a dedicated machine.
+
+Given these characteristics, a software test's primary job is **to compare the actual results against the expected results**. If they match, the test passes; otherwise, it fails.
+
+Here are some additional considerations for implementing good software tests.
+
+## Tests Should Be Unchanging
+
+Good tests capture the correct behavior of the software. As long as that behavior remains consistent, the tests should not need to change. **Once a test is written, it should not need to be modified.**
+
+Specifically, changes like refactoring, adding new features, or fixing bugs should not alter the existing behaviors of our software.
+
+A good test helps ensure that our software's existing behavior remains consistent as we modify the code.
+
+If we need to change existing tests when refactoring, adding features, or fixing bugs, it may indicate that our code changes are unintentionally impacting the software's existing behavior.
+
+Poorly written tests may need to be changed. We'll examine the characteristics of poorly written tests below.
+
+## Testing Implementation Details
+
+When writing tests, we might be tempted to rely on internal implementation details.
+
+For example, we might implement a test by reading a specific variable's value, calling a private function, or accessing code parts that only developers are aware of.
+
+Imagine testing a feature where a dialog opens when the user clicks a button. The mechanism controlling the dialog might be a boolean value named `showDialog`, which is set to `true` when the button is clicked.
+
+We might be tempted to test this by ensuring that `showDialog` is `true` after the button click. This would be relying on implementation details.
+
+In general, avoid using implementation details in tests because it makes them brittle. If we refactor our code and rename `showDialog`, or eliminate it entirely, the test would break and need to be changed.
+
+It is best practice to **implement tests that interact with our software the way a user would**, using only public APIs and observing changes to the UI.
+
+In the dialog example, a better test would check whether the dialog is actually displayed in the UI when the button is clicked (e.g., by checking for the presence of the dialog's text).
+
+As the course progresses, we'll explore tools and techniques for writing tests that interact with our software like a user, rather than testing implementation details.
+
+However, there are cases where testing implementation details is necessary, especially when important code behavior is not apparent from the public interface.
+
+For example, you might want to test that a data access function correctly reads from a cache instead of a database when appropriate. This behavior might not be evident in the function's return value, so testing it may require examining the function's internals.
+
+### The Developer User Vs. The End User
+
+When we say you should “implement tests that interact with our software the way a user would”, remember that there can be [two different kinds of users](https://kentcdodds.com/blog/avoid-the-test-user):
+
+- **The end user** – a person who interacts directly with the code, such as by clicking buttons and typing text.
+- **The developer user** – another developer who uses your code in their own code, such as by incorporating a class you wrote into their application.
+
+Regardless of which type of user your code has (or if it has both, like a reusable UI component), always implement tests using the interface that user would use. This means clicks and typing for end users, and public method calls for developer users.
+
+## Determinism And Flaky Tests
+
+Another important characteristic of automated software tests is **determinism**. A good test should always produce the same results (pass or fail) given the same conditions (same code and inputs).
+
+Non-deterministic tests are known as **flaky tests**. These tests sometimes pass and sometimes fail, even when the code and the test haven't changed.
+
+Flaky tests reduce developers' confidence in their tests and can waste time as developers try to find the cause of the failures. Therefore, we want to avoid implementing flaky tests. We'll discuss strategies for this later in the course.
+
+Sometimes, test flakiness is unavoidable. For example, a test might require a call to a network service, and uncontrollable factors like network issues may cause the test to be flaky.
+
+In such cases, we can mitigate the effects of flakiness by automatically rerunning a failing test.
+
+# Different Types Of Automated Software Tests
+
+We'll focus on three main types of automated software tests: **unit tests**, **integration tests**, and **end-to-end tests**. These types are distinguished by their scope, or how much code is being tested.
+
+## Unit Tests
+
+A **unit test** validates a small, focused piece of code, such as a single function or class (the name “unit test” comes from testing “units” of code).
+
+For example, a unit test might ensure that a function returns the correct value for known inputs or that a form's submit handler correctly validates user input.
+
+Unit tests are generally small and easy to implement. We often implement multiple unit tests to validate a unit of code under different conditions, or **test cases**.
+
+For example, when implementing unit tests for a shipping address form, we might implement tests to ensure that the form accepts a valid address and rejects various kinds of invalid input (e.g., missing ZIP code or city name) or doesn't break for unusual input (e.g., a city name that's 257 characters long).
+
+-  Test cases involving unusual or rare inputs are known as **boundary cases** and are important to include in our test suite.
+
+These multiple tests give us confidence that our unit of code behaves correctly under many circumstances.
+
+The main limitation of unit tests (as [many](https://natooktesting.wordpress.com/2017/08/24/x-unit-tests-0-integration-tests/) [clever](https://media.tenor.com/7c9bvnQbGCIAAAAC/unittest-unit.gif) [gifs](https://twitter.com/erinfranmc/status/1148986961207730176) have demonstrated) is that they don't ensure that units of code work correctly *together*. This is where integration tests come in.
+
+## Integration Tests
+
+An **integration test** is broader in scope than a unit test and validates *interactions* between multiple software components.
+
+For example, while a unit test might verify that a shipping address form correctly validates input, an integration test might verify that the form correctly passes a valid address to a shipping cost calculator, which then calculates the correct shipping cost. This integration test would specifically verify the interaction between the form and the shipping cost calculator.
+
+Another integration test might ensure that the user's shipping address is correctly stored in the database after submission, validating the interaction between the address form and the database.
+
+Because integration tests validate that different parts of our code interact correctly, they give us more confidence than unit tests.
+
+However, integration tests are also more complex to implement and maintain due to their wider scope.
+
+Thus, unit tests and integration tests represent a tradeoff that must be balanced. We will discuss how to achieve this balance shortly.
+
+## End-To-End Tests
+
+**End-to-end tests** have the largest scope and validate large, connected portions of the codebase running together, such as an entire page or user flow. These tests may involve verifying the behavior of many different application processes running on different machines (e.g., web client, web/API server, database server).
+
+End-to-end tests directly validate an application's behavior through its user interface and are typically implemented using a “robot” that behaves like a user, clicking around the application and typing things.
+
+For example, we might implement an end-to-end test to validate the entire checkout flow of an e-commerce application, where a “robot” goes through the process of clicking the “checkout” button, entering shipping and payment information, clicking the “complete checkout” button, and receiving a transaction confirmation.
+
+The end-to-end test implementation would encode the expected behavior of the application at each step, and the testing “robot” would verify that the actual behavior matches the expected behavior.
+
+End-to-end tests are the most expensive to implement, run, and maintain.
+
+However, because they use our entire application in the way a real user does, they give us the most confidence that our application will work as intended for real users.
+
+## Other Types Of Automated Software Tests
+
+There are a few other types of automated software testing that we won't focus on much in this course but are worth mentioning.
+
+**Performance tests** verify that the resource usage (e.g., runtime or memory usage) of a piece of software is within acceptable limits.
+
+For example, a performance test might run a piece of code and time how long it takes to finish. If execution takes too long, the test fails.
+
+**Load tests** verify whether an application can maintain its performance at scale.
+
+Load tests often simulate a large number of users using an application simultaneously. If the application slows down significantly or exhibits errors during a load test, it may indicate that the code must be streamlined or that larger architectural changes (e.g., more servers) are needed.
+
+# Balancing Different Types Of Automated Tests
+
+Most production software projects benefit from a mix of unit, integration, and end-to-end tests.
+
+The ideal proportion of each type of test to best balance their advantages and disadvantages has been debated.
+
+One popular model for balancing unit, integration, and end-to-end tests is the “[testing pyramid](https://martinfowler.com/bliki/TestPyramid.html)”:
+
+![](https://res.cloudinary.com/kentcdodds-com/image/upload/f_auto,q_auto,dpr_2.0,w_1600/v1625033547/kentcdodds.com/content/blog/write-tests/2.png)
+*Courtesy of [Kent C. Dodds](https://kentcdodds.com/blog/write-tests) (h/t to [Martin Fowler](https://martinfowler.com/bliki/TestPyramid.html) and the [Google Testing Blog](https://testing.googleblog.com/2015/04/just-say-no-more-end-to-end-tests.html))*
+
+The testing pyramid suggests that unit tests are the fastest and least expensive to write, run, and maintain, so they should form the bulk of our tests. As we move up the pyramid to integration and end-to-end tests, which are increasingly slower and more expensive, we should have fewer of these tests.
+
+Thus, most of our tests should be unit tests, with integration tests comprising a smaller proportion and end-to-end tests an even smaller proportion.
+
+Another model is the “[testing trophy](https://kentcdodds.com/blog/write-tests)”:
+
+![](https://res.cloudinary.com/kentcdodds-com/image/upload/f_auto,q_auto,dpr_2.0,w_1600/v1625033466/kentcdodds.com/content/blog/unit-vs-integration-vs-e2e-tests/testing-trophy.png)
+*Courtesy of [Kent C. Dodds](https://kentcdodds.com/blog/static-vs-unit-vs-integration-vs-e2e-tests)*
+
+The “testing trophy” model suggests that most of our tests should be integration tests, with unit tests comprising the next-largest proportion and end-to-end tests the smallest.
+
+- The “testing trophy” image also suggests the importance of **static tests**, which catch typos and type errors. Static tests are often executed as we code, by a [**linter**](https://en.wikipedia.org/wiki/Lint_\(software\)) integrated into our code editor.
+
+Proponents of the “testing trophy” argue that the testing pyramid doesn't reflect the confidence gained from each type of test. Confidence generally increases as we move up the pyramid.
+
+They also argue that testing tools have improved in speed and ease of use, making it more feasible to maintain and run a larger suite of integration tests.
+
+# Test-Driven Development (TDD)
+
+Test-Driven Development (TDD) is a software development strategy that prioritizes automated testing. It revolves around a repeating cycle of testing, coding, and refactoring, commonly known as the "red, green, refactor" cycle.
+
+![](https://res.cloudinary.com/kentcdodds-com/image/upload/f_auto,q_auto,dpr_2.0,w_1600/v1625033508/kentcdodds.com/content/blog/when-i-follow-tdd/0.jpg)
+*Courtesy of [Kent C. Dodds](https://kentcdodds.com/blog/when-i-follow-tdd)*
+
+The TDD cycle consists of the following steps:
+
+- ❌ **Test Fails:** Begin by writing a test that includes just enough code to check the behavior of the next feature you plan to implement. Since the feature hasn't been implemented yet, the test will fail, resulting in a "red" error message.
+- ✅ **Test Passes:** Next, write the minimum amount of code necessary to make the test pass, resulting in a "green" success message. At this stage, focus on functionality rather than code design or elegance.
+- 🔄 **Refactor:** Once the test passes, refactor your code to ensure it is clean and well-structured. As you refactor, the test should continue to pass. If the test fails, it indicates that the refactoring has introduced an issue.
+
+This cycle is repeated for each new feature or behavior you want to add to your code.
+
+A significant advantage of TDD is that writing the test first compels you to consider your code's interface and behavior upfront. The "red" phase inherently involves design considerations.
+
+In essence, to create a test for code that doesn't yet exist, you must decide how you will call that code, what its behavior will be, and how it will communicate its results back to you.
+
+Making these decisions within the context of a test forces you to approach your code from the perspective of its user (in this case, the test itself). This approach can lead to code with a clear and simple interface that is easy to use and understand.
+
+A key to successful TDD implementation is working in small increments. Start by implementing a single test with a limited scope, and then write just enough code to make that test pass. Repeat this process until the entire feature is implemented. This often involves breaking down seemingly simple problems into even smaller, manageable steps.
+
+It's important to note that TDD does *not* require implementing all tests upfront. In fact, doing so is considered an anti-pattern. Instead, TDD involves working on one test at a time.
+
+To gain a better understanding of working in small increments with TDD, I highly recommend reading the "A TDD Example" section from the ["Test-Driven Development" chapter](https://www.jamesshore.com/v2/books/aoad2/test-driven_development) of The Art of Agile Development.
+
+# Limits of Automated Testing and the Importance of Manual Testing
+
+While automated software testing is a cornerstone of modern development, it's crucial to recognize its limitations. Automated testing isn't suitable for every task, and manual testing remains essential in certain situations.
+
+Manual testing is particularly valuable when human creativity or judgment is required.
+
+For instance, security testing often involves identifying complex and subtle vulnerabilities, a task where human exploratory testing excels compared to automated systems. Exploratory testing leverages human intuition and creativity to uncover vulnerabilities that automated tools might miss. Once a human identifies a security vulnerability, an automated test can then be created to ensure its permanent fix.
+
+Similarly, assessing the quality of elements like search results, audio, or video is challenging to automate, as it relies on subjective human judgment. Systematic manual testing is typically the best approach for these evaluations.

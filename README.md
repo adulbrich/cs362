@@ -12,7 +12,16 @@ This template:
 - has scripts to generate PDFs for the different pages
 - hides flowcharts when printing (to be improved)
 
-Search for `TODO` to find things that needs editing.
+## Instructor Checklist
+
+Every term:
+
+- [ ] Update the version of this repository if making changes (`package.json`)
+- [ ] Add TAs to Canvas
+- [ ] Create team **Bookings** page for assignment demo and set up slots
+- [ ] Update Bookings link in Canvas
+- [ ] Create **GitHub Classroom** class and add TAs
+- [ ] Update GitHub Classroom link in Canvas
 
 ## PDFs
 
@@ -65,7 +74,10 @@ All commands are run from the root of the project, from a terminal:
 
 ## Resources
 
-Displaying Latex:
-
-- [How to create an Astro LaTeX component](https://danidiaztech.com/create-astro-latex-component/)
-- [KaTeX: The fastest math typesetting library for the web.](https://katex.org/)
+- [Starlight Getting Started](https://starlight.astro.build/getting-started/) -- Astro template
+- [TailwindCSS](https://tailwindcss.com/) -- for styling
+- [Svelte](https://svelte.dev/docs/svelte/overview) -- for reactive components
+- [How to create an Astro LaTeX component](https://danidiaztech.com/create-astro-latex-component/) -- LaTeX component
+- [KaTeX: The fastest math typesetting library for the web.](https://katex.org/) -- LaTeX component
+- [Adding Mermaid diagrams to Astro MDX](https://xkonti.tech/blog/astro-mermaid-mdx/) -- Mermaid component
+- [Mermaid User Guide](https://mermaid.js.org/intro/getting-started.html) -- Mermaid component
