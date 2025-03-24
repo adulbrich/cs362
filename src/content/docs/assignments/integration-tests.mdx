@@ -5,4 +5,69 @@ sidebar:
   order: 3
 ---
 
-Coming Soon!
+In this assignment, you will utilize tools explored in class to implement integration tests for small UI-based applications. You will write tests for two distinct applications, with specific testing goals for each, as detailed below.
+
+Before you begin writing tests, set up your testing environment. Vitest is already included as a dependency in `package.json`. Install it by running:
+
+```shell
+npm install
+```
+
+To effectively test the HTML/JS-based applications in this assignment, you'll need additional tools and libraries. Ensure you install the following:
+
+{/* TODO: check if this is up to date */}
+* [The jsdom or happy-dom Vitest test environment](https://vitest.dev/guide/environment.html) to provide a DOM-based environment for testing the apps.
+* [The DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro) for locating UI elements as a user would.
+* [The User Event library](https://testing-library.com/docs/user-event/intro) for simulating user interactions with the apps.
+{/* * [The Happy DOM environment](https://github.com/capricorn86/happy-dom) as an alternative DOM implementation for testing (can be used instead of jsdom). */}
+* [The Mock Service Worker API](https://mswjs.io/) for mocking responses from web API data requests.
+
+Don't forget to:
+
+- check the **grading rubric** in the Canvas assignment, and
+- attend your **assignment demo**, which you should have already scheduled at this point.
+
+The assignment is divided into the following parts:
+
+## Testing a User Registration Form
+
+Located in the `registerUser/` directory of this repository is a simple user registration form application. In this application, users enter an email address and password to register for a new account. Upon clicking the "register" button, the entered email address and password are validated. The application responds as follows:
+
+- If both the email and password are valid, a success message appears, and the form fields are cleared.
+- If either the email address or the password is invalid, an error message is displayed. Specifically, if the password is invalid, the error message will detail the reasons for its invalidity.
+
+You can interact with this application by running:
+
+```shell
+npm run serve:registerUser
+```
+
+Your task for this section is to create integration tests using the tools discussed in class. The test design is up to you, but at a minimum, your tests should include test cases for each behavior shown in the **videos available in the repository**. Include multiple tests to cover different aspects of a single behavior when necessary (e.g., ensuring the error message adapts correctly to different failure types). See below for additional requirements.
+
+## Testing a Roman Numeral Converter Application
+
+The `romanNumerals/` directory in this repository contains an application that converts Arabic numbers to Roman numerals. The application features a number input field for entering Arabic numbers and supports conversion to both "old" and "modern" Roman numerals. The application functions as follows:
+
+- The "old" Roman numeral conversion updates live as the user types, using the `convertToOldRoman()` function in `romanNumerals.js`.
+- The "modern" Roman numeral conversion is triggered when the user clicks the "Convert to 'Modern' Roman Numerals" button. This action sends the Arabic number to a web API, which responds with the corresponding "modern" Roman numeral. Refer to the "submit" event listener in `romanNumerals.js` for implementation details.
+- If the user modifies the entered number after converting to "modern" Roman, the "modern" Roman numeral is cleared.
+
+You can interact with this application by running:
+
+```shell
+npm run serve:numerals
+```
+
+Your task for this section is to develop integration tests using the tools covered in class. You are responsible for designing the tests, but they should, at a minimum, accomplish the following (see below for additional requirements):
+
+- Include one or more test cases for each behavior demonstrated in the **videos available in the repository**.
+- To prevent instability, mock the web API used for the "modern" Roman numeral conversion. More information about this API can be found here: https://helloacm.com/tools/romans/. Experimenting with the API will help you understand its behavior and responses, enabling you to effectively mock them in your tests.
+- You **do not** need to implement tests for **error cases** in this application.
+
+## Additional Requirements For This Assignment's Tests
+
+In addition to the application-specific requirements outlined above, your tests should meet these general criteria:
+
+- Verify that the application's user interface responds correctly to various user interactions. This may involve testing for the appearance or disappearance of UI elements or other UI modifications.
+- Use the tools studied in class to interact with the application as an end-user would.
+- Each test should concentrate on a single behavior (e.g., "the form fields are cleared when the email and password are both valid"). Avoid overloading individual tests.
