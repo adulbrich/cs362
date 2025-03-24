@@ -5,4 +5,148 @@ sidebar:
   order: 2
 ---
 
-Coming Soon!
+In this assignment, you will use the [Vitest Testing Framework](https://vitest.dev/) to write unit tests for functions that validate user input during the user signup process.
+
+Don't forget to:
+
+- check the **grading rubric** in the Canvas assignment, and
+- attend your **assignment demo**, which you should have already scheduled at this point.
+
+The assignment is divided into the following parts:
+
+## Unit Testing an An Email Verification Function
+
+In `lib/verifyEmail.js`, you will find a function called `verifyEmail()` that checks if a user has entered a valid email address during signup. Take some time to understand the code and its documentation to grasp its functionality.
+
+The function checks whether an email address matches the correct structure, but it does not verify if the email address actually exists. It's important to note that a simplified email address structure is used, and not all email addresses valid under [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) will be considered valid by this function. However, most common email address formats should pass the validation.
+
+```javascript
+// verifyEmail.js
+/**
+ * Verifies whether an email address is a valid email address.
+ * @param {string} email - The email address to validate.
+ * @returns {boolean} Returns true if the email address is valid, false otherwise.
+ */
+const verifyEmail = (email) => {
+    if (typeof email !== "string") {
+        return false;
+    }
+
+    const emailRegex = /^[\w!#$%&'*+\/=?`{|}~^-]+(?:\.[\w!#$%&'*+\/=?`{|}~^-]+)*@(?:[a-z0-9-]+\.)+[a-z]{2,6}$/i;
+
+    return emailRegex.test(email);
+};
+
+export default verifyEmail;
+```
+
+The regular expression will verify most email addresses. It's
+from [Regular Expressions Cookbook by Jan Goyvaerts and Steven Levithan](https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s01.html). If you want to understand it better, refer to the book, or past the expression on [regex101](https://regex101.com/).
+
+Your first task is to use Vitest to implement unit tests to validate the `verifyEmail()` function. To begin, you'll need to install Vitest as a project dependency. Then, you will decide on the number and types of tests to implement. Designing effective unit tests is a key part of this assignment. Ensure that your tests meet the requirements listed below.
+
+## Unit Testing a Password Verification Function
+
+In `lib/verifyPassword.js`, you'll find a function called `verifyPassword()`, which verifies that a user's password meets specific criteria during signup. Again, familiarize yourself with the code and its documentation to understand how it works.
+
+```javascript
+// verifyPassword.js
+/**
+ * Verifies whether a password satisfies the following criteria:
+ *   * Contains at least 8 characters
+ *   * Contains at least one lowercase letter
+ *   * Contains at least one uppercase letter
+ *   * Contains at least one numerical digit
+ *   * Contains at least one of the following symbols: !@#$%^&*
+ *   * Does not contain invalid characters (spaces and other symbols not listed above)
+ *
+ * @param {string} password - The password to be validated
+ * @returns {Object} Returns an object with the following fields, all boolean valued:
+ *     pass - true if the password passes overall verification
+ *     length - true if the password contains at least 8 characters
+ *     lowercase - true if the password contains at least one lowercase letter
+ *     uppercase - true if the password contains at least one uppercase letter
+ *     digit - true if the password contains at least one digit
+ *     symbol - true if the password contains at least one valid symbol
+ *     noInvalid - true if the password doesn't contain invalid symbols/spaces
+ */
+const verifyPassword = (password) => {
+    if (!password || typeof password !== "string") {
+        return { pass: false };
+    }
+
+    const checks = {
+        length: containsAtLeast8Chars(password),
+        lowercase: containsOneLowercase(password),
+        uppercase: containsOneUppercase(password),
+        digit: containsOneDigit(password),
+        symbol: containsOneSymbol(password),
+        noInvalid: containsNoInvalidChars(password)
+    };
+
+    const pass = Object.values(checks).every(check => check);
+
+    return { ...checks, pass };
+};
+
+const containsAtLeast8Chars = (password) => password.length >= 8;
+
+const containsOneLowercase = (password) => /[a-z]/.test(password);
+
+const containsOneUppercase = (password) => /[A-Z]/.test(password);
+
+const containsOneDigit = (password) => /[0-9]/.test(password);
+
+const containsOneSymbol = (password) => /[!@#$%^&*]/.test(password);
+
+const containsNoInvalidChars = (password) => !/[^a-zA-Z0-9!@#$%^&*]/.test(password);
+
+export default verifyPassword;
+```
+
+Your next task is to implement unit tests to validate the `verifyPassword()` function. As before, you will determine the number and types of tests to implement. These tests must meet the criteria listed below.
+
+Note that `verifyPassword()` is more complex than `verifyEmail()`, so you will likely need more tests to validate it thoroughly.
+
+## Implement a Roman Numeral Converter Using Test-Driven Development (TDD)
+
+Your final task involves using test-driven development (TDD) to implement a new feature: a Roman numeral converter. This converter will take standard Arabic numbers (e.g., 3, 8, 64, 207, 2023) as input and convert them into Roman numerals, based on the following table of equivalents:
+
+| Arabic | Roman Numeral |
+| ------ | ------------- |
+| 1      | I             |
+| 5      | V             |
+| 10     | X             |
+| 50     | L             |
+| 100    | C             |
+| 1000   | M             |
+
+For this part of the assignment, focus on converting to "old" Roman numerals only. 
+
+"Old" Roman numerals rely solely on addition. In this system, every number is constructed by adding smaller component "digits." For example, 1 is "I", 2 is "II" (1 + 1), 4 is "IIII" (1 + 1 + 1 + 1), and 9 is "VIIII" (5 + 1 + 1 + 1 + 1). This differs from modern Roman numerals, which use subtraction (e.g., "IV" is 5 - 1 = 4).
+
+Following the TDD process is crucial for this task.
+
+To demonstrate your use of TDD, you **must** commit after each **phase** of the TDD cycle. Commit after implementing a test in the "red" phase, again after passing the test in the "green" phase, and again after refactoring (if necessary). 
+
+**Your grade for this section will largely depend on your adherence to TDD, assessed through your commit history.**
+
+Here are the specific requirements:
+
+- Implement a converter that takes an Arabic number as input and outputs the corresponding "old" Roman numeral. You will design the interface for this converter.
+- Follow TDD to implement the converter.
+- Commit after each phase of the TDD cycle to demonstrate your process.
+- Each commit message should start with a label indicating the TDD phase:
+  - e.g., "TDD Red: ..." or "TDD Green: ..." or "TDD Refactor: ..."
+- The converter should accept inputs in the range of 1-3999. Numbers outside this range should be considered invalid.
+
+## Requirements For This Assignment's Unit Tests
+
+The unit tests you implement must meet these criteria:
+
+- Thoroughly cover all reasonable inputs to the function being tested.
+- Thoroughly cover the boundary cases of the function. Analyze the function to identify these cases.
+- Have descriptive, clear, and concise names for easy understanding.
+- Be behavior-driven, not method-driven.
+- Follow the arrange-act-assert (AAA) pattern.
+- Avoid anti-patterns, such as excessive DRYness and using logic within the tests.
