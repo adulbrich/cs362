@@ -7,7 +7,7 @@ sidebar:
 
 In this assignment, you will utilize tools explored in class to implement integration tests for small UI-based applications. You will write tests for two distinct applications, with specific testing goals for each, as detailed below.
 
-Before you begin writing tests, set up your testing environment. Vitest is already included as a dependency in `package.json`. Install it by running:
+Before you begin writing tests, set up your testing environment. `vitest` and `http-server` are already included as dependencies in `package.json`. Install it by running:
 
 ```shell
 npm install
@@ -15,7 +15,6 @@ npm install
 
 To effectively test the HTML/JS-based applications in this assignment, you'll need additional tools and libraries. Ensure you install the following:
 
-- The [Vitest](https://vitest.dev/) testing framework for running tests.
 - The [jsdom](https://github.com/jsdom/jsdom) library for creating a virtual DOM environment. You need to setup the [vitest jsdom environment](https://vitest.dev/guide/environment.html#jsdom).
 - The [@testing-library/dom](https://github.com/testing-library/dom-testing-library) library for locating UI elements as a user would.
 - The [@testing-library/jest-dom/vitest](https://github.com/testing-library/jest-dom) library for extending Vitest's expect function with DOM-specific matchers.
