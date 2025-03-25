@@ -1,6 +1,6 @@
 ---
 title: "Integration Tests"
-description: TODO
+description: Learn how to implement integration tests for UI-based applications using Vitest, jsdom, and Testing Library.
 sidebar:
   order: 3
 ---
@@ -15,12 +15,12 @@ npm install
 
 To effectively test the HTML/JS-based applications in this assignment, you'll need additional tools and libraries. Ensure you install the following:
 
-{/* TODO: check if this is up to date */}
-* [The jsdom or happy-dom Vitest test environment](https://vitest.dev/guide/environment.html) to provide a DOM-based environment for testing the apps.
-* [The DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro) for locating UI elements as a user would.
-* [The User Event library](https://testing-library.com/docs/user-event/intro) for simulating user interactions with the apps.
-{/* * [The Happy DOM environment](https://github.com/capricorn86/happy-dom) as an alternative DOM implementation for testing (can be used instead of jsdom). */}
-* [The Mock Service Worker API](https://mswjs.io/) for mocking responses from web API data requests.
+- The [Vitest](https://vitest.dev/) testing framework for running tests.
+- The [jsdom](https://github.com/jsdom/jsdom) library for creating a virtual DOM environment. You need to setup the [vitest jsdom environment](https://vitest.dev/guide/environment.html#jsdom).
+- The [@testing-library/dom](https://github.com/testing-library/dom-testing-library) library for locating UI elements as a user would.
+- The [@testing-library/jest-dom/vitest](https://github.com/testing-library/jest-dom) library for extending Vitest's expect function with DOM-specific matchers.
+- The [@testing-library/user-event](https://github.com/testing-library/user-event) library for simulating user interactions with the apps.
+- The [Mock Service Worker API](https://mswjs.io/) for mocking responses from web API data requests.
 
 Don't forget to:
 
