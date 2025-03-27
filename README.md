@@ -23,6 +23,8 @@ Every term:
 - [ ] Create **GitHub Classroom** class and add TAs
 - [ ] Update GitHub Classroom link in Canvas
 - [ ] Review project code and complete assignment using vitest and playwright (optionally, use something else than SvelteKit)
+- [ ] Check feasibility of project demo (time-wise)
+- [ ] Write down questions for TA demos
 
 ## PDFs
 
