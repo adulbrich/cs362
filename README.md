@@ -25,6 +25,7 @@ Every term:
 - [ ] Review project code and complete assignment using vitest and playwright (optionally, use something else than SvelteKit)
 - [ ] Check feasibility of project demo (time-wise)
 - [ ] Write down questions for TA demos
+- [ ] Use mermaid for flow charts and git flows
 
 ## PDFs
 
