@@ -6,133 +6,179 @@ sidebar:
   order: 1
 ---
 
-Git and GitHub are essential tools in software development, used in nearly every significant software project worldwide.
+import Mermaid from "../../../components/Mermaid.astro";
 
-While conceptually straightforward, their extensive features can make them seem complex. Mastering these tools is crucial for contributing to real-world software projects, and we will use them extensively in this course. Therefore, we will begin by exploring Git and GitHub.
+Git and GitHub are indispensable tools in modern software development, used in nearly every significant project worldwide.
 
-Initially, we will focus on using these tools as an individual developer, without collaborators. Later, we will explore team-based project collaboration.
+Although their core concepts are straightforward, their extensive features can sometimes feel overwhelming. Mastering these tools is essential for contributing to real-world software projects, and we will use them extensively throughout this course. To begin, we will explore Git and GitHub.
 
-Git and GitHub are separate tools, so we will examine each individually, starting with Git.
+Initially, we will focus on using these tools as an individual developer. Later, we will delve into team-based collaboration workflows.
+
+Git and GitHub are distinct tools, so we will examine each separately, starting with Git.
 
 ## What is Git?
 
-Git is a version control system (VCS) that records changes to a set of files over time, providing access to previous versions.
+Git is a version control system (VCS) designed to track changes to a set of files over time, allowing you to access and manage previous versions.
 
-Using a VCS offers several benefits:
+Using a VCS provides several key benefits:
 
-- Reverting files to previous versions.
-- Comparing changes over time.
-- Synchronizing version history across multiple locations/collaborators.
-- Identifying when and by whom a change was made.
+- Reverting files to earlier versions.
+- Comparing changes made over time.
+- Synchronizing version history across multiple locations or collaborators.
+- Identifying when and by whom changes were made.
 
-Many VCSs exist, but Git differs in how it stores version history. Git represents version history as a series of snapshots of the project.
+While many VCSs exist, Git stands out in how it stores version history. Git represents version history as a series of snapshots of the project.
 
-When you record a new version (make a "commit"), Git stores a snapshot of all project files. The version history is a stream of these snapshots.
+When you create a new version (known as a "commit"), Git saves a snapshot of all project files. This version history is essentially a stream of these snapshots.
 
-Git stores these snapshots efficiently. If a file remains unchanged, a copy isn't included; instead, a link to the previous version is used.
+Git optimizes storage by avoiding duplication. If a file remains unchanged, Git doesn't store a new copy; instead, it links to the previous version.
 
-This stream of snapshots is stored in a Git repository (repo) within the project directory:
+This stream of snapshots is stored in a Git repository (repo) located within the project directory:
 
 ![Git Repository Structure](https://git-scm.com/book/en/v2/images/snapshots.png)
 
-Representing data as snapshots enables powerful features like branches, which we will explore later.
+Representing data as snapshots enables powerful features like branching, which we will explore later.
 
-Another key difference is that Git is a distributed VCS. Every location with the version history fully mirrors the complete history, including every version/commit/snapshot.
+Another defining feature of Git is that it is a distributed VCS. Every location containing the version history is a complete mirror of the entire history, including every version, commit, and snapshot.
 
 ![Distributed Version Control](https://git-scm.com/book/en/v2/images/distributed.png)
 
-This can be both beneficial and challenging. A major benefit is that every **clone** acts as a complete backup, increasing resilience to machine failure.
+This distributed nature has both advantages and challenges. A significant advantage is that every **clone** of the repository acts as a complete backup, increasing resilience to machine failures.
 
-However, because every clone contains the full version history, care must be taken to ensure the snapshot streams don't diverge.
+However, because every clone contains the full version history, care must be taken to prevent the snapshot streams from diverging.
 
-If developers A and B make commits in their clones simultaneously, they create different versions of the project's history. These versions can be reconciled, but it can be challenging if they diverge significantly or conflict.
+For example, if developers A and B make commits in their respective clones simultaneously, they create different versions of the project's history. While these versions can be reconciled, the process can become difficult if the changes diverge significantly or conflict.
 
-Therefore, workflows are helpful for Git projects with collaborators to ensure easy reconciliation of work. We will discuss these workflows later.
+To address this, workflows are often used in Git projects with collaborators to ensure smooth reconciliation of work. We will discuss these workflows in detail later.
 
-Finally, all version history data and most Git operations are local, allowing you to work on a Git project without an internet connection.
+Finally, most Git operations are local, meaning you can work on a Git project without an internet connection.
 
-Git has remote operations requiring a network connection (e.g., synchronizing copies), but a network is not needed until you explicitly execute one of these remote operations.
+Remote operations, such as synchronizing copies, require a network connection, but these are only necessary when explicitly executed.
 
-We will explore how to use Git shortly.
+We will soon explore how to use Git in practice.
 
 ## What is GitHub?
 
-GitHub is a cloud hosting service for Git repositories, commonly used to back up code. Developers use Git commands to synchronize their code with a remote repository on GitHub as they make commits.
+GitHub is a cloud-based hosting service for Git repositories, widely used to back up code and facilitate collaboration. Developers use Git commands to synchronize their code with a remote repository on GitHub as they make commits.
 
-However, GitHub offers more than just hosting. Its key features build upon hosted Git repositories to create a central point for collaboration.
+However, GitHub offers much more than just hosting. It provides a suite of tools that build upon hosted Git repositories to serve as a central hub for collaboration.
 
-These tools are accessed through [GitHub's web client](https://github.com) and include bug/issue tracking, code review (via **pull requests**), task management, continuous integration, and social features.
+These tools, accessible through [GitHub's web client](https://github.com), include:
 
-GitHub is commonly used for team-based code project collaboration. The code project is hosted in a repository on GitHub that becomes the central focal point for collaboration on that project.
+- Bug and issue tracking.
+- Code review via **pull requests**.
+- Task management.
+- Continuous integration.
+- Social features for developers.
 
-Each collaborator has their own clone of the central GitHub repository, and as they write code and make commits to their clone, they push those commits back to the central repository. Then, other developers can pull those commits from the central GitHub repository into their own clones to incorporate each other's commits into their own copy of the code.
+GitHub is especially popular for team-based projects. A code project is hosted in a repository on GitHub, which acts as the central point for collaboration.
 
-We will explore GitHub's collaboration tools and workflows for team-based projects later.
+Each team member works on their own clone of the central GitHub repository. As they write code and make commits to their local clone, they push those commits back to the central repository. Other collaborators can then pull these commits from the central repository into their own clones, ensuring everyone stays up to date and can incorporate each other's changes.
+
+Later in this course, we will explore GitHub's collaboration tools and workflows in greater detail, focusing on how they support team-based projects.
 
 ## Basic Workflow
 
-Let's explore a basic workflow for an individual developer using Git and GitHub, including Git operations for making commits and synchronizing them.
+Let's walk through a basic workflow for an individual developer using Git and GitHub, focusing on Git operations for making commits and synchronizing them.
 
-Git is a command-line program, so we will focus on the command-line form of Git operations. While I encourage you to become comfortable with the command-line version of Git to access its full functionality, GUI Git clients like GitHub Desktop and GitKraken are available. Many code editors, such as VS Code, also have GUI Git clients built into them. You are free to use any of these clients for this course.
+Git is primarily a command-line tool, so we will emphasize the command-line version of Git operations. While I encourage you to become comfortable with the command-line interface to access Git's full functionality, you are free to use GUI Git clients like GitHub Desktop or GitKraken. Many code editors, such as VS Code, also include built-in Git clients.
 
-Note that if you want to use GitKraken for this course, you'll need to be able to work with private repos on GitHub, which requires GitKraken Pro. Normally, you have to pay for GitKraken Pro, but as long as you're a student, you can get GitKraken Pro (and lots of other cool stuff) for free through the GitHub Student Developer Pack.
+If you plan to use GitKraken for this course, note that working with private repositories on GitHub requires GitKraken Pro. While GitKraken Pro is typically a paid service, students can access it for free through the GitHub Student Developer Pack, which also includes other useful tools.
 
-To use Git, you need a Git client installed on your development machine. The Pro Git book provides installation documentation for various platforms. Here are a few different notes:
+### Installing Git
 
-- Windows users will need to install Git for Windows, which provides a command-line version of Git (called Git shell) as well as a simple GUI version of Git.
-- Mac users may find it easiest to install a recent version of Git using Homebrew (`brew install git`).
-- If you like to use the ENGR servers (e.g., access.engr.oregonstate.edu) or Linux, the command-line version of Git should already be installed there.
+To use Git, you need to have a Git client installed on your development machine. The Pro Git book provides detailed installation instructions for various platforms. Here are some platform-specific notes:
 
-If you're installing or using Git for the first time on your development machine, you'll need to set some basic configuration information before you can use Git. At a minimum, you'll need to tell Git what your name and email address are. Git will use this information to assign you as the author of the commits you make on this machine. You can use Git's `config` operation to set your name and email address, e.g.:
+- **Windows**: Install Git for Windows, which includes a command-line version of Git (called Git Bash) and a simple GUI.
+- **Mac**: Use Homebrew to install Git with the following command `brew install git`.
+- **Linux**: The command-line version of Git is typically pre-installed (including on the OSU ENGR servers).
+
+### Configuring Git
+
+If you're using Git for the first time on your development machine, you'll need to configure some basic settings before you can start. At a minimum, you must set your name and email address, which Git uses to identify you as the author of your commits. Use the following commands to configure these settings:
 
 ```shell
-git config --global user.name "Your Name"
-git config --global user.email "your_email@example.com"
+git config --global user.name "John Doe"
+git config --global user.email "john.doe@example.com"
 ```
 
-If you already have a GitHub account, feel free to use your GitHub email address here.
+If you already have a GitHub account, you can use your GitHub email address here.
 
-Now we're ready to start using Git. There are two basic ways we can begin with a Git-based project: we can create one from scratch, or we can start with an existing repo, e.g. from GitHub. We'll look at both of these methods here.
+### Starting a Git Project
 
-### Creating a Git Repository from Scratch
+Now that Git is installed and configured, you're ready to start using it. There are two main ways to begin working on a Git-based project:
 
-A Git repository is always associated with a directory, which works perfectly since code projects typically live in their own dedicated directories. Git allows you to selectively choose which files and subdirectories in your project to place under version control.
+- Create a new repository from scratch--and eventually mirroring it on GitHub
+- Clone an existing repository, such as one hosted on GitHub
+
+We'll explore both methods in detail.
+
+## Creating a Git Repository from Scratch
+
+A Git repository is always tied to a directory, which aligns well with the practice of keeping code projects in their own dedicated directories. Git allows you to selectively manage which files and subdirectories are placed under version control.
 
 To create a new Git repository, follow these steps:
 
 ```shell
-mkdir my-project # create a new project
-cd my-project    # move into it
-git init         # initialize a Git repo
+mkdir my-project # Create a new project directory
+cd my-project    # Navigate into the directory
+git init         # Initialize a Git repository
 ```
 
-This command sets up an initial "database" that will store your project's version history and other Git-related information. This database is actually stored in a hidden directory called `.git/` inside your project directory.
+This command creates an initial "database" to store your project's version history and other Git-related information. This database resides in a hidden `.git/` directory within your project folder.
 
-Directories that start with a `.` are hidden by default, but you can still view them:
+Hidden directories (those starting with a `.`) are not visible by default, but you can view them using:
 
-- In Unix terminals: use `ls -a` 
-- In Windows Command Prompt: use `dir /a:hd`
+- **Unix Terminals**: `ls -a`
+- **Windows Command Prompt**: `dir /a:hd`
 
 :::caution
-Never manually modify anything inside the `.git/` directory. Only use Git commands to interact with this data. Manual modifications could corrupt your Git repository. Typically, you'll only need to check if the `.git/` directory exists to confirm a project has Git version control.
+Avoid manually modifying anything inside the `.git/` directory. Always use Git commands to interact with this data. Manual changes can corrupt your repository. Typically, you only need to check for the existence of the `.git/` directory to confirm that Git is initialized.
 :::
 
-### Adding Files and Making Our First Commit
+### States in a Git Repository
 
-Now that our project directory is initialized as a Git repo, let's start to put some files under version control with Git. We'll need some files first, so let's create two files in our project directory called `cat.js` and `dog.js` (you can create these files however you want). Let's also add a little code to each of these files:
+Files in a Git repository can exist in one of three states:
 
- ```shell
+1. **Modified**: The file has changes but is not yet staged.
+2. **Staged**: The file is marked to be included in the next commit.
+3. **Committed**: The file's changes are saved in the repository and doesn't have any changes since the last commit.
+
+This means that before a file can be committed, it must be staged. 
+
+In general, we can think of a Git project as having three separate parts: the working directory, the staging area, and the repository itself (i.e. the `.git/` directory).
+
+The working directory is where your files live. This is where you write code, edit files, and make changes. The staging area is a temporary holding area for files that are ready to be committed. The repository is where the version history of your project is stored.
+
+In particular, as we work on a project, we may make changes to many files at once. At some point, we may decide that we are ready to commit some of those changes but not ready to commit others. This is what the staging area allows us to do. The working directory, the staging area, and the Git repository interact like this:
+
+<Mermaid title="Git Workflow" showForPrint="true">
+```
+sequenceDiagram
+  .git Directory ->> Working Directory: Checkout the Project
+  Working Directory ->> Staging Area: Stage Files
+  Staging Area ->> .git Directory: Commit Changes
+```
+</Mermaid>
+
+Let's run through an example of this workflow.
+
+### Staging Files
+
+With the repository initialized, you can now add files to version control. Start by creating two files in your project directory, `cat.js` and `dog.js`, and add some content to them:
+
+```shell
 echo 'console.log("Meow!");' > cat.js
 echo 'console.log("Woof!");' > dog.js
 ```
 
-Before going further, let's run another Git operation, the `status` operation, which will let us know the current state of our working directory (i.e. the project directory associated with our Git repo):
+Next, check the current state of your working directory using the `git status` command:
 
 ```shell
 git status
 ```
 
-If we run this operation in our terminal, it will print a status message that looks something like this:
+The output will look something like this:
 
 ```text
 On branch master
@@ -140,22 +186,26 @@ On branch master
 No commits yet
 
 Untracked files:
-(use "git add <file>..." to include in what will be committed)
+  (use "git add <file>..." to include in what will be committed)
         cat.js
         dog.js
 
 nothing added to commit but untracked files present (use "git add" to track)
 ```
 
-At this point we can focus on the middle part of this status message, where it says we have “untracked files”. These are files that Git can see in our working directory but that aren't currently under version control by Git.
-
-If we want Git to start tracking the files we just created, we'll have to explicitly put them under version control. We can do this by running Git's `add` operation (as described in the status message above):
+The "untracked files" section indicates that Git sees these files but is not yet tracking them. To start tracking the files, use the `git add` command:
 
 ```shell
 git add cat.js dog.js
 ```
 
-Once we do this, we can run `git status` again, and we'll see that the status message will have changed:
+Alternatively, to track all files, you can use:
+
+```shell
+git add .
+```
+
+Run `git status` again, and you'll see the updated output:
 
 ```text
 On branch master
@@ -163,44 +213,52 @@ On branch master
 No commits yet
 
 Changes to be committed:
-(use "git rm --cached <file>..." to unstage)
+  (use "git rm --cached <file>..." to unstage)
         new file:   cat.js
         new file:   dog.js
 ```
 
-Now, instead of saying we have untracked files, Git's status message tells us we have “changes to be committed”. In other words, while we've put our two new files under version control, we haven't yet made a commit (i.e. taken a snapshot) that includes those files. We can do this using Git's `commit` operation:
+### Committing Files
+
+Now the files are staged for a commit. To save this snapshot, use the `git commit` command:
 
 ```shell
 git commit
 ```
 
-When you run `git commit` in your terminal Git will automatically open a text editor for you. The reason Git opens an editor is so you can type a commit message for the commit you're creating. A commit message is a brief description (usually one or two sentences) that concisely summarizes the changes being made in a commit. These messages are helpful when we are looking through a project's version history, since they help us remember the changes each commit represents. Every commit needs a commit message. For this commit, we'll type a message like this into the editor:
+Git will open a text editor for you to write a commit message. Enter a brief description, such as:
 
 ```text
 Add cat and dog sounds
 ```
 
-Once we save that message and exit out of the editor, Git will create the commit for us. If we run `git status` now, we'll see a message that should say something like “nothing to commit, working tree clean”.
+Save and close the editor to complete the commit. If you check the status again, you'll see:
 
-There are a couple different things to note about the way we entered the commit message. First, note that we can use `git config` to set the editor Git opens for us when we run `git commit`. For example, if we want Git to use `vim` as the default editor, we could run this command (you can replace `vim` with the command-line command for your favorite editor):
-
-```shell
-git config --system core.editor vim
+```text
+nothing to commit, working tree clean
 ```
 
-Alternatively, if we didn't want to bother opening an editor, we could pass the `-m` option to `git commit` to specify our commit message directly on the command line. For example, we could have made a commit with the same commit message as the one we entered into the editor above by using this command (note that the commit message must be wrapped in quotes if it contains any spaces):
+Alternatively, you can skip the editor by using the `-m` option to specify the commit message directly:
 
 ```shell
 git commit -m "Add cat and dog sounds"
 ```
 
-Now that we've made a commit, we can look at our project's commit history using Git's `log` operation:
+:::tip
+We can use `git config` to set the editor Git opens for us when we run `git commit`. For example, if we want Git to use `vim` as the default editor, we could run this command (you can replace `vim` with the command-line command for your favorite editor):
+
+```shell
+git config --system core.editor vim
+```
+:::
+
+To view the commit history, use:
 
 ```shell
 git log
 ```
 
-For now, since we've made just one commit, we'll only have one entry in the commit log, which will look like this:
+The output will include details like the commit hash, author, timestamp, and message:
 
 ```text
 commit c4f570c3ce30fcf50f8f8a7736306030667e9337 (HEAD -> master)
@@ -210,9 +268,7 @@ Date:   Thu Feb 27 21:04:30 2025 -0800
     Add cat and dog sounds
 ```
 
-There are a couple things to note about this entry in the commit log. First, note that it contains information about the author who made the commit along with a timestamp indicating exactly when the commit was made. In addition, the commit message we wrote is included in the log to help us remember what the commit represents.
-
-Finally, note that the commit has a long hexadecimal value associated with it, which is known as the commit hash. Here, the commit hash is:
+The ong hexadecimal value associated with the commit is known as the commit hash. Here, the commit hash is:
 
 ```text
 c4f570c3ce30fcf50f8f8a7736306030667e9337
@@ -223,9 +279,9 @@ There are a couple things to know about the commit hash:
 - The commit hash is a checksum computed based on the contents of the commit itself. This means that the commit hash verifies the integrity of the commit it's associated with.
 - The commit hash also serves as a unique identifier for the commit it's associated with. When we need to refer to a specific commit in certain Git operations, we will typically do so using the hash of that commit.
 
-### Making and Reviewing Changes with `git diff`
+### Reviewing Changes with `git diff`
 
-Let's go ahead and make some changes to the files we created—after all, there aren't many software projects that are finished all at once. Specifically, let's slightly change what the cat says in `cat.js` and let's add some more barking in `dog.js`:
+Now, let's modify the files. Update `cat.js` and `dog.js` as follows:
 
 ```js
 // cat.js
@@ -235,10 +291,16 @@ console.log("Purr...");
 ```js
 // dog.js
 console.log("Woof!");
-console.log("Bark!"); 
+console.log("Bark!");
 ```
 
-Before we commit these changes let's run `git status` again. This is typically a good thing to do before making a commit, so we know exactly what changes we've made since the last commit. Now, our status message will look something like this:
+Before committing these changes, check the status again:
+
+```shell
+git status
+```
+
+The output will indicate "changes not staged for commit." 
 
 ```text
 On branch master
@@ -251,9 +313,13 @@ Changes not staged for commit:
 no changes added to commit (use "git add" and/or "git commit -a")
 ```
 
-Now we see the status message tells us we have “changes not staged for commit”. We'll talk about what this means in just a second.
+To see the exact changes, use the `git diff` command:
 
-First, though, let's get a more fine grained view of the changes we've made using Git's `diff` operation. This will generate a diff displaying all the differences between the current working directory and the last commit we made. It'll look like this:
+```shell
+git diff
+```
+
+This will display a unified diff showing the differences between the current working directory and the last commit:
 
 ```diff
 diff --git a/cat.js b/cat.js
@@ -272,9 +338,9 @@ index 9260ad6..5b62dbb 100644
 +console.log("Bark!");
 ```
 
-Git produces a diff with a specific format known as unified format. The syntax here is somewhat cryptic because it's designed to be read by both humans and machines. Here's what to know about a Git diff.
+Git uses a specific format called unified format to produce diffs. This format can be a bit difficult to read at first because it's designed for both human and machine consumption. Here's what you should know about Git diffs:
 
-Each file under version control that has changed since the last commit will be represented in the diff. The representation of the changes of each file is designated with a 4-line header, e.g.:
+A diff will represent each file under version control that has been modified since the last commit. The changes for each file are indicated by a 4-line header, such as:
 
 ```diff
 diff --git a/dog.js b/dog.js
@@ -283,30 +349,31 @@ index 9260ad6..5b62dbb 100644
 +++ b/dog.js
 ```
 
-The most important thing to recognize about this header is that it contains the name of the file it represents, here `dog.js`.
+The most important part of this header is the file name, in this case, `dog.js`.
 
-After the header for a file will be one or more change hunks representing the specific changes made to the file. Each hunk begins with a line indicating line numbers of the file represented by the hunk, e.g.:
+Following the header, you'll find one or more change hunks detailing the specific modifications made to the file. Each hunk starts with a line that specifies the line numbers involved in the change, like this:
 
 ```diff
 @@ -1 +1,2 @@
 ```
 
-The range information here means that the hunk represents changes that start at line 1 of `cat.js` in the last commit (the last commit is symbolized with a `-` sign in the diff) and that range from line 1 to line 2 in the current working directory (the current working directory is symbolized with a `+` sign in the diff).
+The range information indicates the changes starting at line 1 of cat.js in the last commit (represented by the `-` sign) and spanning from line 1 to line 2 in the current working directory (represented by the `+` sign).
 
-Finally, the hunk will contain a representation of the changes themselves. This representation will include three different kinds of lines (in the output above, these lines are each colored differently, but not all Git implementations will produce colored output):
 
-- A line that starts with a `-` represents a deletion, i.e. a line that was present in the last commit but is no longer present in the working directory.
-- A line that starts with a `+` represents an addition, i.e. a line that is present in the current working directory that was not present in the last commit.
-- A line that starts with neither a `-` nor a `+` is a contextual line. These help provide some surrounding context for the actual changes.
+Finally, the hunk contains the actual changes, represented by three types of lines (note that the coloring may vary depending on the Git implementation):
 
-For example, the single change hunk associated with `dog.js` in the diff above represents the two lines we added since the last commit (along with a single contextual line):
+- Lines starting with a `-` indicate a deletion, meaning the line existed in the last commit but is no longer present in the working directory.
+- Lines starting with a `+` indicate an addition, meaning the line is present in the current working directory but was not in the last commit.
+- Lines that don't start with either `-` or `+` are contextual lines, providing surrounding context for the changes.
+
+For example, the change hunk for `dog.js` shows the two lines added since the last commit, along with a contextual line:
 
 ```diff
  console.log("Woof!");
 +console.log("Bark!");
 ```
 
-As you can see in the single hunk associated with `cat.js` in the diff above, a modified line is represented as both a deletion and an addition:
+In the change hunk for `cat.js`, a modified line is represented as both a deletion and an addition:
 
 ```diff
 -console.log("Meow!");
@@ -315,31 +382,15 @@ As you can see in the single hunk associated with `cat.js` in the diff above, a 
 
 ### Staging and Committing Changes
 
-Before we commit our changes, it's important to understand that a file under version control with Git always exists in one of three different states:
-
-- Modified: A modified file is one that has been changed but is not yet committed.
-- Staged: A staged file is one that has been changed and that has been marked (as it currently exists) to be included in the next commit.
-- Committed: A committed file is one whose most recent changes have already been committed, i.e. one that doesn't have any changes since the last commit.
-
-This means that before a file can be committed, it must be staged. This is why the status message we saw just above said we had “changes not staged for commit.” We have two files that were modified but that hadn't yet been marked as staged.
-
-In general, we can think of a Git project as having three separate parts: the working directory, the staging area, and the Git repository itself (i.e. the `.git/` directory).
-
-We already understand what the working directory and the Git repository are. The purpose of the staging area is to allow us to pick and choose which modified files to include in the next commit.
-
-In particular, as we work on a project, we may make changes to many files at once. At some point, we may decide that we are ready to commit some of those changes but not ready to commit others. This is what the staging area allows us to do. The working directory, the staging area, and the Git repository interact like this:
-
-![Git Workflow](https://git-scm.com/book/en/v2/images/areas.png)
-
-We can stage a file using the `git add` operation. For example, if we decide we're ready to commit our changes to `dog.js` but not `cat.js`, we can stage only `dog.js` with this command:
+When you made your changes, you should stage and commit again. You can do it piecewise. For example, to stage only `dog.js`, run:
 
 ```shell
 git add dog.js
 ```
 
-If we do this and then run `git status` again, the status message will reflect that only the changes to `dog.js` are staged:
+Check the status again:
 
-```
+```text
 On branch master
 Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
@@ -351,13 +402,13 @@ Changes not staged for commit:
         modified:   cat.js
 ```
 
-Now, we can commit our changes to `dog.js`. Let's give it a commit message like this:
+Now, commit the staged changes:
 
 ```shell
 git commit -m "Make dog bark too"
 ```
 
-Now, we should be able to run `git log` and see our new commit included in the commit history. Running `git status` will give a status message that includes only the unstaged changes to `cat.js`. If we wanted to commit those changes, too, we could do so using the same two-step process of staging and committing we used just now to commit the changes to `dog.js`.
+You can repeat this process for `cat.js` or any other files. Use `git log` to verify the commit history and `git status` to check the working directory's state.
 
 ## Mirroring a Local Git Repo on GitHub
 
@@ -417,8 +468,8 @@ Once we're ready to communicate with GitHub using either HTTPS or SSH, we can no
 On the new repository page on GitHub, select either HTTPS or SSH, depending on which form of communication you want to use, and then copy the corresponding URL, which should look something like one of these two:
 
 ```shell
-https://github.com/<username>/my_git_project.git # HTTPS
-git@github.com:<username>/my_git_project.git`    # SSH
+https://github.com/<username>/<repository>.git # HTTPS
+git@github.com:<username>/<repository>.git`    # SSH
 ```
 
 In order to connect the local repository on our development machine with the one we just created on GitHub, we'll need to register the GitHub repo as a remote within our local repo. A Git remote is simply a repo that lives somewhere else that we want to keep synchronized with our local repo.
@@ -438,8 +489,8 @@ git remote -v
 This should print out a message that looks something like this (with your own HTTPS or SSH URL, of course):
 
 ```text
-origin  https://github.com/<username>/my_git_project.git (fetch)
-origin  https://github.com/<username>/my_git_project.git (push)
+origin  https://github.com/<username>/<repository>.git (fetch)
+origin  https://github.com/<username>/<repository>.git (push)
 ```
 
 Next, we'll make sure our local repository is using the correct default branch name. By convention, the name `main` should be used for the default branch:
@@ -828,7 +879,7 @@ Date:   Thu Feb 27 21:06:39 2025 -0800
 
 commit c4f570c3ce30fcf50f8f8a7736306030667e9337
 Author: Alexander Ulbrich <adulbrich@users.noreply.github.com>
-Date:   Thu Feb 27 21:04:30 2025 -0800
+Date:   Thu Feb 27 21:04:30 2025
 
     Add cat and dog sounds
 ```
@@ -844,7 +895,9 @@ git push --force-with-lease
 ```
 
 :::caution[Rewriting History in a Shared Repo]
-If working with others, as we'll see later in the course, it's best practices to avoid rewriting history. This can cause problems for others who are working on the same branch. If you're working on a branch that *only* you are working on, it's generally safe to rewrite history with `rebase`. If you *really* have to re-write the main branch history, coordinate with your team first.
+When collaborating with others, as we'll explore later in the course, it's considered best practice to **avoid** rewriting history. Doing so can create issues for teammates working on the same branch.
+
+If you're working on a branch that only you are using, rewriting history with `rebase` is generally safe. However, if you find it absolutely necessary to rewrite the history of the main branch, make sure to coordinate with your team beforehand to avoid conflicts.
 :::
 
 ## Additional Readings and Resources
