@@ -47,9 +47,16 @@ npx starlight-to-pdf https://cs362.alexulbrich.com --footer ./footer.html --head
 
 To generate lecture notes in separate files (one per page), use the corresponding bash script:
 
-```bash
+```shell
 chmod +x ./pdf/generate-lecture-notes.sh
 ./pdf/generate-lecture-notes.sh
+```
+
+To generate slides from marp, use:
+
+```shell
+cd slides
+npx @marp-team/marp-cli@latest intro.md --pdf --allow-local-files
 ```
 
 ## 🚀 Project Structure

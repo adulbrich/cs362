@@ -652,6 +652,19 @@ Please commit your changes or stash them before you merge.
 Aborting
 ```
 
+<Mermaid showForPrint="true">
+```
+sequenceDiagram
+    participant Developer
+    participant Local Repository
+    participant Remote Repository
+
+    Developer->>Local Repository: Modify files
+    Developer-xRemote Repository: git pull
+    Remote Repository-->>Local Repository: Error
+```
+</Mermaid>
+
 The error suggests two options: commit the changes or stash them. Let's explore both.
 
 #### Option 1: Stashing Changes (Painless)
@@ -676,7 +689,26 @@ To reapply the stashed changes (with or without pulling), use:
 git stash pop
 ```
 
-Note that the subcommand here is called `pop` because Git's stash functionality stores stashed changes in a stack
+Note that the subcommand here is called `pop` because Git's stash functionality stores stashed changes in a stack.
+
+Here's a visual representation of the resolution process using the stash:
+
+<Mermaid showForPrint="true">
+```
+sequenceDiagram
+    participant Developer
+    participant Local Repository
+    participant Remote Repository
+
+    Developer->>Local Repository: Modify files
+    Developer->>Local Repository: git stash
+    Local Repository-->>Local Repository: Save changes to stash
+    Developer->>Remote Repository: git pull
+    Remote Repository->>Local Repository: Fetch and merge changes
+    Developer->>Local Repository: git stash pop
+    Local Repository-->>Local Repository: Reapply stashed changes
+```
+</Mermaid>
 
 #### Option 2: Committing Changes (Leads to Trouble)
 
@@ -795,7 +827,27 @@ git pull
 
 Check the commit history with `git log` to confirm consistency across locations and GitHub.
 
-Let's re-iterate: **Before starting work in a new location, always `pull` changes from GitHub to ensure you're working on the latest version of the code.**
+Here's a visual representation of the merge conflict resolution process:
+
+<Mermaid showForPrint="true">
+```
+sequenceDiagram
+    participant Developer
+    participant Local Repository
+    participant Remote Repository
+
+    Developer->>Local Repository: Modify files
+    Developer->>Local Repository: git commit
+    Developer-xRemote Repository: git push
+    Remote Repository-->>Local Repository: Reject push (divergent branches)
+    Developer->>Remote Repository: git pull
+    Remote Repository->>Local Repository: Fetch and attempt merge
+    Local Repository-->>Developer: Report merge conflict
+    Developer->>Local Repository: Resolve conflict manually
+    Developer->>Local Repository: git commit
+    Developer->>Remote Repository: git push
+```
+</Mermaid>
 
 ## Cleaning Up Your Commit History
 
