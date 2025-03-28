@@ -1,7 +1,6 @@
 ---
 title: Git and GitHub Basics
 description: Learn the basics of Git and GitHub for individual software development, including version control, repository management, and collaboration workflows.
-draft: true
 sidebar:
   order: 1
 ---
@@ -527,41 +526,60 @@ We will cover additional GitHub repository features as the course progresses.
 
 ### Starting with an Existing Repo on GitHub
 
-The other main way we might begin working on a Git project is to start with an existing remote repo, e.g. one on GitHub.
+Another common way to begin working on a Git project is by cloning an existing remote repository, such as one hosted on GitHub.
 
-In order to do this, we'll need to make a working copy of the remote repo on our development machine. In git terminology, this is called making a **clone** of the remote repo.
+To create a working copy of the remote repository on your development machine, follow these steps:
 
-To see how to do this, let's actually make a clone of the repo we created and mirrored on GitHub just above.
+<Steps>
+1. **Choose a Location for the Clone**
 
-If you want to do this on the same development machine where you created the original repo, you'll need to start out by navigating to a different directory on that machine. Alternatively, you can move to a different development machine for now (e.g. by connecting through `ssh` to one of the ENGR servers).
+   If you're cloning the repository on the same machine where you created the original repo, navigate to a different directory. Alternatively, you can use a different machine (e.g., by connecting via `ssh` to one of the ENGR servers). We'll refer to the new location as "location #2" and the original location as "location #1".
 
-We'll refer to whatever location you're going to make a clone of the repo at as “location #2”. We'll refer to the original location of the repo as “location #1”.
+2. **Copy the Repository URL**
 
-On the home page for your project on GitHub, you should see a green “Code” button. If you click that button, it'll open a dropdown with options for cloning the repo (along with other options for working with the code).
+   On your GitHub repository page, click the green **Code** button. This opens a dropdown with options for cloning the repository. Select either HTTPS or SSH as your preferred communication method and copy the provided URL. This URL should match the one used when setting up the remote earlier.
 
-In the “clone” section of that dropdown, make sure you select the form of communication you want to use to clone the repo, either HTTPS or SSH, and copy the URL presented in the dropdown for that form of communication (it should be the same URL we used when we set up the remote above).
+3. **Clone the Repository**
 
-At location #2, run this command to clone the repo, pasting in your HTTPS or SSH URL:
+   At "location #2", run the following command, replacing `<HTTPS_or_SSH_URL>` with the URL you copied:
 
-```shell
-git clone <HTTPS_or_SSH_URL>
-```
+   ```shell
+   git clone <HTTPS_or_SSH_URL>
+   ```
 
-When this command completes, you'll have a clone of the repo at location #2. This clone will live in a directory whose name matches the name of the repo on GitHub (i.e. `my-project/`), and it will contain the project's complete version history.
+   This command creates a local copy of the repository in a new directory named after the repository (e.g., `my-project/`). The directory will contain the complete version history of the project.
 
-If you list the contents of that directory and look at the files, you'll see that they match the most recent commit we made at location #1 (remember, we didn't commit the modification we made to `cat.js`).
+4. **Verify the Clone**
 
-Importantly, because we created this local repo by cloning a remote repo, Git will automatically set up a connection to the remote repo, giving it the name `origin` like we did when we manually set up a remote at location #1 above. You can see this if you navigate into the new repo and run `git remote -v`. Like we did manually above, Git will set up the branch `main` of the local repo to track the branch `main` of `origin`, so we can run `git push` and `git pull` without arguments.
+   Navigate into the cloned directory and list its contents. The files should match the most recent commit made at "location #1" (e.g., any uncommitted changes, like modifications to `cat.js`, will not appear).
 
-We can now work on this cloned repo at location #2 in exactly the same way we worked on the original repo at location #1. If we do continue to work in both locations, there will be a few extra considerations we'll need to make. We'll cover those next.
+5. **Check the Remote Connection**
 
-## Working on a Git Repo in Two Different Locations
+   When cloning a repository, Git automatically sets up a connection to the remote repository, naming it `origin`. You can verify this by running:
 
-If we want to work on two different instances of the same Git repo (e.g. on two different machines), we'll have to take a bit of extra care to make sure our commit history stays consistent between the two repos.
+   ```shell
+   git remote -v
+   ```
 
-In this case, we have two different clones of a repo (in location #1 and location #2) that are both connected to the same repo on GitHub.
+   The output will display the remote URLs for fetching and pushing, similar to this:
 
-Let's make a new commit at location #2 and see how to deal with that commit at location #1. Specifically, let's make and commit the following modification (adding one more “woof”) at location #2:
+   ```text
+   origin  https://github.com/<username>/<repository>.git (fetch)
+   origin  https://github.com/<username>/<repository>.git (push)
+   ```
+
+   Additionally, Git configures the `main` branch of the local repository to track the `main` branch of the remote repository. This allows you to use commands like `git push` and `git pull` without specifying additional arguments.
+</Steps> 
+
+Once the repository is cloned, you can work on it at "location #2" just as you would at "location #1." If you plan to work in both locations, there are additional considerations to ensure the commit history remains consistent. These will be covered in the next section.
+
+### Working on a Git Repo in Two Different Locations
+
+When working on two separate instances of the same Git repository (e.g., on two different machines), it's important to take extra care to keep the commit history consistent between them.
+
+In this scenario, we have two clones of the same repository: one at "location #1" and another at "location #2". Both are connected to the same GitHub repository.
+
+To illustrate, let's make a new commit at "location #2" and then handle that commit at "location #1". At "location #2", modify the `dog.js` file as follows (adding additional "bark" lines):
 
 ```js
 // dog.js
@@ -571,25 +589,33 @@ console.log("Bark!");
 console.log("Bark!");
 ```
 
-Once that change is committed, let's push it to the repo on GitHub by running `git push`.
+After making this change, stage and commit it, and push it to the GitHub repository:
 
-Now, let's say we want to go back to work at location #1. We know we made changes to the code at location #2 and pushed those changes to GitHub, so before we start to make changes at location #1, we need to make sure we have the most recent version of the code there by synchronizing the repo at location #1 with the one on GitHub. We can do this with Git's `pull` operation:
+```shell
+git push
+```
+
+Now, suppose you want to resume work at "location #1". Since changes were made and pushed from "location #2", you must first ensure that "location #1" has the latest version of the code. To synchronize the repository at "location #1" with the GitHub repository, use the `git pull` command:
 
 ```shell
 git pull
 ```
 
-This will “pull” all of the commits from GitHub into the repo at location #1 and incorporate those commits into the working directory.
+This command will fetch all the commits from GitHub and merge them into the working directory at "location #1".
 
-A good rule of thumb when working on two different instances of the same Git repo is this:**Before you start working in a different location, pull all changes from GitHub to make sure you're working on the most up-to-date version of the code.**
+:::tip[Working in Multiple Locations]
+Before starting work in a different location, **pull all changes** from GitHub (or other remote) to ensure you're working on the most up-to-date version of the code. Make sure changes were also **pushed** from other locations before pulling.
 
-Following this rule of thumb will help to prevent conflicts from being introduced into the version history.
+Adhering to this rule will help prevent conflicts and maintain a consistent commit history. 
 
-Let's keep going a bit to see what might happen when we don't follow this rule of thumb.
+We'll discuss other approaches to working in multiple locations or with other people later, but for now, this is the simplest and most effective way to ensure a smooth workflow.
+:::
+
+Next, let's explore what happens if this rule is not followed.
 
 ### Dealing with Merge Conflicts
 
-Let's remain at location #1 for a minute. Recall when we stopped working at location 1, we had actually made a modification to `cat.js` we didn't yet commit. You can run `git diff` there to see it:
+Let's revisit "location #1". Recall that we had made a modification to `cat.js` but hadn't committed it yet. You can verify this change using `git diff`:
 
 ```diff
 diff --git a/cat.js b/cat.js
@@ -601,7 +627,7 @@ index ab949dc..45819c5 100644
 +console.log("Purr...");
 ```
 
-Let's commit and push this modification at location #1:
+Commit and push this change at location #1:
 
 ```shell
 git add cat.js
@@ -609,9 +635,7 @@ git commit
 git push
 ```
 
-Now let's move back to location #2 and pretend we've forgotten to follow our rule of thumb about pulling before we start working there. 
-
-Specifically, before we pull at location #2, let's make a change to `cat.js` there, adding a new line to make the cat hiss (the first line of `cat.js` should not reflect the change we committed and pushed from location #1):
+Now, switch to "location #2". **Suppose we forget the rule of pulling changes before starting work.** We modify `cat.js` to add a new line for a hissing sound, without reflecting the changes pushed from "location #1":
 
 ```js
 // cat.js
@@ -619,61 +643,63 @@ console.log("Meow!");
 console.log("Hiss!");
 ```
 
-Now, let's say we remember at this point that we forgot to pull from GitHub before starting to work again at location #2, and we go ahead and run `git pull` there. If we do that, git will report an error to us:
+At this point, we remember to pull from GitHub. Running `git pull` results in an error:
 
 ```text
 error: Your local changes to the following files would be overwritten by merge:
-	cat.js
+    cat.js
 Please commit your changes or stash them before you merge.
 Aborting
 ```
 
-As the error message tells us, we have two different options to handle this situation: commit our changes or stash them. One of these options will be fairly painless, and one will lead to some trouble. Let's briefly look at the painless option first, then we'll explore the one that will lead to trouble.
+The error suggests two options: commit the changes or stash them. Let's explore both.
 
-The painless option here is to stash our changes. The term “stash” here has a specific meaning. In particular, Git has a `stash` operation we can use to record the current, modified state of the working directory and then roll the working directory back to the most recent commit:
+#### Option 1: Stashing Changes (Painless)
+
+Stashing temporarily saves your changes and reverts the working directory to the last commit:
 
 ```shell
 git stash
 ```
 
-If we run `git stash` at location #2, and look at our code, we'll see it now reflects the state it was in when we last committed at location #2. If we run `git status` at this point, it will report that our working directory is clean (i.e. it has no modifications). We could also see a record of our stashed changes if we wanted to:
+After stashing, the working directory reflects the last committed state. Verify this with `git status`, which should show a clean working directory. You can also view stashed changes:
 
 ```shell
 git stash list
 ```
 
-At this point, we could run `git pull` at location #2 if we wanted to, and it would successfully pull the most recent commits from GitHub. Then, we could reapply the changes we stashed and keep going from there. However, let's not do this yet. Instead, let's explore the more painful option we could have taken when we first tried to pull changes from GitHub.
+At this point, we could run `git pull` and it would successfully pull the most recent commits from GitHub. Then, we could reapply the changes we stashed and keep going from there. However, let's not do this yet. Instead, let's explore the more painful option we could have taken when we first tried to pull changes from GitHub.
 
-Without pulling, let's reapply the changes we stashed at location #2:
+To reapply the stashed changes (with or without pulling), use:
 
 ```shell
 git stash pop
 ```
 
-Note that the subcommand here is called `pop` because Git's stash functionality stores stashed changes in a stack. Each time we run `git stash`, it pushes a new set of changes on top of the stash stack. Running `git stash pop` pops the changes from the top of the stash stack and reapplies them.
+Note that the subcommand here is called `pop` because Git's stash functionality stores stashed changes in a stack
 
-Now, let's commit those changes:
+#### Option 2: Committing Changes (Leads to Trouble)
+
+Instead of stashing then pulling, let's commit the changes directly:
 
 ```shell
 git add cat.js
 git commit -m "Cat hisses"
 ```
 
-If we go one step further now and try to push the new commit to GitHub, we'll see an error message that looks something like this:
+Attempting to push this commit results in an error:
 
-```
+```text
 To https://github.com/<username>/my-project.git
  ! [rejected]        main -> main (non-fast-forward)
-error: failed to push some refs to 'https://github.com/adulbrich/my-project.git'
+error: failed to push some refs to 'https://github.com/<username>/my-project.git'
 hint: Updates were rejected because the tip of your current branch is behind
 hint: its remote counterpart. If you want to integrate the remote changes,
 hint: use 'git pull' before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 ```
 
-The error message is slightly misleading in this particular situation. The real issue here is that we have now created two different versions of the commit history, one that lives at location #2 and another that lives both on GitHub and at location #1. We can see the two different commit histories if we run `git log` at both location #1 and location #2.
-
-If we try to run `git pull` at location #2 as suggested by the error message above, we'll get another error message that's more accurate:
+This happens because the local and remote branches now have divergent histories. Running `git pull` prompts another more accurate error:
 
 ```text
 hint: You have divergent branches and need to specify how to reconcile them.
@@ -692,19 +718,18 @@ fatal: Need to specify how to reconcile divergent branches.
 ```
 
 Again, we have a couple different options here for how to deal with the issue. We'll try to resolve it by merging the two commit histories together (we'll discuss rebase later):
-
 ```shell
-git config pull.rebase false # this sets the pull to merge
+git config pull.rebase false # sets pull to merge
 git pull
 ```
 
-Alternatively, you can merge explicitly:
+Alternatively, explicitly merge:
 
 ```shell
 git merge origin/main
 ```
 
-This command will specifically try to take the commit history from the `main` branch of the `origin` remote and join it together with the local `main` branch at location #2. Unfortunately, in both cases, Git will report a conflict:
+During the merge, Git reports a conflict:
 
 ```text
 Auto-merging cat.js
@@ -725,7 +750,7 @@ The underlying problem here is that the latest commit in each of the two differe
 
 This is known as a conflict, and it is preventing Git from being able to automatically merge the two commit histories together (which it can normally do if there are no conflicts). This means we must manually resolve the conflict to complete the merge.
 
-If we actually look at the contents of `cat.js` at location #2 at this point, we will see that Git has modified the file to highlight the conflict. Specifically, at location #2, `cat.js` currently looks like this:
+Inspecting `cat.js` reveals the conflict:
 
 ```js
 <<<<<<< HEAD
@@ -736,57 +761,51 @@ console.log("Purr...");
 >>>>>>> 1817ae01cb389bd5f48282e8b09f56a84e7f474e
 ```
 
-The syntax here may be somewhat cumbersome, but it's presenting us with the two different sides of the conflict. The first version (between the `<<<<<<<` and the `=======`) is the local version, and the second version (between the `=======` and the `>>>>>>>`) is the version from `origin/main`.
-
-We need to edit the file to indicate how we want to resolve the conflict. We can do this however we want. For example, we could delete everything except the local version of the code to resolve the conflict in favor of the local commit history, or we could delete everything except the remote version of the code to resolve the conflict in favor of the remote commit history. Or, we could create a hybrid of the two versions of the code, with some pieces from the local version and others from the remote version.
-
-Many visual code editors have built-in tools to present this conflict to us in a more intuitive way. For example, in VS Code, we could use the built-in “merge editor” to view the conflict. Other visual editors have similar tools, and we can use them to click and type our way through the conflict.
-
-However we do it, let's resolve the merge conflict as a hybrid between the two version histories, taking the line of `cat.js` from the remote history and all lines from the local history:
+The `<<<<<<<` section shows the local changes, while the `=======` and `>>>>>>>` sections show the remote changes. Resolve the conflict by editing the file. For example, merge both changes:
 
 ```js
 // cat.js
-console.log("Meow!")
-console.log("Hiss!")
-console.log("Purr...")
+console.log("Meow!");
+console.log("Hiss!");
+console.log("Purr...");
 ```
 
-To complete the conflict resolution, we can mark the conflict as resolved by running `git add` and then running `git commit` to finalize the merge at location #2:
+:::note
+Many visual code editors have built-in tools to present this conflict to us in a more intuitive way. For example, in VS Code, we could use the built-in “merge editor” to view the conflict. Other visual editors have similar tools, and we can use them to click and type our way through the conflict.
+:::
+
+Mark the conflict as resolved:
 
 ```shell
 git add cat.js
 git commit
 ```
 
-Here, when we run `git commit`, we will see that Git will give us the start of a commit message. We can add to this if we want.
-
-Now, we should be able to successfully push everything from location #2 to GitHub:
+Finally, push the resolved changes:
 
 ```shell
 git push
 ```
 
-And, just for good measure, we can go back to location #1 to make sure we can pull the merged commit history there:
+Return to "location #1" and pull the latest changes to ensure both locations have the same commit history:
 
 ```shell
 git pull
 ```
 
-Now, if we use `git log` to look at the commit histories at both locations, we should see that they are again the same. The commit history on GitHub should also be the same.
+Check the commit history with `git log` to confirm consistency across locations and GitHub.
 
-Hopefully, this is the last time you ever have to worry about merge conflicts, but it probably won't be. In any case, if you do run into a merge conflict again, you should now have some idea about how to approach it.
-
-However, this should all make the importance of our rule of thumb above more clear. Let's repeat it again here for emphasis:
-
-> Before you start working in a different location, `pull` all changes from GitHub to make sure you're working on the most up-to-date version of the code.
+Let's re-iterate: **Before starting work in a new location, always `pull` changes from GitHub to ensure you're working on the latest version of the code.**
 
 ## Cleaning Up Your Commit History
 
-One of the most important things to know about Git is that it's designed to help you keep a clean, organized commit history. This means that you should try to make sure that each commit you make represents a single, coherent change to your project. This will make it easier for you to understand your project's history and to collaborate with other developers. Employers might also look at your Git history to see how you work, so it's a good idea to keep it clean.
+Git is designed to help you maintain a clean and organized commit history. Each commit should represent a single, coherent change to your project. This approach makes it easier to understand your project's history, collaborate with others, and even showcase your work to potential employers.
 
-One of the most common ways to clean up your commit history is to use Git's `rebase` operation. This operation allows you to rewrite your commit history by combining, splitting, or reordering commits.
+A common way to tidy up your commit history is by using Git's `rebase` operation. This allows you to rewrite your commit history by combining, splitting, or reordering commits.
 
-Let's start with a `git log` of our work so far:
+### Reviewing the Current Commit History
+
+Let's start by examining the current commit history using `git log`:
 
 ```text
 commit da7e2e995e86828a46779fb3ae2c06efa9e43ea3 (HEAD -> main, origin/main)
@@ -821,9 +840,17 @@ Date:   Thu Feb 27 21:04:30 2025
     Add cat and dog sounds
 ```
 
-This commit history is a bit messy. We have a merge commit that doesn't really represent a change to our project, and we have a couple commits that are related to the same change. Let's clean this up by using `rebase`.
+This history is somewhat messy. It includes a merge commit that doesn't represent a meaningful change and multiple commits related to the same feature. Let's clean it up using `rebase`.
 
-The first thing we'll do is run `git rebase -i HEAD~3`. This command tells Git to start an interactive rebase that will include the last four commits. When we run this command, Git will open an editor with a list of the last three commits in our commit history:
+### Starting an Interactive Rebase
+
+To begin, run the following command:
+
+```shell
+git rebase -i HEAD~3
+```
+
+This starts an interactive rebase for the last three commits. Git will open an editor displaying the commits:
 
 ```text
 pick 3b0a84c Make dog bark too
@@ -862,7 +889,7 @@ pick 1817ae0 Cat purrs now
 #
 ```
 
-Notice that by design, the merge commit does not show up. When you use git rebase, it:
+Notice that by design, the merge commit does not show up. When you use `git rebase`, it:
 
 - Temporarily sets aside your commits
 - Updates your branch to the latest version of the target branch
@@ -878,9 +905,11 @@ squash 673e6b8 Cat hisses
 squash 1817ae0 Cat purrs now
 ```
 
-When we save and close the file, Git will reapply the commits in the order we specified. It will then open an editor to allow us to create a new commit message that will represent the squashed commits. We can keep the default message or change it to something more descriptive.
+Save and close the editor. Git will reapply the commits in the specified order and open another editor for the new commit message. You can keep the default message or write a more descriptive one.
 
-After we save and close the commit message, Git will have rewritten our commit history. We can verify this by running `git log` again:
+### Verifying the Updated History
+
+After completing the rebase, check the updated commit history with `git log`:
 
 ```text
 commit 600f9a073e36a932b870c9886229d02b2376ae21 (HEAD -> main)
@@ -896,20 +925,38 @@ Date:   Thu Feb 27 21:04:30 2025
     Add cat and dog sounds
 ```
 
-Depending on the situation, you might also want to use `rebase` to reorder commits, split commits, or even remove commits. You can do all of these things with the interactive rebase tool.
+The history is now cleaner, with related changes grouped into a single commit.
 
-If there are conflicts, you'll have to resolve them first before continuing. There are other `git rebase` flags such as `--continue`, `--abort`, and `--skip` that you can use to manage the rebase process. Read the messages that Git gives you during the rebase process to understand what you need to do.
+Interactive rebase also allows you to:
 
-Once the rebase has been done on your local, you need to update the remote. Because you are rewriting history, a regular `git push` will be rejected. To overwrite the remote history but check that nobody else has pushed changes in the meantime, you can use:
+- **Reorder commits**: Rearrange the order of commits in the editor.
+- **Split commits**: Use the `edit` command to break a commit into smaller parts.
+- **Remove commits**: Use the `drop` command to delete a commit.
+
+If conflicts arise during the rebase, resolve them manually, then continue with:
+
+```shell
+git rebase --continue
+```
+
+To abort the rebase and restore the original history, use:
+
+```shell
+git rebase --abort
+```
+
+### Updating the Remote Repository
+
+After rewriting history locally, you'll need to update the remote repository. A regular `git push` will be rejected because the history has changed. Instead, use:
 
 ```shell
 git push --force-with-lease
 ```
 
-:::caution[Rewriting History in a Shared Repo]
-When collaborating with others, as we'll explore later in the course, it's considered best practice to **avoid** rewriting history. Doing so can create issues for teammates working on the same branch.
+This ensures you overwrite the remote history only if no one else has pushed changes in the meantime.
 
-If you're working on a branch that only you are using, rewriting history with `rebase` is generally safe. However, if you find it absolutely necessary to rewrite the history of the main branch, make sure to coordinate with your team beforehand to avoid conflicts.
+:::caution[Rewriting History in Shared Repositories]
+Avoid rewriting history in shared branches, as it can disrupt teammates' work. If you must rewrite history, coordinate with your team beforehand. For personal branches, rewriting history is generally safe.
 :::
 
 ## Additional Readings and Resources
