@@ -522,6 +522,12 @@ To mirror your local repository with a GitHub repository, you need to establish 
 
 Once the push is complete, your files and commit history will be visible on GitHub. Refresh the repository page in your browser to explore its features, such as viewing the commit history. 
 
+:::note[Main or Master?]
+GitHub has transitioned to using `main` as the default branch name instead of `master`. This change reflects a broader movement in the tech community to use more inclusive language. If you create a new repository on GitHub, it will default to `main`. However, if you initialize a repository locally, it may still default to `master`. You can change this default behavior by configuring your Git settings. For now, we will continue using `main` as the default branch name.
+
+The `-M` flag above renames the current branch to `main`, even if it was previously named `master`.
+:::
+
 We will cover additional GitHub repository features as the course progresses.
 
 ### Starting with an Existing Repo on GitHub
