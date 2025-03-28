@@ -7,6 +7,7 @@ sidebar:
 ---
 
 import Mermaid from "../../../components/Mermaid.astro";
+import { Steps } from '@astrojs/starlight/components';
 
 Git and GitHub are indispensable tools in modern software development, used in nearly every significant project worldwide.
 
@@ -417,110 +418,114 @@ git commit -m "Make dog bark too"
 
 You can repeat this process for `cat.js` or any other files. Use `git log` to verify the commit history and `git status` to check the working directory's state.
 
-## Mirroring a Local Git Repo on GitHub
+## Connecting your Local Machine with GitHub
 
-At the moment, the repo we've been working with lives only on our development machine. There are no remote copies of it. Let's work on changing that by mirroring our repo on GitHub.
+Currently, the repository we've been working on exists only on our development machine, with no remote copies. Let's change that by allowing our local machine to connect to a remote one, in this case GitHub.
 
-Start out by navigating to [github.com](https://github.com/) in your web browser. If you haven't done so yet, you'll need to sign up for a GitHub account and make sure you're logged in.
+Start by visiting [github.com](https://github.com/) in your web browser. If you don't already have a GitHub account, sign up for one and log in.
 
-Once you're logged into GitHub, there are several ways to create a new repo there.
+Once logged in, you can create a new repository on GitHub. Follow these steps to ensure the new repository is set up correctly for mirroring an existing local repository:
 
-Go ahead and create a new repo on GitHub. GitHub will ask you for some information about the repo you're creating. Since we're starting with an existing repo (the one on our development machine), we'll have to be careful to set up our new GitHub repo correctly. Specifically, on the “create a new repository” page on GitHub, we want to specify the following settings so that no new files are created in the repo on GitHub:
+1. Navigate to the “create a new repository” page on GitHub.
+2. Provide the following details:
+   - **Repository name**: Match the name of your project directory, e.g., `my-project`.
+   - **Description**: Optional, add if desired.
+   - **Visibility**: Choose between public (visible to everyone) or private (visible only to you and collaborators you invite).
+   - **Add a README file**: Leave this unchecked.
+   - **Add .gitignore**: Select “None.”
+   - **Choose a license**: Select “None.”
 
-- Repository name: Typically, the repository name should match the name of the project directory, which in this case is `my-project`.
-- Description: You can set this if you want.
-- Public/private: You can choose either. A public repo will be visible to anyone. A private repository will be visible only to you (until you give other developers access).
-- Add a README file: leave unchecked
-- Add .gitignore: None
-- Choose a license: None
+After completing these steps, GitHub will create the repository and redirect you to its page.
 
-After you create the repository with the above settings, GitHub will navigate you to a page representing your new repo.
+Before **pushing** commits from your local repository to the newly created GitHub repository, you need to configure how your development machine will communicate with GitHub. There are two options for this: **SSH** and **HTTPS**.
 
-We're almost ready to push the commits from our development machine to the new repo we just created on GitHub. Before we do this, though, we need to decide how our development machine will communicate with GitHub. There are two options: SSH and HTTPS.
+At the top of your new repository's page on GitHub, you'll find a box with buttons to toggle between SSH and HTTPS. Choose your preferred method, as each requires specific setup steps on both GitHub and your development machine. We'll briefly outline these setups in the following sections.
 
-At the top of the page representing your new repo on GitHub, you should see a box with buttons that allow you to toggle between these two modes of communication.
+### HTTPS: Creating a Personal Access Token (PAT)
 
-Either communication option will require some setup with GitHub and on your development machine. We'll briefly explore this setup below.
+When using HTTPS to communicate with GitHub, Git will prompt you to authenticate during operations that interact with GitHub. However, GitHub does not support simple password-based authentication. Instead, you'll need to generate a Personal Access Token (PAT), which acts as a secure alternative to a password and includes specific permissions.
 
-### Creating a Personal Access Token (PAT) 
+To create a PAT, follow the instructions in the [GitHub documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens). Here are the recommended settings for this course:
 
-If we choose to communicate with GitHub using HTTPS, Git will prompt us to authenticate ourselves with GitHub when we execute a Git operation that communicates with GitHub.
+- **Type**: Personal Access Token (classic)
+- **Scopes**: `repo`
 
-Importantly, GitHub does not support simple password-based authentication. Instead, if we want to use HTTPS communication, we'll have to generate a GitHub personal access token (PAT). This is a special string that acts as an alternative to a password and has specific permissions built into it.
+Once generated, the PAT will be a long string. Copy it and store it securely, as you would a password. You'll need this token when pushing commits from your local repository to GitHub. 
 
-To use HTTPS communication, you'll need to start out by following the instructions in the [GitHub documentation for creating a PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens). These instructions give you a couple options about what kind of personal access token to create and what permissions to associate with the token. For this course, I'd recommend the following settings:
+Depending on your environment, Git may prompt you for the PAT each time you perform an operation requiring authentication. In some cases, Git will remember the token after the first use.
 
-- Type: personal access token (classic)
-- Scopes: repo
+### SSH: Setting up SSH Keys
 
-The personal access token you create will be a long string something like. Make sure you copy this string and keep it somewhere secure. You should treat your personal access token like you would treat a password.
+To communicate with GitHub via SSH, you'll need to create an SSH key and register it with GitHub. An SSH key is a secure authentication credential that replaces the need for a username and password. Once set up, you'll typically only need to enter the SSH key's password once, enabling "passwordless" authentication for future operations.
 
-Have this token ready. We'll use it in a minute when we want to push commits from our development machine to GitHub. In some environments, you may be prompted for your personal access token every time you want to use Git to communicate with GitHub. In other environments, Git will remember your personal access token after the first time you use it.
+Follow these steps to set up an SSH key and register it with GitHub:
 
-### Setting up SSH Keys
+1. **Check for Existing SSH Keys**: Start by verifying if you already have SSH keys on your machine. Refer to [GitHub's guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys) for instructions.
+2. **Generate a New SSH Key**: If no keys exist, create one and configure your machine to use it. Detailed steps are available in [GitHub's documentation](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
+3. **Register the SSH Key with GitHub**: Add your newly created SSH key to your GitHub account by following [these instructions](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
+4. **Test the SSH Connection**: Confirm that your SSH setup works by testing the connection. See [GitHub's guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection) for details.
 
-In order to be able to communicate with GitHub via SSH, we'll need to create an SSH key and register it with GitHub. An SSH key is an authentication credential that will be exchanged with GitHub when we connect with it via SSH. It serves as an alternative to a username and password. In fact, even though an SSH key typically has a password associated with it, we'll usually only need to enter that password once, and thus an SSH key can be used to perform “passwordless” authentication.
+### Mirroring a Local Git Repo on GitHub
 
-There are several steps to follow to set up an SSH key and register it with GitHub. Follow these steps on your development machine:
+To mirror your local repository with a GitHub repository, you need to establish a connection using either HTTPS or SSH.
 
-- First, check to see if you [already have existing SSH keys](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys).
-- If you don't already have an existing SSH key, [generate a new one and set your machine up to use it](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
-*   Next, [register your SSH key with GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
-*   If you want to, [test your SSH connection with GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection).
+<Steps>
+1. **Copy the Repository URL**  
 
-### Setting our GitHub Repo as a Remote
+   On your GitHub repository page, choose either HTTPS or SSH as your preferred communication method. Copy the corresponding URL, which will look like one of these:
 
-Once we're ready to communicate with GitHub using either HTTPS or SSH, we can now push the repository data from our development machine to GitHub.
+   ```shell
+   https://github.com/<username>/<repository>.git # HTTPS
+   git@github.com:<username>/<repository>.git     # SSH
+   ```
 
-On the new repository page on GitHub, select either HTTPS or SSH, depending on which form of communication you want to use, and then copy the corresponding URL, which should look something like one of these two:
+2. **Add the Remote Repository**
 
-```shell
-https://github.com/<username>/<repository>.git # HTTPS
-git@github.com:<username>/<repository>.git`    # SSH
-```
+   Register the GitHub repository as a remote in your local repository. A Git remote is simply a reference to a repository hosted elsewhere. Use the following command, replacing `<HTTPS_or_SSH_URL>` with the URL you copied:
 
-In order to connect the local repository on our development machine with the one we just created on GitHub, we'll need to register the GitHub repo as a remote within our local repo. A Git remote is simply a repo that lives somewhere else that we want to keep synchronized with our local repo.
+   ```shell
+   git remote add origin <HTTPS_or_SSH_URL>
+   ```
 
-To do this, we can use Git's `remote` operation, which allows us to view and manipulate remotes. We'll register our GitHub repo as a remote named `origin`, indicating that it will be the default remote we want to synchronize with. You can do this by running the following command, pasting in either the HTTPS URL or the SSH URL, depending on which form of communication you want to use:
+3. **Verify the Remote**
 
-```shell
-git remote add origin <HTTPS_or_SSH_URL>
-```
+   Confirm that the remote was added successfully by running:
 
-You can verify that the remote was correctly set up by running this command, which prints out all the remotes associated with a local repo along with their URLs:
+   ```shell
+   git remote -v
+   ```
 
-```shell
-git remote -v
-```
+   This will display a list of remotes and their URLs, which should look like this:
 
-This should print out a message that looks something like this (with your own HTTPS or SSH URL, of course):
+   ```text
+   origin  https://github.com/<username>/<repository>.git (fetch)
+   origin  https://github.com/<username>/<repository>.git (push)
+   ```
 
-```text
-origin  https://github.com/<username>/<repository>.git (fetch)
-origin  https://github.com/<username>/<repository>.git (push)
-```
+4. **Set the Default Branch**
 
-Next, we'll make sure our local repository is using the correct default branch name. By convention, the name `main` should be used for the default branch:
+   Ensure your local repository uses `main` as the default branch name:
 
-```shell
-git branch -M main
-```
+   ```shell
+   git branch -M main
+   ```
 
-Finally, we can use Git's `push` operation to send the commit history from our local repo to the remote repo on GitHub:
+5. **Push to GitHub**
 
-```shell
-git push -u origin main
-```
+   Use the `git push` command to upload your local commit history to the GitHub repository:
 
-This command specifically tells Git to send the changes from the current branch on our local repo (whose name we just set to `main`) to the branch named `main` on the remote named `origin`. The `-u` option makes a permanent connection between the local branch and the remote branch so that in the future, we'll be able to execute the `git push` command (as well as other commands, like `git pull`) without arguments.
+   ```shell
+   git push -u origin main
+   ```
 
-If the `push` operation successfully executes, the files you committed to your local repo should be visible on GitHub if you refresh the GitHub repo page in your browser.
+   The `-u` option establishes a tracking relationship between your local branch and the remote branch, allowing you to use commands like `git push` and `git pull` without additional arguments in the future.
+</Steps>
 
-Take a minute to explore the repo page on GitHub to see what information is available there. For example, you should be able to view your project's entire commit history by clicking the commit history link in the GitHub repo.
+Once the push is complete, your files and commit history will be visible on GitHub. Refresh the repository page in your browser to explore its features, such as viewing the commit history. 
 
-We'll explore other features available through this repository page on GitHub as we move through the course.
+We will cover additional GitHub repository features as the course progresses.
 
-## Starting with an Existing Repo on GitHub
+### Starting with an Existing Repo on GitHub
 
 The other main way we might begin working on a Git project is to start with an existing remote repo, e.g. one on GitHub.
 
@@ -811,7 +816,7 @@ Date:   Thu Feb 27 21:06:39 2025 -0800
 
 commit c4f570c3ce30fcf50f8f8a7736306030667e9337
 Author: Alexander Ulbrich <adulbrich@users.noreply.github.com>
-Date:   Thu Feb 27 21:04:30 2025 -0800
+Date:   Thu Feb 27 21:04:30 2025
 
     Add cat and dog sounds
 ```
