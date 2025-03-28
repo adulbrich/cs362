@@ -138,13 +138,20 @@ Avoid manually modifying anything inside the `.git/` directory. Always use Git c
 
 ### States in a Git Repository
 
-Files in a Git repository can exist in one of three states:
+Files in a Git repository can exist in different states:
 
-1. **Modified**: The file has changes but is not yet staged.
-2. **Staged**: The file is marked to be included in the next commit.
+1. **Not Staged for Commit**:
+    - **untracked**: the file is not tracked by Git and is not included in the version history.
+    - **modified**: the file is tracked by Git, but its contents have changed since the last commit.
+    - **deleted**: the file is tracked by Git, but it has been deleted from the working directory.
+2. **Staged**: The file is marked to be included in the next commit. It can be in state **new file**, **modified**, or **deleted**, respectively.
 3. **Committed**: The file's changes are saved in the repository and doesn't have any changes since the last commit.
 
 This means that before a file can be committed, it must be staged. 
+
+:::note[Ignoring Files?]
+It's also worth noting that files can be in the **ignored** state (intentionally excluded from version control). You can specify this by creating a `.gitignore` file, as we'll see later.
+:::
 
 In general, we can think of a Git project as having three separate parts: the working directory, the staging area, and the repository itself (i.e. the `.git/` directory).
 
@@ -155,9 +162,9 @@ In particular, as we work on a project, we may make changes to many files at onc
 <Mermaid title="Git Workflow" showForPrint="true">
 ```
 sequenceDiagram
-  .git Directory ->> Working Directory: Checkout the Project
-  Working Directory ->> Staging Area: Stage Files
-  Staging Area ->> .git Directory: Commit Changes
+  .git Directory ->> Working Directory: Checkout the latest commit
+  Working Directory ->> Staging Area: Stage files
+  Staging Area ->> .git Directory: Commit changes
 ```
 </Mermaid>
 
