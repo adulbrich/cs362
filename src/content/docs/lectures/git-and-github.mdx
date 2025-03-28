@@ -159,12 +159,12 @@ The working directory is where your files live. This is where you write code, ed
 
 In particular, as we work on a project, we may make changes to many files at once. At some point, we may decide that we are ready to commit some of those changes but not ready to commit others. This is what the staging area allows us to do. The working directory, the staging area, and the Git repository interact like this:
 
-<Mermaid title="Git Workflow" showForPrint="true">
+<Mermaid showForPrint="true">
 ```
 sequenceDiagram
   .git Directory ->> Working Directory: Checkout the latest commit
-  Working Directory ->> Staging Area: Stage files
-  Staging Area ->> .git Directory: Commit changes
+  Working Directory ->> Staging Area: Add files to staging area
+  Staging Area ->> .git Directory: Commit staged changes
 ```
 </Mermaid>
 

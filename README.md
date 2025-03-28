@@ -23,9 +23,17 @@ Every term:
 - [ ] Create **GitHub Classroom** class and add TAs
 - [ ] Update GitHub Classroom link in Canvas
 - [ ] Review project code and complete assignment using vitest and playwright (optionally, use something else than SvelteKit)
-- [ ] Check feasibility of project demo (time-wise)
+- [x] Check feasibility of project demo (time-wise): about 12 hours in final's week
 - [ ] Write down questions for TA demos
 - [ ] Use mermaid for flow charts and git flows
+- [ ] topics to cover
+  - [ ] maintenance
+  - [ ] git pre-commit hooks
+  - [ ] feature flags
+  - [ ] chaos engineering
+  - [ ] system performance and reliability
+  - [ ] technical debt
+  - [ ] ...
 
 ## PDFs
 
