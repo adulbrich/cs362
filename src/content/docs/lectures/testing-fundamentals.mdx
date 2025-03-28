@@ -6,19 +6,19 @@ sidebar:
   order: 2
 ---
 
-Testing has always been a critical aspect of software development.
+Testing has always been a vital part of software development.
 
-Even when you were first learning to program, before you knew much about formal software testing, you likely tested your code by inputting data and comparing the actual behavior against what you expected.
+Even in the early stages of learning to program, before formal software testing concepts were introduced, you likely tested your code by providing input and comparing the actual behavior to your expectations.
 
-This comparison of actual versus expected behavior is the core of software testing.
+This process—comparing actual behavior against expected behavior—is the essence of software testing.
 
-Even **manual testing**, where a person (developer, tester, or end-user) runs code, manually enters input, and monitors the behavior, still plays a role in software development.
+**Manual testing**, where a person (such as a developer, tester, or end-user) runs the code, inputs data, and observes the behavior, still plays an important role in software development.
 
-However, today, "testing" usually refers to **automated testing**, where a suite of tests is executed against a codebase. Each test automatically runs part or all of the code and compares the actual behavior against the expected behavior.
+However, in modern development, "testing" typically refers to **automated testing**. Automated testing involves running a suite of tests against a codebase, where each test automatically executes part or all of the code and compares the actual behavior to the expected behavior.
 
-Automated testing is typically driven by developers, who design and implement the tests for the software they are building.
+Automated testing is usually driven by developers, who design and implement these tests to validate the software they are building.
 
-Therefore, it's important to understand the fundamentals of automated software testing: why we test, what types of tests we can perform, and how they work at a high level. We will explore these fundamentals here.
+Understanding the fundamentals of automated software testing is essential: why we test, the types of tests we can perform, and how they function at a high level. These fundamentals will be explored in this discussion.
 
 ## Why Perform Software Testing?
 
@@ -48,53 +48,41 @@ For these reasons, we want to become proficient software testers. As we learn, r
 
 ## What Makes a Good Test?
 
-Let's examine the characteristics of a good automated software test.
+A good automated software test has several key characteristics that ensure its effectiveness and reliability. Let's explore these features in detail:
 
-Every good automated software test has these core features:
+- **Focus on a Single Behavior**: A good test targets one specific behavior within the software, such as calling a function, invoking an API method, or interacting with a specific UI element (e.g., a form or button). This ensures clarity and precision.
+- **Based on Specific Input**: The test should use well-defined inputs, such as function parameters, API values, or user interactions (e.g., submitting a form). This helps isolate the behavior being tested.
+- **Observable Results**: The behavior being tested must produce measurable results, such as a function's return value, an API response, or a visible change in the UI (e.g., a form submission).
+- **Known Expected Results**: The expected outcome for the given input must be clearly defined. This allows the test to determine whether the behavior is correct.
+- **Controlled Environment**: Tests should run in a predictable and isolated environment, such as a single process on a dedicated machine, to ensure consistency.
 
-- It focuses on **a single, specific behavior** within a software project, such as calling a function, invoking an API method, or interacting with a specific UI element (like a form or button).
-- It is based on **a specific input**, such as a set of function parameters, a value passed to an API, or a type of user interaction (like submitting a form).
-- The behavior being tested has **observable results**, such as a function's return value, an API method's response body, or a change in the UI after a form submission.
-- **We know the expected results** of the behavior for the specific input used in the test.
-- The test occurs within **a controlled environment**, such as a single, isolated process on a dedicated machine.
-
-Given these characteristics, a software test's primary job is **to compare the actual results against the expected results**. If they match, the test passes; otherwise, it fails.
-
-Here are some additional considerations for implementing good software tests.
+The primary purpose of a software test is to compare the **actual results against the expected results**. If they match, the test passes; otherwise, it fails.
 
 ### Tests Should Be Unchanging
 
-Good tests capture the correct behavior of the software. As long as that behavior remains consistent, the tests should not need to change. **Once a test is written, it should not need to be modified.**
+Good tests are designed to capture the correct behavior of the software and should remain unchanged as long as that behavior stays consistent. **Once a test is written, it should not need to be modified.**
 
-Specifically, changes like refactoring, adding new features, or fixing bugs should not alter the existing behaviors of our software.
+For example, changes like refactoring, adding new features, or fixing bugs should not alter the existing behaviors of the software. A good test ensures that these modifications do not unintentionally impact the software's current functionality.
 
-A good test helps ensure that our software's existing behavior remains consistent as we modify the code.
+If existing tests need to be updated during refactoring or feature additions, it may indicate that the changes are unintentionally affecting the software's behavior. Poorly written tests, however, may require updates, which highlights the importance of writing high-quality tests from the start.
 
-If we need to change existing tests when refactoring, adding features, or fixing bugs, it *may* indicate that our code changes are unintentionally impacting the software's existing behavior.
+### Avoid Testing Implementation Details
 
-Poorly written tests may need to be changed. We'll examine the characteristics of poorly written tests below.
+When writing tests, it can be tempting to rely on internal implementation details, but this approach should generally be avoided.
 
-### Testing Implementation Details
+For instance, consider a feature where a dialog opens when a user clicks a button. The mechanism controlling this dialog might involve a boolean variable named `showDialog`, which is set to `true` when the button is clicked. Testing this by verifying that `showDialog` is `true` after the button click relies on implementation details.
 
-When writing tests, we might be tempted to rely on internal implementation details.
+This approach is problematic because it makes tests brittle. If the code is refactored—such as renaming or removing `showDialog`—the test would fail and require modification, even if the functionality remains unchanged.
 
-For instance, consider a test that reads the value of a specific variable, calls a private function, or accesses parts of the code that are only intended for developers.
+The best practice is to write tests that interact with the software as a user would, using only public APIs and observing visible changes in the UI. For example, instead of checking the value of `showDialog`, a better test would verify that the dialog is actually displayed in the UI after the button is clicked. This could involve checking for the presence of the dialog's text or other visible elements.
 
-Imagine testing a feature where a dialog opens when a user clicks a button. The mechanism controlling this dialog might be a boolean variable named `showDialog`, which is set to true when the button is clicked.
+### When Testing Implementation Details Is Necessary
 
-It might seem logical to test this by verifying that `showDialog` is `true` after the button click. However, this approach relies on implementation details.
+While avoiding implementation details is ideal, there are scenarios where testing them is unavoidable. This is particularly true when critical behavior cannot be observed through the public interface.
 
-In general, relying on implementation details in tests should be avoided because it makes tests  or brittle. If the code is refactored—such as renaming or removing `showDialog`—the test would fail and require modification, even if the functionality remains unchanged.
+For example, you might need to test whether a data access function retrieves data from a cache instead of a database. If this behavior is not evident from the function's return value, examining the function's internals may be required.
 
-The best practice is to write tests that interact with the software as a user would, using only public APIs and observing visible changes in the UI.
-
-For example, instead of checking the value of `showDialog`, a better test would verify that the dialog is actually displayed in the UI after the button is clicked. This could involve checking for the presence of the dialog's text or other visible elements.
-
-Throughout this course, we will explore tools and techniques for writing tests that simulate user interactions rather than relying on internal implementation details.
-
-That said, there are scenarios where testing implementation details is necessary. This is particularly true when critical behavior cannot be observed through the public interface.
-
-For example, you might need to test whether a data access function correctly retrieves data from a cache instead of a database. Since this behavior may not be evident from the function's return value, examining the function's internals might be required.
+Throughout this course, we will explore tools and techniques for writing tests that simulate user interactions and focus on observable behaviors, while minimizing reliance on internal implementation details.
 
 ## The Developer User Vs. The End User
 
@@ -107,15 +95,15 @@ Regardless of which type of user your code has (or if it has both, like a reusab
 
 ## Determinism and Flaky Tests
 
-One crucial characteristic of automated software tests is **determinism**. A good test should consistently produce the same results—either passing or failing—when run under the same conditions, such as identical code and inputs.
+A key characteristic of effective automated software tests is **determinism**. A good test should consistently produce the same result—either passing or failing—when run under identical conditions, such as the same code and inputs.
 
-Tests that behave unpredictably, sometimes passing and sometimes failing without any changes to the code or test, are called **flaky tests**. These tests undermine developers' confidence in the test suite and can waste significant time as developers attempt to diagnose the cause of the failures.
+Tests that behave unpredictably, sometimes passing and sometimes failing without any changes to the code or test, are referred to as **flaky tests**. These tests can erode developers' confidence in the test suite and waste valuable time as they try to diagnose the cause of the failures.
 
-To maintain reliable tests, it is essential to avoid implementing flaky tests whenever possible. Strategies for addressing this issue will be covered later in the course.
+To ensure reliable tests, it is crucial to avoid creating flaky tests whenever possible. Strategies for preventing flakiness will be discussed later in the course.
 
-However, some degree of test flakiness may be unavoidable in certain scenarios. For instance, a test that depends on a network service might fail due to uncontrollable factors like network instability.
+That said, some degree of test flakiness may be unavoidable in specific scenarios. For example, a test that relies on a network service might fail due to uncontrollable factors like network instability.
 
-In such cases, the impact of flakiness can be mitigated by automatically rerunning any failing tests. This approach helps ensure that transient issues do not disrupt the overall testing process.
+In such cases, the impact of flakiness can be minimized by automatically rerunning any failing tests. This approach helps ensure that transient issues do not disrupt the overall testing process.
 
 ## Different Types Of Automated Software Tests
 
@@ -232,45 +220,57 @@ Both models provide valuable insights, but the ideal balance depends on your pro
 
 ## Test-Driven Development (TDD)
 
-Test-Driven Development (TDD) is a software development strategy that prioritizes automated testing. It revolves around a repeating cycle of testing, coding, and refactoring, commonly known as the "red, green, refactor" cycle.
+[Test-Driven Development](https://martinfowler.com/bliki/TestDrivenDevelopment.html) (TDD) is a software development methodology that emphasizes writing automated tests before implementing the corresponding code. This approach follows a repeating cycle known as the "red, green, refactor" cycle.
 
-![](https://res.cloudinary.com/kentcdodds-com/image/upload/f_auto,q_auto,dpr_2.0,w_1600/v1625033508/kentcdodds.com/content/blog/when-i-follow-tdd/0.jpg)
-*Courtesy of [Kent C. Dodds](https://kentcdodds.com/blog/when-i-follow-tdd)*
+![](https://martinfowler.com/bliki/images/test-driven-development/card.png)
 
-The TDD cycle consists of the following steps:
+The TDD cycle consists of three key steps:
 
-- ❌ **Test Fails:** Begin by writing a test that includes just enough code to check the behavior of the next feature you plan to implement. Since the feature hasn't been implemented yet, the test will fail, resulting in a "red" error message.
-- ✅ **Test Passes:** Next, write the minimum amount of code necessary to make the test pass, resulting in a "green" success message. At this stage, focus on functionality rather than code design or elegance.
-- 🔄 **Refactor:** Once the test passes, refactor your code to ensure it is clean and well-structured. As you refactor, the test should continue to pass. If the test fails, it indicates that the refactoring has introduced an issue.
+- ❌ **Test Fails:** Start by writing a test that defines the behavior of the next feature you plan to implement. Since the feature does not yet exist, the test will fail, producing a "red" error message.
+- ✅ **Test Passes:** Write the minimum amount of code required to make the test pass. At this stage, focus solely on functionality, not on code design or optimization.
+- 🔄 **Refactor:** Once the test passes, improve the code's structure and readability without changing its behavior. The test should continue to pass after refactoring. If it fails, the refactoring introduced an issue that needs to be addressed.
 
-This cycle is repeated for each new feature or behavior you want to add to your code.
+This cycle is repeated for each new feature or behavior you want to implement.
 
-A significant advantage of TDD is that writing the test first compels you to consider your code's interface and behavior upfront. The "red" phase inherently involves design considerations.
+### Benefits of TDD
 
-In essence, to create a test for code that doesn't yet exist, you must decide how you will call that code, what its behavior will be, and how it will communicate its results back to you.
+One of the primary advantages of TDD is that writing tests first forces you to think critically about your code's interface and behavior before implementation. During the "red" phase, you must decide:
 
-Making these decisions within the context of a test forces you to approach your code from the perspective of its user (in this case, the test itself). This approach can lead to code with a clear and simple interface that is easy to use and understand.
+- How the code will be called.
+- What behavior it will exhibit.
+- How it will communicate its results.
 
-A key to successful TDD implementation is working in small increments. Start by implementing a single test with a limited scope, and then write just enough code to make that test pass. Repeat this process until the entire feature is implemented. This often involves breaking down seemingly simple problems into even smaller, manageable steps.
+By designing the test first, you approach your code from the perspective of its user (in this case, the test itself). This often results in code with a clear, simple, and user-friendly interface.
 
-It's important to note that TDD does *not* require implementing all tests upfront. In fact, doing so is considered an anti-pattern. Instead, TDD involves working on one test at a time.
+### Working in Small Increments
 
-To gain a better understanding of working in small increments with TDD, I highly recommend reading the "A TDD Example" section from the ["Test-Driven Development" chapter](https://www.jamesshore.com/v2/books/aoad2/test-driven_development) of The Art of Agile Development.
+A key to successful TDD is working in small, manageable increments. Start by writing a single test with a narrow scope, then implement just enough code to make that test pass. Repeat this process until the entire feature is complete. Breaking down problems into smaller steps makes the development process more manageable and reduces the risk of introducing errors.
+
+To gain a better understanding of working in small increments with TDD, I highly recommend reading the "A TDD Example" section from [Test-Driven Development](https://www.jamesshore.com/v2/books/aoad2/test-driven_development) in The Art of Agile Development.
+
+### Avoiding Common Pitfalls
+
+TDD does not require writing all tests upfront. Attempting to do so is considered an anti-pattern, as it can lead to wasted effort if requirements change. Instead, focus on one test at a time, iterating through the "red, green, refactor" cycle for each feature.
+
+### Behavior-Driven Development (BDD)
+
+[Behavior-Driven Development](https://martinfowler.com/bliki/GivenWhenThen.html) (BDD) is an extension of TDD that emphasizes collaboration between developers, testers, and non-technical stakeholders. BDD encourages writing tests in a language that is easily understood by all parties involved, making it easier to communicate requirements and expectations.
 
 ## Limits of Automated Testing and the Importance of Manual Testing
 
-While automated software testing is a cornerstone of modern development, it's crucial to recognize its limitations. Automated testing isn't suitable for every task, and manual testing remains essential in certain situations.
+While automated software testing is a fundamental part of modern development, it's important to understand its limitations. Automated testing cannot handle every scenario, and manual testing remains essential in certain cases.
 
-Manual testing is particularly valuable when human creativity or judgment is required.
+Manual testing is particularly valuable when tasks require human creativity or judgment.
 
-For instance, security testing often involves identifying complex and subtle vulnerabilities, a task where human exploratory testing excels compared to automated systems. Exploratory testing leverages human intuition and creativity to uncover vulnerabilities that automated tools might miss. Once a human identifies a security vulnerability, an automated test can then be created to ensure its permanent fix.
+For example, security testing often involves uncovering complex and subtle vulnerabilities. This is an area where human exploratory testing excels compared to automated tools. Exploratory testing relies on human intuition and creativity to identify vulnerabilities that automated systems might overlook. Once a vulnerability is discovered, an automated test can be created to ensure the issue is permanently resolved.
 
-Similarly, assessing the quality of elements like search results, audio, or video is challenging to automate, as it relies on subjective human judgment. Systematic manual testing is typically the best approach for these evaluations.
+Similarly, evaluating the quality of subjective elements—such as search results, audio, or video—is difficult to automate. These tasks often depend on human judgment, making systematic manual testing the most effective approach for such assessments.
 
 ## Additional Readings
 
 - [Testing Overview](https://abseil.io/resources/swe-book/html/ch11.html) from Software Engineering at Google
-- [Test Driven Development](https://martinfowler.com/bliki/TestDrivenDevelopment.html) by Martin Fowler
+- [Canonical Test Driven Development](https://tidyfirst.substack.com/p/canon-tdd) by Kent Beck
+- [Introducing Behavior-Driven Development](https://dannorth.net/introducing-bdd/) by Dan North
 - [We Finally Agree On Unit Tests](https://www.youtube.com/watch?v=MbU-PKukdMw) by Theo (YouTube)
 - [Different types of testing and the testing pyramid](https://learn.microsoft.com/en-us/training/modules/visual-studio-test-concepts/4-different-types-of-testing) from Microsoft
 
