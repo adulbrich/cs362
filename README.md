@@ -22,11 +22,12 @@ Every term:
 - [ ] Update Bookings link in Canvas
 - [ ] Create **GitHub Classroom** class and add TAs
 - [ ] Update GitHub Classroom link in Canvas
+- [x] Create form for random team assignment for final project and add to Canvas
 - [ ] Review project code and complete assignment using vitest and playwright (optionally, use something else than SvelteKit)
 - [x] Check feasibility of project demo (time-wise): about 12 hours in final's week
 - [ ] Write down questions for TA demos
 - [ ] Use mermaid for flow charts and git flows
-- [ ] topics to cover
+- [ ] additional topics to cover
   - [ ] maintenance
   - [ ] git pre-commit hooks
   - [ ] feature flags

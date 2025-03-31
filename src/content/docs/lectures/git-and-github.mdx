@@ -37,7 +37,7 @@ This stream of snapshots is stored in a Git repository (repo) located within the
 
 ![Git Repository Structure](https://git-scm.com/book/en/v2/images/snapshots.png)
 
-Representing data as snapshots enables powerful features like branching, which we will explore later.
+Representing data as snapshots enables powerful features like [branches](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell), which we will explore later.
 
 Another defining feature of Git is that it is a distributed VCS. Every location containing the version history is a complete mirror of the entire history, including every version, commit, and snapshot.
 
@@ -1030,3 +1030,38 @@ In addition, Julia Evans does a great job at explaining Git's quirks in her blog
 - [git branches: intuition & reality](https://jvns.ca/blog/2023/11/23/branches-intuition-reality/)
 
 And of course, there's the [Pro Git book](https://git-scm.com/book/en/v2), which is a great resource for learning more about Git. Most visuals on this page are sourced from the book. Check out Chapters 1 and 2 of the book for a more in-depth introduction to Git.
+
+## Summary
+
+In this lecture, we covered the basics of using Git and GitHub for version control. We learned how to:
+
+- Initialize a Git repository
+- Stage and commit changes
+- Push and pull changes between local and remote repositories
+- Handle merge conflicts
+- Clean up commit history using interactive rebase
+- Work with multiple locations and branches
+- Use SSH and HTTPS for remote connections
+- Clone an existing repository from GitHub
+- Use Git commands to manage and review changes
+
+Here's a table summarizing key git commands:
+
+| Command | Description |
+|---------|-------------|
+| `git init` | Initialize a new Git repository |
+| `git add` | Stage changes for commit |
+| `git diff` | Show changes between commits, commit and working tree, etc. |
+| `git commit` | Commit staged changes with a message |
+| `git status` | Show the status of the working directory |
+| `git log` | View commit history |
+| `git merge` | Join two or more development histories together |
+| `git rebase` | Reapply commits on top of another base |
+| `git pull` | Fetch and merge changes from a remote repository |
+| `git push` | Push local commits to a remote repository |
+| `git stash` | Temporarily save changes |
+| `git stash pop` | Reapply stashed changes |
+| `git clone <url>` | Clone a remote repository |
+| `git config` | Configure Git settings |
+| `git remote add origin <url>` | Add a remote repository |
+| `git remote -v` | Show remote repository URLs |
