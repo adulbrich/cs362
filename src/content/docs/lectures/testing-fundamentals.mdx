@@ -5,13 +5,7 @@ sidebar:
   order: 2
 ---
 
-{/* TODO:
-    - add something about white and black and grey box testing
-    - mention function vs non-functional tests
-    - waterfall vs agile vs v-model vs xp ... 
-    - https://www.inflectra.com/Ideas/Topic/Testing-Methodologies.aspx
-    - https://www.geeksforgeeks.org/software-testing-techniques/
-     */}
+import Mermaid from "../../../components/Mermaid.astro";
 
 Testing has always been a vital part of software development.
 
@@ -26,6 +20,59 @@ However, in modern development, "testing" typically refers to **automated testin
 Automated testing is usually driven by developers, who design and implement these tests to validate the software they are building.
 
 Understanding the fundamentals of automated software testing is essential: why we test, the types of tests we can perform, and how they function at a high level. These fundamentals will be explored in this discussion.
+
+### Functional vs Non-Functional Tests
+
+Akin to functional and non-functional requirements, tests can also be categorized into two types:
+
+- **Functional Tests**: These tests validate that the software behaves as expected. They check whether the software meets its functional requirements, such as correctly processing user input or returning the expected output.
+- **Non-Functional Tests**: These tests evaluate the software's performance, security, usability, and other non-functional aspects. They ensure that the software meets its non-functional requirements, such as response time, scalability, and reliability.
+
+### White Box vs Black Box Testing
+
+In addition to functional and non-functional tests, tests can also be classified based on their approach:
+
+- **White Box Testing**: This approach involves testing the internal workings of the software. Testers have access to the code and can design tests based on the software's structure, algorithms, and logic. White box testing is often used for unit tests, where the focus is on individual functions or components.
+- **Black Box Testing**: This approach treats the software as a "black box", where the internal workings are not visible to the tester. Testers focus on the inputs and outputs of the software without knowledge of its internal code. Black box testing is commonly used for functional tests, where the emphasis is on verifying that the software meets its requirements.
+
+### Waterfall vs Agile Testing
+
+Depending on the software development methodology, testing can be integrated into the development process in different ways:
+
+- **Waterfall Testing**: In the waterfall model, testing is typically performed after the development phase. This means that all code is written before any testing occurs, which can lead to discovering issues late in the process.
+- **Agile Testing**: In agile methodologies, testing is integrated throughout the development process. Tests are written alongside the code, and continuous testing is performed to ensure that new features do not introduce bugs. This approach allows for faster feedback and more efficient bug detection.
+
+In their book "Agile Testing", Janet Gregory and Lisa Crispin describe the Agile Testing Quadrants, which categorize different types of tests based on their purpose and focus. The quadrants help teams understand the various testing activities needed to ensure software quality:
+
+<Mermaid showForPrint="true">
+```
+quadrantChart
+  title Agile Testing Quadrants
+  x-axis Supporting the Team --> Critique Product
+  y-axis Technology-Facing --> Business-Facing 
+  quadrant-1 Manual
+  quadrant-2 Automated & Manual
+  quadrant-3 Automated
+  quadrant-4 Tools
+  Functional Tests: [0.25, 0.85] radius: 0
+  Examples: [0.25, 0.8] radius: 0
+  Story Tests: [0.25, 0.75] radius: 0
+  Prototypes:[0.25, 0.7] radius: 0
+  Simulations: [0.25, 0.65] radius: 0
+  Exploratory: [0.75, 0.85] radius: 0
+  Testing Scenarios: [0.75, 0.8] radius: 0
+  Usability Testing: [0.75, 0.75] radius: 0
+  "UAT (User Acceptance Testing)": [0.75, 0.7] radius: 0
+  Alpha/Beta: [0.75, 0.65] radius: 0
+  Unit Tests: [0.25, 0.35] radius: 0
+  Component Tests: [0.25, 0.3] radius: 0
+  "Performance & Load Testing": [0.75, 0.35] radius: 0
+  Security Testing: [0.75, 0.3] radius: 0
+  'ility' Testing: [0.75, 0.25] radius: 0
+```
+</Mermaid>
+
+The "ility" testing category refers to non-functional tests that evaluate various aspects of the software, such as maintainability, interoperability, compatibility, reliability, instability, and safety. These depend on the specific context of the software or business.
 
 ## Why Perform Software Testing?
 
@@ -278,5 +325,5 @@ Similarly, evaluating the quality of subjective elements—such as search result
 - [Testing Overview](https://abseil.io/resources/swe-book/html/ch11.html) from Software Engineering at Google
 - [Canonical Test Driven Development](https://tidyfirst.substack.com/p/canon-tdd) by Kent Beck
 - [Introducing Behavior-Driven Development](https://dannorth.net/introducing-bdd/) by Dan North
-- [We Finally Agree On Unit Tests](https://www.youtube.com/watch?v=MbU-PKukdMw) by Theo (YouTube)
 - [Different types of testing and the testing pyramid](https://learn.microsoft.com/en-us/training/modules/visual-studio-test-concepts/4-different-types-of-testing) from Microsoft
+- The Purpose of Testing from Agile Testing by Janet Gregory and Lisa Crispin

@@ -2,7 +2,9 @@
 
 # Define array of lecture topics
 lecture_topics=(
-    "TODO"
+    "introduction"
+    "git-and-github"
+    "testing-fundamentals"
 )
 
 # Loop through topics and generate PDFs
@@ -29,8 +31,8 @@ for topic in "${lecture_topics[@]}"; do
     else
         npx starlight-to-pdf \
             "https://cs362.alexulbrich.com/lectures/$topic" \
-            --last "/studios/introduction" \
-            --exclude "/studios/introduction" \
+            --last "/lectures/testing-fundamentals" \
+            --exclude "/lectures/testing-fundamentals" \
             --footer ./footer.html \
             --header ./header.html \
             --filename "lecture-notes-$topic" \
