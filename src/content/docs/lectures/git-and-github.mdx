@@ -252,7 +252,7 @@ git commit -m "Add cat and dog sounds"
 ```
 
 :::tip
-We can use `git config` to set the editor Git opens for us when we run `git commit`. For example, if we want Git to use `vim` as the default editor, we could run this command (you can replace `vim` with the command-line command for your favorite editor):
+We can use `git config` to [set the editor Git opens for us](https://docs.github.com/en/get-started/git-basics/associating-text-editors-with-git) when we run `git commit`. For example, if we want Git to use `vim` as the default editor, we could run this command (you can replace `vim` with the command-line command for your favorite editor):
 
 ```shell
 git config --system core.editor vim
@@ -818,6 +818,10 @@ Mark the conflict as resolved:
 git add cat.js
 git commit
 ```
+
+Alternatively, instead of using `git commit`, you can use `git merge --continue` (which was introduced in Git 2.12 and aligns with the `git rebase` command).
+
+```shell
 
 Finally, push the resolved changes:
 

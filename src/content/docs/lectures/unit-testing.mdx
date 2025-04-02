@@ -6,4 +6,525 @@ sidebar:
   order: 3
 ---
 
+Let's delve deeper into software testing by writing our first tests. We'll begin with unit testing--a fundamental building block of an effective testing strategy.
 
+## What is a Unit Test?
+
+A unit test validates a small, focused piece of code (a "unit"), such as:
+
+- An individual function
+- A single class
+- A specific module
+
+These tests are characterized by their:
+
+- Small scope
+- Low cost to write and run
+- Quick execution time
+
+Due to these advantages, unit tests typically form the majority of a comprehensive test suite. Mastering unit test implementation is therefore an essential skill for developers.
+
+Google considers tests along two dimensions: scope and size. The scope refers to the quantity of code being tested, while size refers to the computing requirements. With that in mind, unit tests are small in both scope and size. They should generally run on a single process on a single machine, and they should not require any external resources like databases or network connections. This makes them fast to run and easy to maintain.
+
+## Anatomy of a Unit Test
+
+At its core, every test compares the **expected** behavior of code against its **actual** behavior. The test passes when these match and fails when they don't.
+
+Let's create a simple `sum()` function:
+
+```js
+// sum.js
+export function sum(a, b) {
+  return a + b;
+}
+```
+
+Here's a simple example testing that function:
+
+```js
+import { sum } from './sum.js';
+const result = sum(2, 2);
+const expected = 4;
+if (result !== expected) {
+    throw new Error(`${result} is not equal to ${expected}`);
+};
+```
+
+Notice how this test:
+
+- Focuses on a single behavior with known inputs (summing 2 and 2)
+- Compares the actual result against an expected value
+- Reports an error when expectations aren't met
+
+While the above example works, it has several drawbacks:
+
+1. Execution stops at first failure: if we have multiple tests, we won't see results from tests after the first failure. This is a problem because we want to know all the tests that failed, not just the first one.
+2. Poor error reporting: it's difficult to quickly identify which test failed and why. The error will be very verbose and it will take time to identify the important information.
+3. No test organization: as the number of tests grows, maintaining structure becomes challenging.
+
+## Testing Frameworks to the Rescue
+
+Real-world tests are typically implemented using a testing framework--an application-independent collection of rules, tools, and components used to define and execute tests.
+
+A good testing framework should:
+
+- **Simplify test creation**: provide clear, straightforward mechanisms for defining tests.
+- **Enable test selection**: make it simple to run all tests or specific subsets.
+- **Ensure isolation**: execute tests quickly and independently from each other.
+- **Provide clear reporting**: offer helpful messaging about test results, making failures easy to identify and debug.
+
+In this class, we'll use [Vitest](https://vitest.dev/) as our testing framework. It has a Jest-compatible API (Jest is still the leader in the JavaScript testing space) and is designed to work seamlessly with Vite, a popular build tool for modern web applications. Vitest is also very fast, thanks to its use of native ESM (Jest only offers experimental support for ESM as of writing this) and parallel test execution.
+
+Other programming languages have their own testing frameworks, but as far as unit testing is concerned, the principles are the same. For example, in Python, you might use `unittest` or `pytest`, while in Java, you might use JUnit. The syntax and specific features may differ, but the underlying concepts remain consistent across languages and frameworks.
+
+### Prerequisites for Vitest
+
+Vitest requires Node 18 or higher. Node is a runtime environment that allows you to run JavaScript code outside of a web browser. It's commonly used for server-side development, but it's also useful for running build tools and testing frameworks like Vitest.
+
+If you don't have Node installed, please refer to the [Node.js installation guide](https://nodejs.org/en/download/) for instructions. I personally recommend managing Node installations with [nvm](https://github.com/nvm-sh/nvm) (Node Version Manager), which allows you to easily switch between different versions of Node on your machine. This is particularly useful if you're working on multiple projects that require different Node versions. 
+
+The OSU ENGR servers have Node 22 installed as of writing this.
+
+In the JavaScript world, libraries, frameworks, or other tidbits of code are often distributed as **packages**. These packages are typically hosted on the [npm registry](https://www.npmjs.com/), which is a public repository of JavaScript packages. You can use the `npm` (Node Package Manager) command-line tool to install packages from the npm registry. You can also use other package managers as you see fit (`pnpm`, `yarn`, `bun`).
+
+### Installing Vitest
+
+Once you have Node and `npm` installed, you can install Vitest using the following command:
+
+```shell
+npm install --save-dev vitest
+```
+
+Doing this for the first time in an empty repository will create a `package.json` file and download Vitest and its dependencies in the `/node_modules/` directory. The `--save-dev` flag indicates that Vitest is a development dependency, meaning it's only needed during development and not in production. This is a common practice for testing libraries, as they are typically not required in the final production build of your application.
+
+Open your `package.json` file and add the following script to run Vitest:
+
+```diff lang="json"
+// package.json
+{
++  "type": "module",
++  "scripts": {
++    "test": "vitest"
++  },
+  "devDependencies": {
+    "vitest": "^3.1.1"
+  }
+}
+```
+
+The `"type": "module"` line tells Node to treat your JavaScript files as ES modules, which is the modern way of writing JavaScript. This allows you to use `import` and `export` statements in your code.
+
+The `"scripts"` section defines a custom command that you can run using `npm run test`. This command will execute Vitest, which will look for test files in your project and run them.
+
+### Running Tests
+
+To run your tests, use the following command:
+
+```shell
+npm run test
+```
+
+This will execute Vitest, which will look for test files in your project and run them. As we've not written any tests, you should see the following output:
+
+```plaintext
+No test files found. You can change the file name pattern by pressing "p"
+
+include: **/*.{test,spec}.?(c|m)[jt]s?(x)
+exclude:  **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,output,temp}/**, **/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*
+```
+
+This message indicates that Vitest didn't find any test files to run. By default, Vitest looks for files with names that end in `.test.js`, `.spec.js`, or similar patterns. You can change this behavior by modifying the `include` and `exclude` patterns in the configuration file. For example, you could add a specific directory for your tests or change the file name pattern to match your project's conventions.
+
+### Writing Your First Test
+
+Let's create a file that matches the pattern that Vitest is looking for. Create a new file named `hello.test.js` and add the following code:
+
+```js
+// hello.test.js
+import { test } from "vitest";
+
+test("vitest runs our first test", () => {});
+```
+
+If we run `npm run test` again, we should see the following output:
+
+```plaintext
+ ✓ hello.test.js (1 test) 1ms
+   ✓ vitest runs our first test 0ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  10:55:19
+   Duration  202ms (transform 19ms, setup 0ms, collect 8ms, tests 1ms, environment 0ms, prepare 59ms)
+
+ PASS  Waiting for file changes...
+       press h to show help, press q to quit
+```
+
+### Making Assertions
+
+Every testing framework needs to support ways to make assertions. Assertions are the statements that check if the actual output of your code matches the expected output. Vitest provides a variety of assertion functions, including `expect()`, which is similar to Jest's `expect()`.
+
+Let's add an assertion to our test:
+
+```diff lang="js"
+```js
+// hello.test.js
+- import { test } from "vitest";
++ import { expect, test } from "vitest";
+
+ test("vitest runs our first test", () => {});
+
++ test(" 2+ 2 = 4", () => {
++   expect(2 + 2).toBe(4);
++ });
+```
+
+We added a new test that checks if `2 + 2` equals `4`. The `expect()` function takes the actual value as an argument, and the `.toBe()` method checks if it matches the expected value.
+
+If we change the value to `5`, the test will fail:
+
+```plaintext
+hello.test.js (2 tests | 1 failed) 4ms
+   ✓ vitest runs our first test 0ms
+   ×  2+ 2 = 4 3ms
+     → expected 4 to be 5 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  hello.test.js >  2+ 2 = 4
+AssertionError: expected 4 to be 5 // Object.is equality
+
+- Expected
++ Received
+
+- 5
++ 4
+
+ ❯ hello.test.js:6:17
+      4| 
+      5| test(" 2+ 2 = 4", () => {
+      6|   expect(2 + 2).toBe(5);
+       |                 ^
+      7| });
+      8| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  11:02:54
+   Duration  195ms (transform 10ms, setup 0ms, collect 8ms, tests 4ms, environment 0ms, prepare 51ms)
+
+ FAIL  Tests failed. Watching for file changes...
+       press h to show help, press q to quit
+```
+
+The error message indicates that the test failed because `4` is not equal to `5`. The output also shows the line of code where the failure occurred, making it easy to identify the problem.
+
+`toBe()` is just one of many assertion methods provided by Vitest. You can also use other methods like `toEqual()`, `toBeTruthy()`, `toBeFalsy()`, and many more. These methods allow you to make various types of assertions, such as checking for equality, truthiness, or even matching regular expressions. Check out the [Vitest `expect` documentation](https://vitest.dev/api/expect.html) for a complete list of available matchers.
+
+## Writing Real Unit Tests
+
+Now that we have a basic understanding of unit testing and Vitest, let's validate a real piece of code.
+
+Let's test our `sum()` function using Vitest. Create a new file named `sum.test.js` in the same directory as `sum.js`:
+
+```js
+// sum.test.js
+import { sum } from './sum.js';
+import { expect, test } from "vitest";
+
+test("adds 1 + 2 to equal 3", () => {
+  expect(sum(1, 2)).toBe(3);
+});
+```
+
+Here we are importing the `sum` function from `sum.js` and using Vitest's `test()` function to define a test case. The test checks if the result of `sum(1, 2)` is equal to `3`.
+
+Let's build a more complex example. Create a new file named `calculator.js` and add the following code:
+
+```js
+// calculator.js
+export class Calculator {
+  add(a, b) {
+    return a + b;
+  }
+
+  subtract(a, b) {
+    return a - b;
+  }
+
+  multiply(a, b) {
+    return a * b;
+  }
+
+  divide(a, b) {
+    if (b === 0) {
+      throw new RangeError("Cannot divide by zero");
+    }
+    return a / b;
+  }
+}
+```
+
+Now, create a new file named `calculator.test.js` and add the following code:
+
+```js
+// calculator.test.js
+import { expect, test } from "vitest";
+import { Calculator } from "./calculator.js";
+
+test("adds 1 + 2 to equal 3", () => {
+  const calculator = new Calculator();
+  expect(calculator.add(1, 2)).toBe(3);
+});
+```
+
+Running `npm run test` should show all our tests passing:
+
+```plaintext
+ ✓ hello.test.js (2 tests) 1ms
+ ✓ sum.test.js (1 test) 1ms
+ ✓ calculator.test.js (1 test) 3ms
+
+ Test Files  3 passed (3)
+      Tests  3 passed (3)
+   Start at  11:14:36
+   Duration  217ms (transform 24ms, setup 0ms, collect 47ms, tests 5ms, environment 0ms, prepare 201ms)
+
+ PASS  Waiting for file changes...
+       press h to show help, press q to quit
+```
+
+If we want to run only part of the test suite, we can run:
+
+```shell
+npm run test calculator.test.js
+```
+
+This will run only the tests in `calculator.test.js`, allowing us to focus on a specific part of our codebase.
+
+## The Arrange-Act-Assert Pattern
+
+There are many ways to structure tests. Different organizations and teams have different conventions, and you may find that some tests are structured differently than others. However, there are some common patterns that can help you write better tests.
+
+The **Arrange-Act-Assert** (AAA) pattern helps structure your tests in a clear and consistent way, making them easier to read and understand. You want other developers to be able to read your tests and understand what they do without having to read the implementation of the code being tested.
+
+The AAA pattern breaks the test into three distinct sections:
+
+- **Arrange**: Set up the test by creating any necessary objects, variables, or state. This is where you prepare everything needed for the test.
+- **Act**: Execute the code being tested. This is where you call the function or method you're testing.
+- **Assert**: Verify the result. This is where you check if the actual output matches the expected output.
+
+The AAA pattern is sometimes referred to as the [**Given-When-Then** pattern](https://martinfowler.com/bliki/GivenWhenThen.html), which is a similar concept. The idea is the same: you want to clearly define the context (Given), the action (When), and the expected outcome (Then).
+
+While our test above for the `Calculator` class follows the AAA pattern, it blends the act and assert steps. Let's rewrite it to follow the AAA pattern more closely:
+
+```js
+// calculator.test.js
+import { expect, test } from "vitest";
+import { Calculator } from "./calculator.js";
+
+test("adds 1 + 2 to equal 3", () => {
+  const calculator = new Calculator(); // Arrange
+  const result = calculator.add(1, 2); // Act
+  expect(result).toBe(3);              // Assert
+});
+```
+
+One common way to violate the AAA pattern is by mixing multiple actions and assertions in a single test. This can make it difficult to understand what the test is doing and why it might be failing. For example, if you have a test that checks multiple conditions, it can be hard to tell which condition caused the failure.
+
+This can occasionally be acceptable for testing complex interactions, but in general, it's best to keep tests focused on a single behavior. This makes it easier to understand the test and identify any issues that arise.
+
+## Method-Driven vs Behavior-Driven Tests
+
+Our first instinct to test our `Calculator` class might be to implement s ingle test which validates all the methods:
+
+```js
+// calculator.test.js
+import { expect, test } from "vitest";
+import { Calculator } from "./calculator.js";
+
+test("Calculator works correctly", () => {
+  const calculator = new Calculator();
+
+  expect(calculator.add(1, 2)).toBe(3);
+  expect(calculator.subtract(5, 2)).toBe(3);
+  expect(calculator.multiply(2, 3)).toBe(6);
+  expect(calculator.divide(6, 2)).toBe(3);
+});
+```
+
+This approach is called **method-driven testing** and is considered bad practice:
+
+- It violates the AAA pattern.
+- It makes it difficult to identify which method is causing the failure.
+- It requires us to change the test when our code changes (e.g., if we implement a `pow` method).
+
+As a rule of thumb, we want our test to be "unchanging". This means that we want to write tests that are resilient to changes in the code. If we add a new method to the `Calculator` class, we should be able to add a new test for that method without changing any of the existing tests.
+
+This is called **behavior-driven testing**. In this approach, we write tests that focus on the behavior of the code rather than the implementation details. This allows us to write tests that are more resilient to changes in the code and makes it easier to understand what the code is doing.
+
+Let's refactor our test to follow the behavior-driven approach (and AAA pattern):
+
+```js
+// calculator.test.js
+test("adds 1 + 2 to equal 3", () => {
+  const calculator = new Calculator();
+  const result = calculator.add(1, 2);
+  expect(result).toBe(3);
+});
+test("subtracts 5 - 2 to equal 3", () => {
+  const calculator = new Calculator();
+  const result = calculator.subtract(5, 2);
+  expect(result).toBe(3);
+});
+test("multiplies 2 * 3 to equal 6", () => {
+  const calculator = new Calculator();
+  const result = calculator.multiply(2, 3);
+  expect(result).toBe(6);
+});
+test("divides 6 / 2 to equal 3", () => {
+  const calculator = new Calculator();
+  const result = calculator.divide(6, 2);
+  expect(result).toBe(3);
+});
+```
+
+If we add a new method to the `Calculator` class, we can simply add a new test for that method without changing any of the existing tests.
+
+## Testing Boundary Cases
+
+Boundary cases are the values at the edges or corners of the input space. These are often the values that cause bugs in code, so it's important to test them. For example, if we have a function that takes a number as input, we should test it with:
+
+- Zero: Test with 0 as input, especially for functions involving division or mathematical operations
+- Negative values: Test with negative numbers (e.g., `-1`, `-10`)
+- Positive values: Test with positive numbers (e.g., `1`, `10`)
+- Extremes: Test with very small and very large values
+- Thresholds: Test with values just below and above thresholds (e.g., `0.999` and `1.001`)
+- Type-Specific values: 
+  - Integers: min and max values for the data type
+  - Floats: very small decimal values and many decimal places
+- Special values: Test with special values like `NaN`, `Infinity`, `-Infinity`, or `undefined`/`null`.
+
+:::note[Edge vs Corner Cases]
+While edge and corner cases are often used interchangeably, they have slightly different meanings in the context of testing.
+
+An **edge case** is a situation that occurs at the extreme ends of the input space. For example, if we have a function that takes a number as input, an edge case would be testing it with the maximum value of a 32-bit integer.
+
+A **corner case** is a situation that occurs at the intersection of multiple edge cases. For example, if we have a function that takes two numbers as input, a corner case would be testing it with the maximum value of both numbers.
+
+We will use the term **boundary case** to refer to both edge and corner cases.
+:::
+
+Let's add some boundary case tests to our `Calculator` class:
+
+```js
+// calculator.test.js
+test("divides 6 / Infinity to equal 0", () => {
+  const calculator = new Calculator();
+  const result = calculator.divide(6, Infinity);
+  expect(result).toBe(0);
+});
+test("divides by zero", () => {
+  const calculator = new Calculator();
+  expect(() => calculator.divide(6, 0)).toThrowError();
+});
+```
+
+The first test is validating that dividing by `Infinity` returns `0`, while the second test is validating that dividing by `0` throws an error. The [`toThrowError()` method](https://vitest.dev/api/expect.html#tothrowerror) checks if a *function* throws an error, hence we need to wrap our code in a function.
+
+You'll notice that the second test blends the act and assert steps. This is a common pattern when testing for exceptions.
+
+We could be more explicit and separate the act and assert steps:
+
+```js
+test("divides by zero", () => {
+  const calculator = new Calculator();
+  const result = () => calculator.divide(6, 0);
+  expect(result).toThrowError();
+});
+```
+
+This is a matter of personal preference, and both approaches are valid. The first approach is more concise, while the second approach is more explicit.
+
+:::tip
+`.toThrowError()` can take an argument to check for a specific error message (e.g., `"Cannot divide by zero"`) or a specific error type (e.g., `RangeError`).
+
+Doing that means we rely on the implementation details of our code. If we change the error message or the error type, our test will fail even if the behavior is still correct. This is a common anti-pattern in testing, as it makes tests brittle and tightly coupled to the implementation details of the code.
+:::
+
+I'll re-iterate that we are testing *behavior*. We expect here that our calculator will throw an error when we try to divide by zero. In reality, JavaScript has an `Infinity` value, so if we run `6 / 0`, we will get `Infinity`. This is a behavior of JavaScript, not our calculator. We want to test that our calculator behaves as expected when we try to divide by zero.
+
+It is very important to think carefully about the boundary cases for the *behaviors* we want to test, and implement tests to cover them. This is a key part of writing effective unit tests.
+
+## Organizing a Test Suite
+
+As the test suite grows, it becomes important to organize the tests in a way that makes them easy to find and understand. There are several ways to do this, including:
+
+1. **Naming tests**: Use descriptive names for tests that clearly indicate what they are testing. This makes it easier to understand the purpose of each test at a glance.
+2. **Using test files**: Organize tests into separate files based on the functionality being tested. This makes it easier to find and run specific tests.
+3. **Using test directories**: Organize tests into separate directories based on the functionality being tested. This is useful for larger projects with many tests.
+4. **Grouping tests**: Use `describe()` to group related tests together. This is useful for organizing tests that share a common setup or context.
+
+We already discussed briefly discussed 1, 2, and 3. Let's clarify them and look at 4 in more detail.
+
+The [`describe()` block](https://vitest.dev/api/#describe) is used to group related tests together. It takes two arguments: a string that describes the group and a callback function that contains the tests. 
+
+In that context, we could use a more generic name for our tests, which makes it clear what the tests are doing. Our previous attempts created a lot of repetition in the wording.
+
+Let's revisit our `Calculator` tests, group them together, and rename them:
+
+```js
+// calculator.test.js
+describe("multiplication operation", () => {
+  test("returns positive for two positive inputs", () => {
+    const calculator = new Calculator();
+    const result = calculator.multiply(2, 3);
+    expect(result).toBe(6);
+  });
+  test("returns positive for two negative inputs", () => {
+    const calculator = new Calculator();
+    const result = calculator.multiply(-2, -3);
+    expect(result).toBe(6);
+  });
+  test("returns negative for opposite-signed inputs", () => {
+    const calculator = new Calculator();
+    const result = calculator.multiply(-2, 3);
+    expect(result).toBe(-6);
+  });
+});
+```
+
+When running tests, the output will look something like:
+
+```plaintext
+✓ multiplication operation > returns positive for two positive inputs 0ms
+✓ multiplication operation > returns positive for two negative inputs 0ms
+✓ multiplication operation > returns negative for opposite-signed inputs 0ms
+```
+
+While somewhat up to personal preferences, here's a set of guidelines to follow when naming tests:
+
+- Focus on behavior and expectations rather than implementation
+- Use plain language that non-technical stakeholders can understand
+- Make names descriptive enough that failing tests clearly indicate what's broken
+- Organize tests so that reading their names tells a meaningful story about your component
+- Avoid redundant prefixes like "test" or "should" in the test name itself
+
+Finally, it is common to locate our test files close to the code they are testing. This is called **co-location**. For example, if we have a `calculator.js` file, we might place the test file in the same directory with a name like `calculator.test.js`. This makes it easy to find the tests for a specific piece of code and keeps related files together.
+
+Larger codebases might have a dedicated `tests` or `__tests__` directory at the root level, with subdirectories for different parts of the codebase. This is a matter of personal preference and project structure, but co-location is generally a good practice for smaller projects.
+
+## Logic, DRYness, and DAMPness
+
+Coming Soon!
+
+{/* TODO:
+    - test via public APIs, --i.e. exported functions
+    - test state not interactions 
+    - beforeEach, afterEach
+    - additional readings: https://abseil.io/resources/swe-book/html/ch12.html
+*/}
