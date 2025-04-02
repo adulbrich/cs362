@@ -49,11 +49,11 @@ const { title = "", showForPrint = false } = Astro.props;
 </script>
 
 <figure
-  class={`expandable-diagram ${showForPrint ? "print:block" : "print:hidden"}`}
+  class={`expandable-diagram`}
 >
-  <figcaption>{title}</figcaption>
+  <figcaption class={`${showForPrint ? "print:block" : "print:hidden"}`}>{title}</figcaption>
 
-  <div class="diagram-content">Loading diagram...</div>
+  <div class={`diagram-content ${showForPrint ? "print:block" : "print:hidden"}`}>Loading diagram...</div>
 
   <details class="text-sm print:hidden">
     <summary>Source</summary>

@@ -21,22 +21,26 @@ for topic in "${lecture_topics[@]}"; do
     if [[ -n "$next_topic" ]]; then
         npx starlight-to-pdf \
             "https://cs362.alexulbrich.com/lectures/$topic" \
+            --format "Letter" \
             --last "/lectures/$next_topic" \
             --exclude "/lectures/$next_topic" \
             --footer ./footer.html \
             --header ./header.html \
             --filename "lecture-notes-$topic" \
             --no-contents \
-            --margins '2cm 1cm 2cm 1cm'
+            --margins '2cm 1cm 2cm 1cm' \
+            --print-bg
     else
         npx starlight-to-pdf \
             "https://cs362.alexulbrich.com/lectures/$topic" \
+            --format "Letter" \
             --last "/lectures/testing-fundamentals" \
             --exclude "/lectures/testing-fundamentals" \
             --footer ./footer.html \
             --header ./header.html \
             --filename "lecture-notes-$topic" \
             --no-contents \
-            --margins '2cm 1cm 2cm 1cm'
+            --margins '2cm 1cm 2cm 1cm' \
+            --print-bg
     fi
 done
