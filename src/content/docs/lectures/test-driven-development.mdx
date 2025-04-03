@@ -6,4 +6,103 @@ sidebar:
   order: 4
 ---
 
+import Mermaid from "../../../components/Mermaid.astro";
 
+In previous discussions, we explored the concept of **Test-Driven Development (TDD)**. Despite being a valuable modern development strategy, TDD can initially feel counterintuitive to many developers.
+
+To clarify how TDD works in practice, let's walk through a comprehensive example that will highlight its nuances and help you become comfortable applying this technique in your own projects.
+
+We'll implement a [ROT13 cipher algorithm](https://en.wikipedia.org/wiki/ROT13)--a straightforward yet instructive example inspired by [James Shore's TDD demonstration](https://www.jamesshore.com/v2/projects/lunch-and-learn/incremental-tdd).
+
+But first, let's briefly review the core principles of TDD and its workflow.
+
+## TDD Principles
+
+TDD is a software development approach that emphasizes writing tests before writing the code that needs to be tested. The primary goal of TDD is to ensure that the code meets its requirements and behaves as expected.
+
+<Mermaid showForPrint="true">
+```
+flowchart TD
+  B[Decide on a feature] ==> C[Write the test] 
+  C ==>|Test Fails| D[Write code to make it pass]
+  D ==>|Test Passes| E[Refactor the code]
+  E ==>|Test Passes| B
+  style C fill:#f87171, stroke:#dc2626
+  linkStyle 1 stroke:#dc2626, color:#dc2626
+  linkStyle 2,3 stroke:#16a34a, color:#16a34a
+  style D fill:#4ade80, stroke:#16a34a
+  style E fill:#60a5fa, stroke:#2563eb
+```
+</Mermaid>
+
+The TDD cycle consists of three key steps:
+
+- ❌ **Test Fails:** Start by writing *one* test that defines the behavior of the next feature you plan to implement. Since the feature does not yet exist, the test will fail, producing a "red" error message.
+- ✅ **Test Passes:** Write the minimum amount of code required to make the test pass. At this stage, focus solely on functionality, not on code design or optimization.
+- 🔄 **Refactor:** Once the test passes, improve the code's structure and readability without changing its behavior. The test should continue to pass after refactoring. If it fails, the refactoring introduced an issue that needs to be addressed.
+
+### Design Through Testing
+
+One of the major benefits of TDD is that writing tests first forces you to think about your code's interface and behavior before implementation. The "red" phase in the red-green-refactor cycle serves as an important design exercise.
+
+By implementing a test for code that doesn't yet exist, you must make crucial decisions about:
+
+- How the code will be invoked
+- What behaviors it will exhibit
+- How it will communicate results
+
+This process makes you approach your code from the user's perspective (the test being the first user). The result is often code with clearer, simpler interfaces that's easier to use and understand.
+
+### Working in Small Increments
+
+Successfully employing TDD requires working in very small, focused increments—a practice we'll emphasize in our example below.
+
+The TDD workflow involves:
+
+1. Implementing a single, narrowly-scoped test
+2. Writing just enough code to make that test pass
+3. Repeating until the entire feature is complete
+
+This often means breaking down seemingly simple problems into even smaller steps.
+
+### One Test at a Time
+
+Importantly, TDD does not require implementing all tests upfront--in fact, this is considered an anti-pattern. Instead, with proper TDD, you focus on just one test at a time, gradually building functionality through this iterative process.
+
+## The ROT13 Cipher
+
+The ROT13 cipher is a simple letter substitution cipher that replaces a letter with the letter 13 places down the alphabet. For example, 'A' becomes 'N', 'B' becomes 'O', and so on. The ROT13 cipher is its own inverse, meaning that applying it twice returns the original text.
+
+<Mermaid showForPrint="true"> 
+``` 
+flowchart TB 
+  A <--> N 
+  B <--> O 
+  C <--> P 
+  D <--> Q 
+  E <--> R 
+  F <--> S 
+  G <--> T 
+  H <--> U 
+  I <--> V 
+  J <--> W 
+  K <--> X 
+  L <--> Y 
+  M <--> Z 
+classDef first fill:#f87171,stroke:#dc2626
+classDef last fill:#60a5fa,stroke:#2563eb
+class A,B,C,D,E,F,G,H,I,J,K,L,M first
+class N,O,P,Q,R,S,T,U,V,W,X,Y,Z last
+```
+</Mermaid>
+{/* TODO: consider a block diagram to reduce spacing between boxes and add an example with the word hello */}
+
+For our implementation, we'll follow these specific rules:
+
+- **Uppercase letters**: Will rotate to other uppercase letters (A → N, B → O, etc.)
+- **Lowercase letters**: Will rotate to other lowercase letters (a → n, b → o, etc.)
+- **Non-alphabetic characters**: Numbers, punctuation, and special characters will remain unchanged
+
+This approach ensures the cipher maintains the original text's capitalization pattern and only transforms alphabetic characters, preserving all other elements of the input text exactly as they appear.
+
+## First TDD Cycle
