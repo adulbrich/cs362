@@ -1,7 +1,6 @@
 ---
 title: Unit Testing
-description: TODO
-draft: true
+description: Unit testing is a fundamental building block of an effective testing strategy. Learn how to write effective unit tests using Vitest, a testing framework that simplifies test creation, enables test selection, ensures isolation, and provides clear reporting.
 sidebar:
   order: 3
 ---
@@ -340,7 +339,7 @@ This can occasionally be acceptable for testing complex interactions, but in gen
 
 ## Method-Driven vs Behavior-Driven Tests
 
-Our first instinct to test our `Calculator` class might be to implement s ingle test which validates all the methods:
+Our first instinct to test our `Calculator` class might be to implement a single test which validates all the methods:
 
 ```js
 // calculator.test.js
@@ -357,11 +356,11 @@ test("Calculator works correctly", () => {
 });
 ```
 
-This approach is called **method-driven testing** and is considered bad practice:
+This approach is called **method-driven testing** and is considered bad practice, i.e., an **antipattern**:
 
 - It violates the AAA pattern.
 - It makes it difficult to identify which method is causing the failure.
-- It requires us to change the test when our code changes (e.g., if we implement a `pow` method).
+- It requires us to change the test when our code changes (e.g., if we implement a `pow` method), meaning it's tightly coupled to the implementation details of the code.
 
 As a rule of thumb, we want our test to be "unchanging". This means that we want to write tests that are resilient to changes in the code. If we add a new method to the `Calculator` class, we should be able to add a new test for that method without changing any of the existing tests.
 
@@ -419,7 +418,7 @@ A **corner case** is a situation that occurs at the intersection of multiple edg
 We will use the term **boundary case** to refer to both edge and corner cases.
 :::
 
-Let's add some boundary case tests to our `Calculator` class:
+Let's add some boundary case tests for our `Calculator` class:
 
 ```js
 // calculator.test.js
@@ -518,19 +517,152 @@ Finally, it is common to locate our test files close to the code they are testin
 
 Larger codebases might have a dedicated `tests` or `__tests__` directory, potentially at the root, with subdirectories for different parts of the codebase. This is a matter of personal preference and project structure, but co-location is generally a good practice for smaller projects.
 
-## Logic, DRYness, and DAMPness
+## Antipatterns
 
-Coming Soon!
+We've already discussed one common antipattern which consists of writing tests that are tightly coupled to the **implementation details** of the code. This makes tests **brittle**: if the implementation changes, the tests may fail even if the behavior is still correct. 
 
-{/* TODO:
-    - mutation testing
-    - test via public APIs, --i.e. exported functions
-    - test state not interactions 
-    - beforeEach, afterEach
-    - additional readings: https://abseil.io/resources/swe-book/html/ch12.html
-*/}
+In that same vein, we should avoid writing tests that are tightly coupled to the **internal state** of the code (e.g., testing private methods or verifying internal state). We often say that we should test the **public API** of the code, i.e., the methods and properties that are exposed to the outside world. This is because the public API is what other code will interact with, and we want to ensure that it behaves as expected.
 
-## Additional Resources
+We'll discuss a few others common anitpatterns below.
 
-- [Unit Testing](https://abseil.io/resources/swe-book/html/ch12.html) from Software Engineering at Google
+### Logic in Tests
+
+Tests should be simple and straightforward. While you might be tempted to add (complex) logic to your tests, this can make them difficult to read and understand, and can lead to bugs in the tests themselves.
+
+For example, consider the following test:
+
+```js
+test("should navigate to albums page", () => {
+  const baseUrl = "http://photos.google.com/";
+  const nav = new Navigator(baseUrl);
+  nav.goToAlbumPage();
+  expect(nav.getCurrentUrl()).toBe(baseUrl + "/albums");
+});
+```
+
+The only logic here is a string concatenation. Let's remove `baseUrl`, the concatenation logic, and we immediately see a bug here:
+
+```js
+test("should navigate to albums page", () => {
+  const nav = new Navigator("http://photos.google.com/");
+  nav.goToAlbumPage();
+  expect(nav.getCurrentUrl()).toBe("http://photos.google.com//albums");
+});
+```
+
+Remember that our goal is to write tests that should be trivially correct on quick inspection. If we have to think about the logic in the test, it becomes harder to understand what the test is doing and why it might be failing.
+
+### Testing interactions
+
+When testing, we want to focus on the **state** of the code rather than the **interactions**. This means that we want to test the final result of the code rather than the individual steps that lead to that result.
+
+
+### Tests Are Too DRY
+
+You might know the [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) principle: "Don't Repeat Yourself". 
+
+For regular programming, DRY is a good principle to follow. It can help reduce duplication and make code easier to maintain. When we recognize that a piece of code is repeated in multiple places, we can refactor it into a single function, module, or class. This makes it easier to change and maintain the code, as we only have to change it in one place.
+
+The one exception is when it comes to tests. In tests, we want to avoid duplication, but we also want to avoid making the tests too DRY. This is because if we make the tests too DRY, they can become difficult to read and understand.
+
+Consider the following tests:
+
+```js
+test("should handle navigation with trailing slash", () => {
+  testNavigation("http://photos.google.com/", "albums", "albums");
+});
+
+test("should handle navigation without trailing slash", () => {
+  testNavigation("http://photos.google.com", "albums", "albums");
+});
+```
+
+You might think that we are avoiding duplication by using the `testNavigation` function, but consider the implementation:
+
+```js
+const createNavigator = (url = "http://example.com") => new Navigator(url);
+const runNavAction = (nav, action) => {
+  if (action === "albums") nav.goToAlbumPage();
+  if (action === "profile") nav.goToProfilePage();
+  // ... more actions could be added here
+};
+const verifyEndpoint = (nav, baseUrl, endpoint) => {
+  const expected = baseUrl.endsWith("/")
+    ? baseUrl + endpoint
+    : baseUrl + "/" + endpoint;
+  expect(nav.getCurrentUrl()).toBe(expected);
+};
+const testNavigation = (baseUrl, action, endpoint) => {
+  const nav = createNavigator(baseUrl);
+  runNavAction(nav, action);
+  verifyEndpoint(nav, baseUrl, endpoint);
+};
+```
+
+Now imagine you're doing that for every test and you end up with hundreds of helper functions. Your test suite will become extremely difficult to parse and understand, and you'll have to read through all the helper functions to understand what the tests are doing, identify why a test failed, and fix it.
+
+We'll favor instead the **DAMP principle**: "Descriptive and Meaningful Phrases". This means that we want to write tests that are descriptive and meaningful, even if they are a bit longer. This makes it **faster** to understand what the tests are doing and why they might be failing.
+
+It does not mean that a little bit of DRYness is bad. Let's explore a few examples of how we can use DRYness to our advantage.
+
+## Test Fixtures
+
+A **test fixture** is a piece of code that sets up the initial state for a test. This can include creating objects, setting up mock data, or configuring the environment. Test fixtures are useful for reducing duplication in tests and making them **easier** to read and understand.
+
+Vitest provides a `beforeEach()` function that allows you to set up a fixture before each test. This is useful for creating a common setup for multiple tests.
+
+Let's refactor some of our `Calculator` tests to use a fixture:
+
+```js
+// calculator.test.js
+import { describe, expect, test, beforeEach } from "vitest";
+import { Calculator } from "./calculator.js";
+
+describe("multiplication operation", () => {
+  let calculator;
+  beforeEach(() => {
+    calculator = new Calculator();
+  });
+  test("returns positive for two positive inputs", () => {
+    const result = calculator.multiply(2, 3);
+    expect(result).toBe(6);
+  });
+  test("returns positive for two negative inputs", () => {
+    const result = calculator.multiply(-2, -3);
+    expect(result).toBe(6);
+  });
+  test("returns negative for opposite-signed inputs", () => {
+    const result = calculator.multiply(-2, 3);
+    expect(result).toBe(-6);
+  });
+});
+```
+
+Here we are using `beforeEach()` to create a new instance of the `Calculator` class before each test. This reduces duplication and makes the tests easier to read and understand. 
+
+`afterEach()` is a similar function that runs after each test. This can be useful for cleaning up any resources or state that were created during the test. 
+
+We could also use `beforeAll()`/`afterAll()` to create/delete the fixture once for all tests in the group. This is useful when the fixture is expensive to create and doesn't change between tests. 
+
+In the case of our `Calculator`, we could argue that it's better to use `beforeEach()`. On the one hand, creating a new calculator is fast, and on the other hand, if the `Calculator` class is later modified to maintain internal state between operations, using `beforeEach()` ensures tests remain isolated and don't interfere with each other.
+
+## Additional Readings and Resources
+
+- Find additional tips on [Unit Testing](https://abseil.io/resources/swe-book/html/ch12.html) from Software Engineering at Google
 - [We Finally Agree On Unit Tests](https://www.youtube.com/watch?v=MbU-PKukdMw) by Theo (YouTube)
+- Vitest [Getting Started](https://vitest.dev/guide/), [Features](https://vitest.dev/guide/features.html), and [API](https://vitest.dev/api/)
+
+## Summary
+
+In this lesson, we learned about unit testing and how to write effective unit tests using Vitest. We covered the following topics:
+
+- What is a unit test?
+- The anatomy of a unit test
+- The importance of using a testing framework
+- The Arrange-Act-Assert pattern
+- The difference between method-driven and behavior-driven tests
+- The importance of testing boundary cases
+- How to organize a test suite
+- Common antipatterns in unit testing
+- The importance of using test fixtures
+
