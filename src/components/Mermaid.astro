@@ -10,8 +10,13 @@ const { title = "", showForPrint = false } = Astro.props;
 <!-- https://mermaid.js.org/syntax/flowchart.html -->
 <script>
   import mermaid from "mermaid";
-  // Postpone mermaid initialization
-  mermaid.initialize({ startOnLoad: false });
+
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'neutral',
+    fontFamily: 'inherit',
+    fontSize: 14,
+  });
 
   function extractMermaidCode() {
     // Find all mermaid components
@@ -29,7 +34,7 @@ const { title = "", showForPrint = false } = Astro.props;
       code = code.replace(/\u007F/g, "\n");
       // Construct the `pre` element for the diagram code
       const preElement = document.createElement("pre");
-      preElement.className = "mermaid not-prose";
+      preElement.className = "mermaid not-prose flex justify-center items-center rounded bg-gray-50";
       preElement.innerHTML = code;
       // Find the diagram content container and override it's content
       const diagramContainer = element.querySelector(".diagram-content");
@@ -44,20 +49,24 @@ const { title = "", showForPrint = false } = Astro.props;
   // Wait for the DOM to be fully loaded
   document.addEventListener("DOMContentLoaded", async () => {
     extractMermaidCode();
-    mermaid.initialize({ startOnLoad: true });
+    mermaid.run();
   });
 </script>
 
-<figure
-  class={`expandable-diagram`}
->
-  <figcaption class={`${showForPrint ? "print:block" : "print:hidden"}`}>{title}</figcaption>
+<figure class="expandable-diagram">
+  <figcaption class={`${showForPrint ? "print:block" : "print:hidden"}`}>
+    {title}
+  </figcaption>
 
-  <div class={`diagram-content ${showForPrint ? "print:block" : "print:hidden"}`}>Loading diagram...</div>
+  <div
+    class={`diagram-content ${showForPrint ? "print:block" : "print:hidden"}`}
+  >
+    Loading diagram...
+  </div>
 
   <details class="text-sm print:hidden">
     <summary>Source</summary>
-    <slot />
+      <slot />
   </details>
 </figure>
 <div class={`${showForPrint ? "hidden" : "print:block"} hidden italic`}>

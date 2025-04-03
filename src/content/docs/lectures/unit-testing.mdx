@@ -516,13 +516,14 @@ While somewhat up to personal preferences, here's a set of guidelines to follow 
 
 Finally, it is common to locate our test files close to the code they are testing. This is called **co-location**. For example, if we have a `calculator.js` file, we might place the test file in the same directory with a name like `calculator.test.js`. This makes it easy to find the tests for a specific piece of code and keeps related files together.
 
-Larger codebases might have a dedicated `tests` or `__tests__` directory at the root level, with subdirectories for different parts of the codebase. This is a matter of personal preference and project structure, but co-location is generally a good practice for smaller projects.
+Larger codebases might have a dedicated `tests` or `__tests__` directory, potentially at the root, with subdirectories for different parts of the codebase. This is a matter of personal preference and project structure, but co-location is generally a good practice for smaller projects.
 
 ## Logic, DRYness, and DAMPness
 
 Coming Soon!
 
 {/* TODO:
+    - mutation testing
     - test via public APIs, --i.e. exported functions
     - test state not interactions 
     - beforeEach, afterEach

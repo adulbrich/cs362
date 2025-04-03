@@ -34,8 +34,8 @@ for topic in "${lecture_topics[@]}"; do
         npx starlight-to-pdf \
             "https://cs362.alexulbrich.com/lectures/$topic" \
             --format "Letter" \
-            --last "/lectures/testing-fundamentals" \
-            --exclude "/lectures/testing-fundamentals" \
+            --last "/assignments/introduction" \
+            --exclude "/assignments/introduction" \
             --footer ./footer.html \
             --header ./header.html \
             --filename "lecture-notes-$topic" \
