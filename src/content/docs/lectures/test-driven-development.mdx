@@ -75,24 +75,103 @@ The ROT13 cipher is a simple letter substitution cipher that replaces a letter w
 
 <Mermaid showForPrint="true"> 
 ``` 
-flowchart TB 
-  A <--> N 
-  B <--> O 
-  C <--> P 
-  D <--> Q 
-  E <--> R 
-  F <--> S 
-  G <--> T 
-  H <--> U 
-  I <--> V 
-  J <--> W 
-  K <--> X 
-  L <--> Y 
-  M <--> Z 
-classDef first fill:#f87171,stroke:#dc2626
-classDef last fill:#60a5fa,stroke:#2563eb
-class A,B,C,D,E,F,G,H,I,J,K,L,M first
-class N,O,P,Q,R,S,T,U,V,W,X,Y,Z last
+block-beta
+columns 1
+block:top
+  A
+  B  
+  style B fill:#4ade80;
+  C  
+  D  
+  E  
+  style E fill:#60a5fa;
+  F  
+  G  
+  H 
+  style H fill:#fb923c; 
+  I  
+  J  
+  K  
+  L  
+  style L fill:#facc15;
+  M 
+end
+space
+block:bottom
+  N 
+  O 
+  style O fill:#4ade80;
+  P 
+  Q 
+  R 
+  style R fill:#60a5fa;
+  S 
+  T 
+  U
+  style U fill:#fb923c; 
+  V 
+  W 
+  X 
+  Y 
+  style Y fill:#facc15;
+  Z
+end
+block:hello1
+  H1["H"]
+  style H1 fill:#fb923c; 
+  E1["E"] 
+  style E1 fill:#60a5fa; 
+  L1["L"]
+  style L1 fill:#facc15;
+  L2["L"]
+  style L2 fill:#facc15;
+  O1["O"]
+  style O1 fill:#4ade80;
+end
+space
+block:hello2
+  H2["U"]
+  style H2 fill:#fb923c; 
+  E2["R"] 
+  style E2 fill:#60a5fa; 
+  L3["Y"]  
+  style L3 fill:#facc15;
+  L4["Y"]  
+  style L4 fill:#facc15;
+  O2["B"]
+  style O2 fill:#4ade80;
+end
+A --> N 
+B --> O 
+C --> P 
+D --> Q 
+E --> R 
+F --> S 
+G -- "ROT13" --> T 
+H --> U 
+I --> V 
+J --> W 
+K --> X 
+L --> Y 
+M --> Z
+N --> A 
+O --> B 
+P --> C 
+Q --> D 
+R --> E 
+S --> F 
+T -- "ROT13" --> G 
+U --> H 
+V --> I 
+W --> J 
+X --> K 
+Y --> L 
+Z --> M
+H1 --> H2
+E1 --> E2
+L1 -- "ROT13" --> L3
+L2 --> L4
+O1 --> O2
 ```
 </Mermaid>
 {/* TODO: consider a block diagram to reduce spacing between boxes and add an example with the word hello */}
