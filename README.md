@@ -1,16 +1,6 @@
-# Course Name
+# CS 362: Software Engineering II
 
-This template:
-
-- uses Astro Starlight to organize course materials
-- uses ExpressiveCode for code snippets
-- uses Tailwind for styling
-- has a Latex and a Mermaid components for Latex and flowcharts respectively
-- integrates with Plausible Analytics
-- supports Svelte islands for reactivity
-- is configured to be deployed on Vercel
-- has scripts to generate PDFs for the different pages
-- hides flowcharts when printing (to be improved)
+This repository contains the source code for the CS362 website.
 
 ## Instructor Checklist
 
@@ -20,13 +10,13 @@ Every term:
 - [ ] Add TAs to Canvas
 - [ ] Create team **Bookings** page for assignment demo and set up slots
 - [ ] Update Bookings link in Canvas
-- [ ] Create **GitHub Classroom** class and add TAs
-- [ ] Update GitHub Classroom link in Canvas
+- [x] Create **GitHub Classroom** class and add TAs
+- [x] Update GitHub Classroom link in Canvas
 - [x] Create form for random team assignment for final project and add to Canvas
 - [ ] Review project code and complete assignment using vitest and playwright (optionally, use something else than SvelteKit)
 - [x] Check feasibility of project demo (time-wise): about 12 hours in final's week
 - [ ] Write down questions for TA demos
-- [ ] Use mermaid for flow charts and git flows
+- [x] Use mermaid for flow charts and git flows
 - [ ] additional topics to cover
   - [ ] maintenance
   - [ ] git pre-commit hooks
