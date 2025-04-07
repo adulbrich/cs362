@@ -21,7 +21,7 @@ const { title = "", showForPrint = false } = Astro.props;
     return new Promise((resolve) => {
       // Simulate a fluctuating number of network connections
       let activeConnections = 5; // Starting with more than 2 connections
-      let stableStart = null; // Tracks when stability begins
+      let stableStart: number | null = null; // Tracks when stability begins
 
       // Function to simulate network activity decreasing over time
       const checkConnections = () => {
