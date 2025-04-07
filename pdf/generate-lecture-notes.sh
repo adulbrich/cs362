@@ -32,8 +32,7 @@ for topic in "${lecture_topics[@]}"; do
             --no-contents \
             --margins '2cm 1cm 2cm 1cm' \
             --print-bg \
-            --page-wait-until 'networkidle2' \
-            --scroll-delay 1000
+            --page-wait-until 'networkidle2'
     else
         npx starlight-to-pdf \
             "https://cs362.alexulbrich.com/lectures/$topic" \
@@ -46,7 +45,6 @@ for topic in "${lecture_topics[@]}"; do
             --no-contents \
             --margins '2cm 1cm 2cm 1cm' \
             --print-bg \
-            --page-wait-until 'networkidle2' \
-            --scroll-delay 1000
+            --page-wait-until 'networkidle2'
     fi
 done

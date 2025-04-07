@@ -17,49 +17,6 @@ const { title = "", showForPrint = false } = Astro.props;
     fontSize: 14,
   });
 
-  function waitForLowNetworkActivity(maxConnections = 2, stableTime = 500) {
-    return new Promise((resolve) => {
-      // Simulate a fluctuating number of network connections
-      let activeConnections = 5; // Starting with more than 2 connections
-      let stableStart: number | null = null; // Tracks when stability begins
-
-      // Function to simulate network activity decreasing over time
-      const checkConnections = () => {
-        // Randomly decrease connections to simulate activity winding down
-        if (Math.random() > 0.7 && activeConnections > 0) {
-          activeConnections--;
-          // console.log(`Connections dropped to: ${activeConnections}`);
-        }
-
-        // Check if condition is met
-        if (activeConnections <= maxConnections) {
-          if (!stableStart) {
-            stableStart = Date.now(); // Mark when stability started
-          } else if (Date.now() - stableStart >= stableTime) {
-            // console.log(
-            //   `Stable with ${activeConnections} connections for ${stableTime}ms`
-            // );
-            resolve(`Network stable with ${activeConnections} connections`);
-            return; // Exit the interval
-          }
-        } else {
-          stableStart = null; // Reset if connections go above threshold
-        }
-
-        // console.log(`Current connections: ${activeConnections}`);
-      };
-
-      // Poll every 100ms to simulate checking network status
-      const interval = setInterval(checkConnections, 100);
-
-      // Optional: Stop after a timeout to avoid infinite loops (e.g., 10 seconds)
-      setTimeout(() => {
-        clearInterval(interval);
-        resolve("Timed out waiting for stable network");
-      }, 4000);
-    });
-  }
-
   function extractMermaidCode() {
     // Find all mermaid components
     const mermaidElements = document.querySelectorAll(
@@ -88,22 +45,11 @@ const { title = "", showForPrint = false } = Astro.props;
       }
     });
   }
-  
-  // console.log("Waiting for network to stabilize...");
-  waitForLowNetworkActivity(2, 500)
-    .then((result) => {
-      console.log(result);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
 
   // Wait for the DOM to be fully loaded
   document.addEventListener("DOMContentLoaded", async () => {
-    // console.log("DOM fully loaded and parsed");
     extractMermaidCode();
-    // console.log("Running mermaid...");
-    mermaid.run();
+    await mermaid.run();
   });
 </script>
 
