@@ -5,6 +5,8 @@ lecture_topics=(
     "introduction"
     "git-and-github"
     "testing-fundamentals"
+    "unit-testing"
+    "test-driven-development"
 )
 
 # Loop through topics and generate PDFs
@@ -29,7 +31,9 @@ for topic in "${lecture_topics[@]}"; do
             --filename "lecture-notes-$topic" \
             --no-contents \
             --margins '2cm 1cm 2cm 1cm' \
-            --print-bg
+            --print-bg \
+            --page-wait-until 'networkidle2' \
+            --scroll-delay 1000
     else
         npx starlight-to-pdf \
             "https://cs362.alexulbrich.com/lectures/$topic" \
@@ -41,6 +45,8 @@ for topic in "${lecture_topics[@]}"; do
             --filename "lecture-notes-$topic" \
             --no-contents \
             --margins '2cm 1cm 2cm 1cm' \
-            --print-bg
+            --print-bg \
+            --page-wait-until 'networkidle2' \
+            --scroll-delay 1000
     fi
 done
