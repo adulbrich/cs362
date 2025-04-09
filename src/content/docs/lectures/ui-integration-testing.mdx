@@ -1,0 +1,321 @@
+---
+title: UI-Based Integration Testing
+description: TODO
+draft: true
+sidebar:
+  order: 5
+---
+
+{/* TODO: Storybook, Chromatic, Axe-Core, ... */}
+{/* TODO: Refactor this lecture -- ui-based testing should probably use Storybook and Playwright and now testing library. */}
+
+Integration testing plays a crucial role when developing UI-based applications, bridging the gap between unit tests and full end-to-end tests. We explore how to effectively implement integration tests for web applications.
+
+While we've previously focused on testing library code through a developer's perspective, UI-based applications (web and mobile apps) require a different testing approach. The key difference is in how we interact with the software:
+
+- **Library testing**: Focuses on developer-facing APIs
+- **UI application testing**: Must simulate end-user interactions like looking, reading, scrolling, clicking, and typing
+
+For UI-based applications, our tests need to mimic how real users interact with the interface. This requires special tooling to properly simulate user behaviors like:
+
+- Visual inspection and reading content
+- Navigation through scrolling
+- Clicking on buttons and interactive elements
+- Typing text into forms
+- Responding to application feedback
+
+One approach is using end-to-end testing tools like Playwright or Cypress, which simulate a real browser environment. However, these tools can be slower and more complex to set up. They can also break when the UI changes, leading to brittle tests.
+
+While there are solutions such as [Storybook](https://storybook.js.org/) and [Chromatic](https://www.chromatic.com/) that can help with visual testing, we'll focus on a more lightweight "integration testing" approach that:
+
+- Focuses on validating specific UI components (forms, buttons, interactive elements)
+- Tests interactions between the UI itself and its associated behavior code
+- Verifies specific outcomes (like a dialog opening when a button is clicked)
+
+These tests are broader than unit tests because they validate interactions between different parts of the application, yet more focused than full end-to-end tests.
+
+In this lecture, we'll integration testing specifically for client-side web applications, using testing based on general UI testing principles. We'll leverage [Vitest](https://vitest.dev/) and [Testing Library](https://testing-library.com/) to create our tests, which will be run in a browser-like environment using [jsdom](https://github.com/jsdom/jsdom). This allows us to simulate user interactions and validate the expected outcomes. These tests don't rely on a real browser, nor do they render the CSS styles, but they do provide a good approximation of how the UI behaves in a real environment.
+
+## Setting Up jsdom
+
+To effectively test UI components, we need to simulate how users interact with our application's interface. While these interactions typically occur in a web browser, using an actual browser for testing can be inefficient and cumbersome.
+
+jsdom offers a lightweight alternative to browser-based testing. As a JavaScript implementation of web standards (including [WHATWG DOM](https://html.spec.whatwg.org/multipage/dom.html) and HTML standards), jsdom can:
+
+{/* Web Hypertext Application Technology Working Group */}
+
+- Parse and "render" HTML into an in-memory DOM tree
+- Provide the same programmatic DOM access mechanisms as a browser
+- Support testing without the overhead of a full browser environment
+
+Unlike browsers, jsdom doesn't create visual representations of HTML. Instead, it builds the equivalent DOM structure that allows us to interact with elements programmatically.
+
+Let's explore how to use jsdom in your testing workflow. Install it as a development dependency in your project:
+
+```shell
+npm install --save-dev jsdom
+```
+
+Then create a simple test file to demonstrate how to use jsdom. In this example, we'll create a basic HTML structure and manipulate it using jsdom.
+
+```js
+// jsdomExperiment.js
+const JSDOM = require("jsdom").JSDOM;
+
+// Create a JSDOM instance with basic HTML
+const dom = new JSDOM(
+    "<!DOCTYPE html><p id='hello'>Hello world!</p>"
+);
+```
+
+:::note
+The HTML language allows you to omit the `<html>`, `<head>`, `<body>`, and closing tags in certain cases, so the above code is valid HTML. However, jsdom will automatically add the missing elements to the DOM representation, as we'll see in a moment.
+:::
+
+You can access the DOM representation in various ways:
+
+```js
+// jsdomExperiment.js
+// Serialize the DOM to HTML
+console.log(dom.serialize());
+
+```
+
+When you run `dom.serialize()`, jsdom outputs a complete HTML document, including automatically added elements:
+
+```html
+<!DOCTYPE html>
+<html>
+    <head></head>
+    <body>
+        <p id="hello">Hello world!</p>
+    </body>
+</html>
+```
+
+Notice how jsdom automatically adds the `<html>`, `<head>`, and `<body>` elements that would be implied in a browser environment.
+
+jsdom provides the same DOM interface as browsers through `dom.window`:
+
+- `dom.window` corresponds to the [global window object](https://developer.mozilla.org/en-US/docs/Web/API/Window) in browsers
+- `dom.window.document` is equivalent to `document` in browser environments
+
+You can manipulate the DOM just as you would in a browser:
+
+```js
+// jsdomExperiment.js
+// Get an element by ID
+const paragraph = dom.window.document.getElementById("hello");
+console.log(paragraph.textContent); // "Hello world!"
+```
+
+With these fundamentals in place, we can now adapt jsdom for testing client-side web applications with a few minor adjustments to this basic setup.
+
+## Loading and Rendering an Application for Testing
+
+When testing web applications, we often need to work with multiple files that comprise the complete application. Let's explore how to effectively load and test a simple counter application consisting of HTML and JavaScript files.
+
+```html
+// counter.html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Counter</title>
+        <script type="module" src="counter.js" defer></script>
+    </head>
+    <body>
+        <button id="counter">0</button>
+    </body>
+</html>
+```
+
+```js
+// counter.js
+export function setupCounter() {
+  const counter = document.getElementById("counter");
+  let count = 0;
+
+  counter.addEventListener("click", () => {
+    count++;
+    counter.textContent = count;
+  });
+}
+
+document.addEventListener("DOMContentLoaded", setupCounter);
+```
+
+:::caution[ESM vs CommonJS]
+We're using the newer `type="module"` attribute in the `<script>` tag to load the JavaScript file. This allows us to use ECMAScript Modules (ESM) in our code, which is a modern way to structure JavaScript applications.
+
+You'll notice that if you open the HTML file in a browser, the button won't work as expected. 
+
+Browsers impose strict security restrictions when loading local files (`file://` protocol). When using `type="module"`, the browser treats the script as a module and attempts to load it via a fetch request, which triggers CORS (Cross-Origin Resource Sharing) policies. The `file://` protocol doesn't support this well, often resulting in the module failing to load.
+
+Serve your files through a local web server instead of opening the HTML file directly. You can use:
+
+- Node.js with `http-server`: Run `npx http-server` .
+- Python: Run `python -m http.server 8000` (Python 3).
+- VS Code: Use the "Live Server" extension.
+
+CommonJS (or rather, non-module scripts) doesn't face the same local loading issue because it's not subject to the same modern module-loading rules.
+
+You don't need to worry about this to test your application.
+:::
+
+This application implements a simple button that displays a count starting at 0 and increments by 1 each time it's clicked.
+
+To properly test this application, we need to:
+
+- Load the HTML into JSDOM
+- Execute the JavaScript file against the DOM
+- Ensure each test starts with a fresh DOM state
+
+Make sure Vitest is installed in your project as a development dependency:
+
+```shell
+npm install --save-dev vitest
+```
+
+Let's create a testing file called `counter.test.js` in the same directory as our application files. At the top of our test file, specify that we want to use the jsdom environment:
+
+```js
+// counter.test.js
+/**
+ * @vitest-environment jsdom
+ */
+```
+
+This docblock comment configures Vitest to use jsdom for this specific test file. Alternatively, you could set this globally in your Vitest configuration. There are other types of environments available such as [happy-dom](https://github.com/capricorn86/happy-dom), node, or [edge-runtime](https://edge-runtime.vercel.app/packages/vm).
+
+Next, we want to load our HTML file into jsdom. We want to do this before each test runs, using `beforeEach`, ensuring we start each test with a fresh DOM state. We can use the `path` and `fs` modules to read the file and pass its contents to jsdom. Once it's loaded, we can run our JS script, then run our tests.
+
+```js
+// counter.test.js
+/**
+ * @vitest-environment jsdom
+ */
+import fs from "fs";
+import path from "path";
+import { describe, test, expect, beforeEach } from "vitest";
+import { setupCounter } from "./counter.js";
+
+describe("Counter Application", () => {
+  beforeEach(() => {
+    const htmlPath = path.resolve(__dirname, "./counter.html");
+    const htmlContent = fs.readFileSync(htmlPath, "utf-8");
+    document.body.innerHTML = htmlContent;
+    setupCounter();
+  });
+
+  test("should start with initial count of 0", () => {
+    const counterButton = document.getElementById("counter");
+    expect(counterButton.textContent).toBe("0");
+  });
+
+  test("should increment count when clicked", async () => {
+    const counterButton = document.getElementById("counter");
+
+    counterButton.click();
+    expect(counterButton.textContent).toBe("1");
+
+    counterButton.click();
+    expect(counterButton.textContent).toBe("2");
+  });
+});
+```
+
+In our test file, we:
+
+- Import the necessary modules from path, fs, Vitest, and our application code
+- Use `beforeEach` to load the HTML file and set up the counter function before each test
+  - Use [`path.resolve`](https://nodejs.org/dist/latest/docs/api/path.html#pathresolvepaths) to get the absolute path of the HTML file
+  - Use [`fs.readFileSync`](https://nodejs.org/dist/latest/docs/api/fs.html#fsreadfilesyncpath-options) to return the contents of the path
+  - Use `document.body.innerHTML` to set the HTML content of the DOM (using jsdom)
+  - Call `setupCounter()` to initialize the event listeners and functionality (limitations of jsdom and Vitest/Jest require this)
+- Define our tests using `test` and `expect` to assert the expected behavior of the application
+
+Note that we don't have to explicitly import jsdom, as Vitest automatically sets it up for us when we specify the environment, but jsdom still needs to be installed as a dependency in your project.
+
+While this works, we are using the `document` interface to manipulate the DOM directly. This is not how a real user would interact with the application. Instead, we should use a library that simulates user interactions more closely.
+
+## Using Testing Library for User Interactions
+
+The [Testing Library](https://testing-library.com/) family of tools offers a more user-centric approach to testing UI interactions compared to direct DOM manipulation. Instead of focusing on implementation details, these libraries help you write tests that interact with your application the way real users would.
+
+The Testing Library consists of several packages:
+
+- `@testing-library/dom`: The core library that works with any web application
+- `@testing-library/user-event`: Simulates realistic user interactions
+- `@testing-library/jest-dom/vitest`: Provides custom matchers for assertions
+- Framework-specific adapters: For React, Vue, Angular, and others
+
+Let's implement this approach for our counter application:
+
+```shell
+npm install --save-dev @testing-library/dom @testing-library/user-event @testing-library/jest-dom vitest
+```
+
+Now you can use the Testing Library to write your tests. Here's how to modify our previous test file to use the Testing Library:
+
+```js
+// counter.test.js
+/**
+ * @vitest-environment jsdom
+ */
+
+import fs from "fs";
+import path from "path";
+import { describe, test, expect, beforeEach } from "vitest";
+import { setupCounter } from "./counter.js";
+import { getByText } from "@testing-library/dom";
+import "@testing-library/jest-dom/vitest";
+import { userEvent } from "@testing-library/user-event";
+
+describe("Counter Application", () => {
+  beforeEach(() => {
+    const htmlPath = path.resolve(__dirname, "./counter.html");
+    const htmlContent = fs.readFileSync(htmlPath, "utf-8");
+    document.body.innerHTML = htmlContent;
+    setupCounter();
+  });
+
+  test("counter increments when clicked", async () => {
+    const counter = getByText(document.body, "0");
+    await userEvent.click(counter);
+    expect(counter).toHaveTextContent("1");
+  });
+});
+```
+
+Testing Library provides multiple ways to find elements, simulating how real users locate elements:
+
+- `getByText`: Finds an element by its text content
+- `getByRole`: Finds an element by its [ARIA role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles) (e.g., button, heading)
+
+Alternatively, you can `import { screen } from "@testing-library/dom";` and use `screen.getByText` or `screen.getByRole` to find elements.
+
+The `userEvent` library simulates user interactions like clicking, typing, and more. You can use `const user = userEvent.setup();` to create a user instance and call `await user.click(counter)`.
+
+Using `await` is important as these interactions are asynchronous, ensuring all events complete before assertions run.
+
+When a real user clicks an element, it [triggers multiple events in sequence](https://testing-library.com/docs/guide-events/):
+
+- `mouseOver`
+- `mouseMove`
+- `mouseDown`
+- `focus` (if focusable)
+- `mouseUp`
+- `click`
+
+Finally, Testing Library encourages assertions based on what users would see:
+
+```js
+expect(counter).toHaveTextContent('1');
+```
+
+The custom matcher `toHaveTextContent()` provided by `@testing-library/jest-dom/vitest` verifies text content the way a user would see it.
+
+By focusing on user-oriented queries, interactions, and assertions, Testing Library helps create more resilient tests that validate behavior rather than implementation details.
+

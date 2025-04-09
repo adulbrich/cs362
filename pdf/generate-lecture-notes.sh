@@ -23,6 +23,7 @@ for topic in "${lecture_topics[@]}"; do
     if [[ -n "$next_topic" ]]; then
         npx starlight-to-pdf \
             "https://cs362.alexulbrich.com/lectures/$topic" \
+            --page-wait-until 'networkidle0' \
             --format "Letter" \
             --last "/lectures/$next_topic" \
             --exclude "/lectures/$next_topic" \
@@ -31,11 +32,11 @@ for topic in "${lecture_topics[@]}"; do
             --filename "lecture-notes-$topic" \
             --no-contents \
             --margins '2cm 1cm 2cm 1cm' \
-            --print-bg \
-            --page-wait-until 'networkidle2'
+            --print-bg
     else
         npx starlight-to-pdf \
             "https://cs362.alexulbrich.com/lectures/$topic" \
+            --page-wait-until 'networkidle0' \
             --format "Letter" \
             --last "/assignments/introduction" \
             --exclude "/assignments/introduction" \
@@ -44,7 +45,6 @@ for topic in "${lecture_topics[@]}"; do
             --filename "lecture-notes-$topic" \
             --no-contents \
             --margins '2cm 1cm 2cm 1cm' \
-            --print-bg \
-            --page-wait-until 'networkidle2'
+            --print-bg
     fi
 done

@@ -101,11 +101,27 @@ Your second task is to mirror your Git repo on GitHub. Here are the steps:
 
 3. After selecting your name, you'll be brought to a page with an "accept this assignment" button. Clicking this generates a private repo for you in the CS 362 GitHub Classroom. After a few seconds, the page will provide a link to that repo on GitHub.
 
-4. Follow the provided link to navigate to your repo. Copy either the HTTPS or SSH URL for the GitHub repo and use it to **set up that repo as a remote** for your local `/assignment-1` directory. 
+4. Follow the provided link to navigate to your repo. Copy either the HTTPS or SSH URL for the GitHub repo and use it to [**set up that repo as a remote**](../../lectures/git-and-github/#mirroring-a-local-git-repo-on-github) for your local `/assignment-1` directory. 
 
 5. Push the commits from your local repo to GitHub.
 
 </Steps>
+
+:::note[Unrelated Histories?]
+GitHub Classroom repos are created with a README file, which automatically creates a new Git history. If you see an error message about unrelated histories when pushing, it means your local repo has no common history with the GitHub repo. That makes sense since both were created separately. To fix this, you need to "force" pull the README file from GitHub into your local repo. Use the following command:
+
+```shell
+git pull --allow-unrelated-histories origin main
+```
+
+This command allows you to merge the two histories. After that, you can push your local commits to GitHub.
+
+You might need to set tracking information for your local branch first:
+
+```shell
+git branch --set-upstream-to=origin/<branch> <local_branch>
+```
+:::
 
 Once you see all your commits on GitHub, your assignment is submitted.
 
