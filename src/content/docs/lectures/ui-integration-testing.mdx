@@ -1,13 +1,11 @@
 ---
 title: UI-Based Integration Testing
-description: TODO
-draft: true
+description: Learn how to implement UI integration tests for web applications using Vitest and Testing Library, focusing on simulating user interactions and validating UI component behavior.
 sidebar:
   order: 5
 ---
 
-{/* TODO: Storybook, Chromatic, Axe-Core, ... */}
-{/* TODO: Refactor this lecture -- ui-based testing should probably use Storybook and Playwright and now testing library. */}
+{/* TODO: This should probably be moved to after test doubles, as it is essentially mocking the environment. */}
 
 Integration testing plays a crucial role when developing UI-based applications, bridging the gap between unit tests and full end-to-end tests. We explore how to effectively implement integration tests for web applications.
 
@@ -589,6 +587,68 @@ Both somewhat rely on understanding the implementation details of the applicatio
 
 The second one is does nop rely on knowing that we have a list that encapsulates the photo cards. It simply checks that the image is not present in the DOM.
 
-### Testing More Complex DOM Content
+## Snapshots
 
-{/* https://vitest.dev/guide/snapshot */}
+When testing applications that produce complex DOM structures, validating each element individually can become cumbersome. [Snapshot](https://vitest.dev/guide/snapshot) testing offers an elegant solution for validating complex UI states after user interactions.
+
+Snapshot testing works by:
+
+1. Rendering the UI and performing actions
+2. Taking a "snapshot" of the resulting DOM structure
+3. Comparing this snapshot against a stored reference version
+
+Let's implement a test that verifies our application correctly handles multiple photo card submissions:
+
+```js
+// photos.test.js
+test("should insert multiple photo cards when submitted sequentially", async () => {
+  const urlInput = screen.getByLabelText(/url/i);
+  const captionInput = screen.getByLabelText(/caption/i);
+  const submitButton = screen.getByRole("button", { name: /add photo/i });
+  const photoCardList = screen.getByRole("list");
+
+  await userEvent.type(urlInput, "https://picsum.photos/200/300");
+  await userEvent.type(captionInput, "Lorem Picsum 200x300");
+  await userEvent.click(submitButton);
+
+  await userEvent.type(urlInput, "https://picsum.photos/300/400");
+  await userEvent.type(captionInput, "Lorem Picsum 300x400");
+  await userEvent.click(submitButton);
+
+  expect(photoCardList).toMatchSnapshot();
+});
+```
+
+The first time you run this test, Vitest will:
+
+1. Generate a reference snapshot of the `photoCardList` element
+2. Store this snapshot in a `__snapshots__` directory next to your test file
+3. Automatically pass the test (since there's no previous snapshot to compare against)
+
+The snapshot file contains an HTML-like representation of your DOM structure and should be committed to your repository as part of your test code.
+
+In subsequent test runs, Vitest compares the current DOM state against this stored reference snapshot. Any differences will cause the test to fail, with Vitest highlighting the specific changes.
+
+When you intentionally change your UI (like modifying the photo card layout), tests will fail because the DOM no longer matches the stored snapshot. You have two options to [update your snapshot](https://vitest.dev/guide/snapshot.html#updating-snapshots):
+
+- In watch mode, you can press the `u` key in the terminal to update the failed snapshot directly.
+- You can use the `--update` or `-u` flag when running Vitest to update all snapshots at once: `npx vitest -u`
+
+Be cautious when updating snapshots—make sure tests aren't failing due to actual bugs before regenerating reference snapshots.
+
+These snapshot tests provide a powerful way to verify complex UI states without writing dozens of individual assertions.
+
+## Other Tests
+
+While our test suite covers the core functionality, you might consider additional tests:
+
+- Different combinations of missing form fields
+- Form submission via Enter key in input fields
+- UI behavior with extremely long captions or URLs
+- Error handling for invalid image URLs
+
+## Summary
+
+In this lecture, we explored how to effectively test UI-based applications using integration testing principles. We learned how to set up jsdom for testing, load HTML and JavaScript files, and simulate user interactions with the Testing Library.
+
+We also discussed the importance of user-centric testing, focusing on how real users interact with the application rather than implementation details. By using tools like the Testing Library and Vitest, we can create robust tests that validate our application's behavior and ensure a smooth user experience.

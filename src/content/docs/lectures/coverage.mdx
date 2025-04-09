@@ -3,7 +3,74 @@ title: Coverage
 description: TODO
 draft: true
 sidebar:
-  order: 5
+  order: 9
 ---
 
-Coming Soon!
+import Mermaid from "../../../components/Mermaid.astro";
+
+Code coverage is a measure of how much of your code is executed when you run your tests. It helps you identify untested parts of your codebase and can guide you in writing more comprehensive tests.
+
+Code coverage metrics can be interpreted in various ways, and expectations around coverage vary widely across teams and organizations.
+
+Some teams aim for high coverage percentages (e.g., 80% or higher), while others focus on specific areas of the codebase that are critical to the application's functionality. It's important to remember that high coverage does not guarantee the absence of bugs, and low coverage does not necessarily indicate poor quality. 
+
+Many use coverage primarily to identify untested code rather than to celebrate tested code. This approach focuses on examining what's missing rather than the overall percentage.
+
+## Coverage Metrics
+
+There are several types of code coverage metrics, including:
+
+- **Line Coverage**: Measures the percentage of lines of code that have been executed by tests. This is the most common metric and is often reported as a percentage.
+- **Function Coverage**: Measures the percentage of functions or methods that have been called by tests. This metric can help identify untested functions in your codebase.
+- **Branch Coverage**: Measures the percentage of branches (e.g., if/else statements) that have been executed. This metric provides a more detailed view of code execution than line coverage.
+- **Condition Coverage**: Measures the percentage of boolean expressions that have been evaluated to both true and false. This metric helps ensure that all possible outcomes of conditional statements are tested.
+
+There are other metrics such as statement, path, [MC/DC](https://en.wikipedia.org/wiki/Modified_condition/decision_coverage), toggle, or mutation.
+
+## Branch and Condition Coverage
+
+Let's take a look at a simple example to illustrate the difference between branch and condition coverage.
+
+```js
+if (x > 10) {
+  console.log("branch 1");
+} else {
+  console.log("branch 2");
+}
+```
+
+<Mermaid showForPrint="true">
+```
+graph TD
+  A[Function start] --> B{if x > 10}
+  B -->|True Path| C[Execute 'x is greater than 10']
+  B -->|False Path| D[Execute 'x is not greater than 10']
+  C --> E[Function end]
+  D --> E
+
+  classDef covered fill:#9f9,stroke:#484,stroke-width:2px
+  classDef uncovered fill:#f99,stroke:#844,stroke-width:2px
+  classDef partial fill:#ff9,stroke:#884,stroke-width:2px
+    
+  class A,B,C,E covered
+  class D uncovered
+  ```
+</Mermaid>
+
+In this case, if we test with `x > 10`, we achieve 50% branch coverage, and 50% condition coverage, because we only executed the true branch of the `if` statement.
+
+{/* TODO: diagram with nested if statements or multiple branches (not only two) */}
+
+Here's a more complex example:
+
+```js
+if (x > 10 || y < 5) {
+  console.log("branch 1");
+} else {
+  console.log("branch 2");
+}
+```
+
+In this case, if we test with `x > 10`, we achieve 50% branch coverage, but only 25% condition coverage. Indeed, because of short-circuiting, we never evaluate the second condition `y < 5` if `x > 10`. 
+
+{/* TODO: verify actual condition coverage */}
