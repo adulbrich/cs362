@@ -25,7 +25,7 @@ for topic in "${lecture_topics[@]}"; do
 done
 
 for topic in "${assignments[@]}"; do
-  node print.js "https://cs362.alexulbrich.com/assignments/$topic" "assignments-$topic.pdf"
+  node print.js "https://cs362.alexulbrich.com/assignments/$topic" "assignment-$topic.pdf"
 done
 
 # for topic in "${practicalities[@]}"; do
