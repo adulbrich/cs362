@@ -6,4 +6,104 @@ sidebar:
   order: 6
 ---
 
+When testing code that interacts with complex external components—such as third-party libraries or network services—we often face challenges that make testing difficult.
 
+Consider testing a function that fetches data from an external server and stores it in a database. This scenario introduces several testing concerns:
+
+- **Performance issues**: Tests may run slowly due to network communication and database operations
+- **Reliability problems**: Tests might be flaky because of random network failures or data conflicts when tests run in different orders
+
+Test doubles offer a solution to these challenges by replacing production components with simplified versions during testing.
+
+## What Are Test Doubles?
+
+Test doubles replace one or more production software components with alternative implementations specifically designed for testing. When writing tests, we focus on the "system under test" (SUT)--the specific component being evaluated. Test doubles stand in for other components (called "collaborators" or "depended-on components" or DOCs) that interact with the SUT but aren't the focus of testing.
+
+The key characteristic of test doubles is that they provide the same API as the real components they replace. From the SUT's perspective, a test double behaves identically to the real component.
+
+### Practical Example
+
+In our example of testing a function that makes network requests and stores data in a database:
+
+- The function itself is the *system under test (SUT)*
+- The external server and database are *collaborators*
+
+Since we're testing the function and not the collaborators, we could:
+
+- Replace the network call with a test double that simulates server responses without actual network communication
+- Substitute a "fake" in-memory database implementation instead of using a real database
+
+This approach gives us greater control over interactions between the function and its collaborators, allowing tests to focus specifically on the function's behavior.
+
+### Benefits of Test Doubles
+
+Test doubles offer several key advantages:
+
+- **Predictability**: Their behavior is controlled by test implementers
+- **Speed**: Tests run faster by avoiding slow operations like network calls
+- **Focus**: They help isolate the specific component being tested
+
+In the following sections, we'll explore the different types of test doubles and how to incorporate them into your testing strategy.
+
+## Types of Test Doubles
+
+Test doubles are essential components in the testing toolkit that replace production dependencies during testing. Below are the main categories of test doubles, each serving distinct testing purposes.
+
+### Stubbing: Controlling Indirect Inputs
+
+A [**stub**](http://xunitpatterns.com/Test%20Stub.html) is a test-specific implementation that provides predefined responses to calls made by the system under test (SUT).
+
+You should use stubs when:
+
+- you need to control indirect inputs that aren't passed directly to the SUT
+- testing specific behaviors that depend on particular input conditions
+
+> Consider a function that generates HTML to display the current time, with special formatting for noon (12:00 pm). Since you can't easily test this at precisely noon every day, you could use a stub to replace the system clock and provide a fixed time value of 12:00 pm.
+
+### Spying: Observing Indirect Outputs
+
+A [**spy**](http://xunitpatterns.com/Test%20Spy.html) records calls made to it by the SUT and captures the parameter values, allowing you to verify these indirect outputs in your tests.
+
+You should use spies when:
+
+- you need to validate side effects that occur when the SUT interacts with its environment
+- you want to prevent actual side effects while still verifying they were attempted
+
+> In a flight management system, when testing a flight cancellation function, you might want to verify that email notifications would be sent to all passengers without actually sending emails. A spy could record these attempted notifications while preventing actual emails from being sent.
+
+### Faking: Lightweight Alternative Implementations
+
+A [**fake**](http://xunitpatterns.com/Fake%20Object.html) is a simplified yet functional implementation of a component that the SUT depends on.
+
+You should use fakes when:
+
+- interactions with the real component would be costly or slow
+- you want to avoid undesirable side effects during testing
+
+> Instead of connecting to a production database during tests, you might implement a fake in-memory database using hash tables. This allows the SUT to perform all its normal database operations without the overhead or side effects of using the real database.
+
+### Dummy Objects: Fulfilling Parameter Requirements
+
+A [**dummy object**](http://xunitpatterns.com/Dummy%20Object.html) satisfies the API requirements of the SUT without providing any real functionality.
+
+You should use dummy objects when:
+
+- the SUT requires inputs that won't affect the test outcome
+- these inputs are complex or time-consuming to create
+
+> If you're testing an Invoice class's ability to add line items, but the Invoice constructor requires a Customer object (which requires an Address, which requires a City, etc.), you could use a dummy Customer object with minimal or null internal values just to satisfy the constructor requirements.
+
+### A Note on "Mocking"
+
+The term "mock" has varied meanings in testing literature:
+
+- Some authors (like [Meszaros](http://xunitpatterns.com/Mock%20Object.html) and [Fowler](https://martinfowler.com/articles/mocksArentStubs.html)) use "mock" specifically for test doubles that perform assertions internally.
+- Others (like [Software Engineering at Google](https://abseil.io/resources/swe-book/html/ch13.html#mocking_frameworks), [Kent C. Dodds](https://kentcdodds.com/blog/but-really-what-is-a-javascript-mock), [Jest](https://jestjs.io/docs/mock-functions), and [Vitest](https://vitest.dev/guide/mocking)) use "mock" more broadly for any test double defined inline in a test.
+
+In this latter context, a mock could be a stub, spy, or hybrid that both injects inputs and records outputs. "Mocking" refers to the act of replacing real components with these test doubles.
+
+
+## Additional Resources
+
+- [Test Double](http://xunitpatterns.com/Test%20Double.html) on xUnitPatterns.com
+- [Techniques for Using Test Doubles](https://abseil.io/resources/swe-book/html/ch13.html#techniques_for_using_test_doubles) in Software Engineering at Google
