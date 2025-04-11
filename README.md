@@ -7,16 +7,16 @@ This repository contains the source code for the CS362 website.
 Every term:
 
 - [ ] Update the version of this repository if making changes (`package.json`)
-- [ ] Add TAs to Canvas
-- [ ] Create team **Bookings** page for assignment demo and set up slots
-- [ ] Update Bookings link in Canvas
+- [x] Add TAs to Canvas
+- [x] Create team **Bookings** page for assignment demo and set up slots: not working, creating individual pages instead
+- [x] Update Bookings link in Canvas
 - [x] Create **GitHub Classroom** class and add TAs
 - [x] Update GitHub Classroom link in Canvas
 - [x] Create form for random team assignment for final project and add to Canvas
 - [ ] Review project code and complete assignment using vitest and playwright (optionally, use something else than SvelteKit)
 - [x] Check feasibility of project demo (time-wise): about 12 hours in final's week
-- [ ] Write down questions for TA demos
 - [x] Use mermaid for flow charts and git flows
+- [ ] Use `bun` for everything (incl. running an http server locally)
 - [ ] additional topics to cover
   - [ ] maintenance
   - [ ] git pre-commit hooks

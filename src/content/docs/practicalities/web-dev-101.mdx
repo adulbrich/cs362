@@ -1,0 +1,193 @@
+---
+title: Web Dev 101
+description: Learn the fundamentals of modern web development including HTML, CSS, JavaScript, Node.js, npm package management, and an introduction to popular frameworks and tools for building web applications.
+draft: true
+sidebar:
+  order: 2
+---
+
+The modern web is composed of three main components: HTML, CSS, and JavaScript.
+
+- [**HTML** (Hypertext Markup Language)](https://developer.mozilla.org/en-US/docs/Web/HTML) is the standard markup language for creating web pages. It provides the structure and content of a webpage.
+- [**CSS** (Cascading Style Sheets)](https://developer.mozilla.org/en-US/docs/Web/CSS) is a style sheet language used for describing the presentation of a document written in HTML. It controls the layout and appearance of web pages.
+- [**JavaScript**](https://developer.mozilla.org/en-US/docs/Web/JavaScript) is a programming language that enables interactive web pages. It allows developers to implement complex features on web pages, such as dynamic content updates, form validation, and animations. Check also [TypeScript](https://www.typescriptlang.org/), a superset of JavaScript that adds static typing and other features to the language.
+
+Your web browser (like Chrome, Firefox, or Safari) interprets HTML, CSS, and JavaScript to render web pages. 
+
+To run JavaScrip code outside the browser, you can use Node.js, a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js allows you to run JavaScript code locally, or on the server side, enabling full-stack development with JavaScript.
+
+In this course, we will use JavaScript test frameworks like Vitest and Playwright, which are designed to run in Node.js. These frameworks allow you to write and run tests for your JavaScript code, ensuring that it works as expected.
+
+## Getting Started
+
+You need to have Node.js installed on your computer to run JavaScript code and use the test frameworks. You can download Node.js from the [official website](https://nodejs.org/).
+
+Better yet, you can use nvm (Node Version Manager) to install and manage multiple versions of Node.js on your machine. This is especially useful if you need to work with different projects that require different versions of Node.js. Refer to [nvm's documentation](https://github.com/nvm-sh/nvm) for installation instructions.
+
+It is recommended to use the latest LTS (Long Term Support) version of Node.js for this course.
+
+To check if Node.js is installed correctly, open your terminal and run the following command:
+
+```bash
+node -v
+```
+
+Installing Node.js should also install [npm](https://docs.npmjs.com/cli/v8/commands/npm) (Node Package Manager), which is used to manage JavaScript packages. You can check if npm is installed by running:
+
+```bash
+npm -v
+```
+
+Finally, you also have the option to use [npx](https://docs.npmjs.com/cli/v8/commands/npx), which is a package runner tool that comes with npm. It allows you to run Node.js packages without installing them globally on your system. This is useful for running scripts or tools that you don't need to keep installed permanently.
+
+## Setting Up A New Project
+
+To set up a new JavaScript project, you can use npm to create a new directory and initialize a `package.json` file. This file will keep track of your project's dependencies and scripts.
+
+To create a new project, navigate to the project directory and run the following commands in your terminal:
+
+```bash
+npm init
+```
+
+This will prompt you to enter some information about your project, such as the name, version, description, entry point, and more. You can press Enter to accept the default values or provide your own.
+
+Once you have completed the prompts, a `package.json` file will be created in your project directory.
+
+You can also use the `-y` flag to skip the prompts and create a default `package.json` file: `npm init -y`.
+
+## Installing Packages
+
+To install packages (libraries or frameworks) for your project, you can use npm. For example, to install the Vitest testing framework, you can run the following command:
+
+```bash
+npm install --save-dev vitest
+```
+
+This will install Vitest as a development dependency and add it to your `package.json` file under the `devDependencies` section.
+
+For packages that are required to build or run your project, you can use the `--save` flag (or simply omit it, as this is the default behavior) to add them to the `dependencies` section of your `package.json` file, for example:
+
+```bash
+npm install http-server
+```
+
+## `.gitignore`
+
+When you create a new project, it's a good practice to create a `.gitignore` file to specify which files and directories should be ignored by **Git**. This is especially important for Node.js projects, as there are certain files and directories that should not be tracked by version control.
+
+For example, you should ignore the `node_modules` directory, which contains all the installed packages for your project. You can create a `.gitignore` file in your project directory and add the following line:
+
+```plaintext
+node_modules/
+```
+
+This will ensure that the `node_modules` directory is ignored by Git and not included in your repository.
+
+:::tip[Creating a New Repository on GitHub]
+When creating a new repository on GitHub, you can choose to add a `.gitignore` file for Node.js (or other languages, runtimes, or frameworks). This will automatically include the necessary entries to ignore the `node_modules` (for Node projects) directory and other common files that should not be tracked by Git.
+:::
+
+## `package.json`
+
+The `package.json` file is a JSON file that contains metadata about your project, including its name, version, description, entry point, scripts, dependencies, and more.
+
+For this course, we will be mostly concerned with the `devDependencies` and `scripts` sections of the `package.json` file.
+
+Like previously mentioned, the `devDependencies` section lists the packages that are only needed for development and testing, while the `dependencies` section lists the packages that are required for the project to run.
+
+Most of the time, the assignments will come with a `package.json` file that already has the some dependencies and scripts set up. You can simply run `npm install` to install the required packages. You can then install additional packages as needed.
+
+The `scripts` section allows you to define custom scripts that can be run using npm. For example, you can define a script to run your tests, start a local server, or build your project.
+
+Here is an example of a `package.json` file with a `scripts` section:
+
+```json
+{
+  ...
+  "scripts": {
+    "test": "vitest",
+    "serve": "http-server"
+  },
+  ...
+}
+```
+
+You can run these scripts using the following syntax `npm run <script-name>`. For example, to run the `test` or `serve` scripts, you can run:
+
+```bash
+npm run test
+npm run serve
+```
+
+This will run the `vitest` command to execute your tests and the `http-server` command to start a local server, respectively.
+
+:::tip[Running Scripts with `npx`]
+You can also use `npx` to run scripts without having to install them globally or without having to add them to the `scripts` section. For example, you can run the following command to run Vitest:
+
+```bash
+npx vitest # instead of npm run test
+```
+:::
+
+## `package-lock.json`
+
+The `package-lock.json` file is automatically generated when you install packages using npm. It contains a detailed description of the dependency tree for your project, including the exact versions of each package and their dependencies.
+
+This file is important for ensuring that your project has consistent dependencies across different environments. When you run `npm install`, npm will use the `package-lock.json` file to install the exact versions of the packages listed in it, rather than the latest versions.
+
+This helps prevent issues that can arise from using different versions of packages, which may have breaking changes or bugs.
+
+The `package-lock.json` file should be committed to your version control system (e.g., Git) to ensure that other developers working on the project have the same dependencies installed.
+
+## ESM vs CommonJS
+
+JavaScript has two main module systems: ESM (ECMAScript Modules) and CommonJS.
+
+- **ESM** is the standard module system for JavaScript, introduced in ES6 (ECMAScript 2015). It uses the `import` and `export` syntax to define and use modules. ESM is supported natively in modern browsers and Node.js.
+- **CommonJS** is the module system used by Node.js. It uses the `require` and `module.exports` syntax to define and use modules. CommonJS is not natively supported in browsers, but it can be used with tools like Browserify or Webpack to bundle your code for the browser.
+
+In this course, we will primarily use ESM syntax for our JavaScript code. However, you may encounter CommonJS syntax in some of the libraries and frameworks we use.
+
+Your `package.json` file should include the following line to indicate that you are using ESM:
+
+```json
+{
+  ...
+  "type": "module",
+  ...
+}
+```
+
+If that line is not present or if it is set to `"type": "commonjs"`, you might need to use CommonJS syntax for your JavaScript code.
+
+In your HTML files, if you want to use ESM, you need to include the `type="module"` attribute in your `<script>` tags:
+
+```html
+<script type="module" src="script.js"></script>
+```
+
+This tells the browser to treat the script as an ESM module, allowing you to use `import` and `export` statements in your JavaScript code. Alternatively, if your file has the extension `.mjs`, the browser will automatically treat it as an ESM module, and you don't need to include the `type="module"` attribute.
+
+Again, the assignments will come with a `package.json` file that already has the `"type": "module"` line included, so you don't need to worry about this unless you are creating your own project from scratch.
+
+## Modern Web Development
+
+The modern web development landscape is constantly evolving, with new tools, frameworks, and best practices emerging all the time. 
+
+It is rare to find a web application that is built using only HTML, CSS, and JavaScript. Most applications use a combination of libraries, frameworks, and tools to build complex and interactive web applications.
+Some popular libraries and frameworks include:
+
+- [**React**](https://react.dev/): A JavaScript library for building user interfaces, developed by Facebook. It allows developers to create reusable UI components and manage the state of their applications. It is rarely used alone, but rather as part of a larger ecosystem of tools and libraries.
+- [**React Router**](https://reactrouter.com/): A library for routing in React applications. It allows developers to create single-page applications with navigation and dynamic content loading.
+- [**Next.js**](https://nextjs.org/): A React meta-framework that provides server-side rendering, static site generation, and other features for building modern web applications.
+- [**Svelte**](https://svelte.dev/): A relatively new framework that compiles components into highly optimized JavaScript code at build time, resulting in faster runtime performance and smaller bundle sizes. Its meta-framework is SvelteKit.
+- [**Astro**](https://astro.build/): A static site generator that allows you to build fast, modern websites using your favorite JavaScript frameworks (like React, Vue, or Svelte) alongside static HTML and Markdown content. It optimizes the delivery of JavaScript by only sending the necessary code to the browser.
+- [**Vue.js**](https://vuejs.org/): A progressive JavaScript framework for building user interfaces. It is designed to be incrementally adoptable, meaning you can use it for small parts of your application or for building entire applications.
+- [**Vite**](https://vite.dev/): A build tool and development server that provides fast hot module replacement (HMR) and optimized builds for modern web applications. It is often used with frameworks like React, Vue, and Svelte.
+- [**Tailwind CSS**](https://tailwindcss.com/): A utility-first CSS framework that allows developers to build custom designs without writing custom CSS. It provides a set of pre-defined classes that can be combined to create complex layouts and styles.
+- [**CSS Modules**](https://github.com/css-modules/css-modules): A CSS file in which all class and animation names are scoped locally by default. This means that the styles defined in a CSS module are only applied to the component that imports it, preventing naming conflicts and making it easier to manage styles in large applications.
+- [**Express**](https://expressjs.com/): A minimal and flexible Node.js web application framework that provides a robust set of features for building web and mobile applications. It is often used to build RESTful APIs and server-side applications.
+- [**Bun**](https://bun.sh/): A modern JavaScript runtime that is designed to be fast and efficient. It includes a built-in package manager, bundler, and transpiler, making it a great alternative to Node.js for certain use cases.
+
+There are many other libraries and frameworks available. The list above is somewhat opinionated, and you may find other tools that work better for your needs. The best way to learn about these tools is to experiment with them and see what works best for you. You can also check what's popular through the State of JS/CSS/HTML surveys, or by subscribing to newsletters like [Bytes](https://bytes.dev/), [This Week in React](https://thisweekinreact.com/), or [Unicorn Club](https://unicornclub.dev/).
