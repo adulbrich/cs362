@@ -1,6 +1,6 @@
 ---
 title: Test Doubles
-description: TODO
+description: Learn how to use test doubles like stubs, spies, fakes, and mocks in JavaScript testing. This practical guide covers implementing test doubles with Vitest, mocking network requests, simulating time-based behavior, and best practices to write reliable tests.
 draft: true
 sidebar:
   order: 6
@@ -102,6 +102,800 @@ The term "mock" has varied meanings in testing literature:
 
 In this latter context, a mock could be a stub, spy, or hybrid that both injects inputs and records outputs. "Mocking" refers to the act of replacing real components with these test doubles.
 
+## Basic Mocking with Vitest
+
+Let's explore how to incorporate test doubles into our tests using Vitest's built-in mocking functionality.
+
+We'll implement tests for the following user registration function that stores user records in a database:
+
+```javascript
+// registerUser.js
+export function registerUser(email, password) {
+  const record = {
+    email: email,
+    password: bcrypt.hashSync(password, 8),
+  };
+  try {
+    const userId = Database.save(record);
+    return userId;
+  } catch {
+    return null;
+  }
+}
+```
+
+Key aspects of this function:
+
+- The primary purpose is to use the `Database` module to store a user record
+- The database interaction happens via `Database.save()` (a hypothetical module that could represent MySQL, MongoDB, etc.)
+- The user record contains the email address and a hashed password ([a security best practice](https://auth0.com/blog/hashing-passwords-one-way-road-to-security/))
+- Error handling returns `null` if database communication fails
+
+Note that this function is not a complete implementation. It lacks the necessary imports and error handling for the `bcrypt` and `Database` modules. However, it serves as a good example of how to use test doubles.
+
+Testing this function against a real database presents several challenges:
+
+- Network communication introduces potential flakiness and reliability issues
+- We may not want test data in a production database
+- We might not have a dedicated testing database instance
+
+While a fake database implementation would be ideal, creating one could be time-consuming. Mocking provides an effective alternative to build confidence in our function's correctness.
+
+### Spying with Vitest
+
+Let's explore how to test the `registerUser()` function using a **spy** to verify that user records are properly saved to the database.
+
+We'll start by creating a basic test structure with test data:
+
+```js
+// registerUser.test.js
+import { test, expect, vi } from "vitest";
+import { registerUser } from "./registerUser.js";
+import { Database } from "...";
+
+test("saves user record in database", () => {
+  const email = "iamfake@oregonstate.edu";
+  const password = "pa$$Word123";
+  registerUser(email, password);
+});
+```
+
+To verify that `registerUser()` correctly interacts with the database, we need to attach a spy to the `Database.save()` method. Vitest provides the `vi.spyOn()` method for this purpose:
+
+```diff lang="js"
+// registerUser.test.js
+import { test, expect, vi } from "vitest";
+import { registerUser } from "./registerUser.js";
+import { Database } from "...";
+
+test("saves user record in database", () => {
+  const email = "iamfake@oregonstate.edu";
+  const password = "pa$$Word123";
++  const spy = vi.spyOn(Database, "save");
+  registerUser(email, password);
+});
+```
+
+With the spy in place, we can now verify that `Database.save()` was called with [`.toHaveBeenCalled()`](https://vitest.dev/api/expect.html#tohavebeencalled):
+
+```js
+expect(spy).toHaveBeenCalled()
+```
+
+We can also verify the exact number of times the method was called with [`.toHaveBeenCalledTimes()`](https://vitest.dev/api/expect.html#tohavebeencalledtimes):
+
+```js
+expect(spy).toHaveBeenCalledTimes(1)
+```
+
+After completing our test, we should restore the original functionality with [`mockRestore()`](https://vitest.dev/api/mock.html#mockrestore) to avoid side effects in subsequent tests:
+
+```js
+spy.mockRestore()
+```
+
+It's worth noting that this spying approach requires us to incorporate implementation details into our test. Specifically, we need to reference the `Database.save()` dependency directly in our test code.
+
+While relying on implementation details in tests is generally undesirable, in this case it's necessary to verify the side effect (saving the user record). A fake database implementation would provide a better approach by removing the need to reference implementation details, which we'll explore later along with other best practices for test doubles.
+
+Here's the final example:
+
+```js
+// registerUser.test.js
+import { test, expect, vi } from "vitest";
+import { registerUser } from "./registerUser.js";
+import { Database } from "...";
+
+test("saves user record in database", () => {
+  const email = "iamfake@oregonstate.edu";
+  const password = "pa$$Word123";
+  const spy = vi.spyOn(Database, "save");
+
+  registerUser(email, password);
+
+  expect(spy).toHaveBeenCalled();
+  expect(spy).toHaveBeenCalledTimes(1); // alternative
+
+  spy.mockRestore();
+});
+```
+
+### Accessing Call Information from a Spy
+
+One powerful feature of spies is the ability to not only verify that functions are called, but also to access detailed information about those calls.
+
+When working with Vitest, the spy created by `vi.spyOn()` returns a mock function object that provides access to call information through its `.mock` property.
+
+The [`mock.calls`](https://vitest.dev/api/mock.html#mock-calls) array contains all arguments passed to the spied function on each invocation. If we assume the user record is passed as the first argument to `Database.save()`, we can access it like this:
+
+```js
+const userRecord = spy.mock.calls[0][0]
+```
+
+This syntax uses a double index because:
+
+- `calls` is an array where each element represents a separate function call
+- Each element within `calls` is itself an array of arguments passed to that call
+
+Therefore, `calls[0][0]` refers to the first argument of the first call to the spied function.
+
+For convenience, Vitest also provides [`mock.lastCall`](https://vitest.dev/api/mock.html#mock-lastcall) to access arguments from the most recent function call. Since our `Database.save()` function is only called once in our test, we could equivalently write:
+
+```js
+const userRecord = spy.mock.lastCall[0]
+```
+
+Let's use this capability to verify that the user's password is properly hashed before being saved to the database:
+
+```js
+// registerUser.test.js
+test("saves user record in database", () => {
+  const email = "iamfake@oregonstate.edu";
+  const password = "pa$$Word123";
+  const spy = vi.spyOn(Database, "save");
+
+  registerUser(email, password);
+
+  const userRecord = spy.mock.calls[0][0];
+
+  expect(userRecord).toMatchObject({
+    email: expect.stringContaining(email),
+    password: expect.not.stringContaining(password),
+  });
+
+  spy.mockRestore();
+});
+```
+
+This test uses two important assertion techniques:
+
+- The [`toMatchObject()`](https://vitest.dev/api/expect.html#tomatchobject) matcher verifies that an object contains specified properties with particular values. Here we're confirming the user record contains a password property with a value meeting our expectations.
+- The asymmetric matcher [`expect.not.stringContaining()`](https://vitest.dev/api/expect.html#expect-stringcontaining) verifies that the password field doesn't contain the original plain text, which is what we'd expect from properly hashed passwords.
+
+We can add more assertions to further verify proper password hashing:
+
+```js
+// Verify hash has correct length for bcrypt
+expect(userRecord.password).toHaveLength(60);
+
+// Verify hash has correct algorithm prefix
+expect(userRecord.password).toMatch(/^\$(2a|2b)\$/);
+```
+
+These additional assertions confirm the password hash has [the expected length (60 characters for bcrypt) and the correct prefix (`$2a$` or `$2n$`)](https://www.npmjs.com/package/bcrypt#hash-info), which indicates the specific hashing algorithm used.
+
+Vitest's mock function API provides many more capabilities for inspecting and controlling function behavior during tests. We'll explore additional features in upcoming examples.
+
+### Adding a Stub
+
+By default, spies created with `vi.spyOn()` continue to call the original function they're spying on. This means our previous tests were still executing the real `Database.save()` method.
+
+This behavior isn't ideal for our testing scenario. One of our main goals in mocking `Database.save()` is specifically to prevent calling the real implementation, which might require actual network communication with a database.
+
+#### Creating a Basic Stub
+
+Beyond just observing function calls, `vi.spyOn()` can also replace the original function with a stub that provides predefined behavior for testing purposes.
+
+After creating a spy, we can use [`mockImplementation()`](https://vitest.dev/api/mock.html#mockimplementation) to define custom behavior. This method accepts a function that will be **executed in place of the original**:
+
+```js
+spy.mockImplementation(() => {})
+```
+
+In our previous tests, this empty stub would work perfectly fine because we're only concerned with verifying that `Database.save()` was called, not with its actual behavior. The stub prevents the real database communication while still allowing us to track the function call.
+
+#### Using a Stub with Specific Behavior
+
+In some cases, we need stubs that exhibit specific behaviors to test certain code paths. For example, we might want to verify that our `registerUser()` function correctly handles database errors.
+
+Remember that `registerUser()` is designed to catch any errors thrown by `Database.save()` and return `null` in that case. Database errors could occur for various reasons (network failure, permission issues, etc.), but for testing purposes, we only need to confirm that `registerUser() `handles these errors appropriately.
+
+Here's a test that verifies this error-handling behavior:
+
+```js
+// registerUser.test.js
+test("returns null on database error", () => {
+  const email = "iamfake@oregonstate.edu";
+  const password = "pa$$Word123";
+  const spy = vi.spyOn(Database, "save");
+
+  spy.mockImplementation(() => {
+    throw new Error();
+  });
+
+  const response = registerUser(email, password);
+  expect(response).toBeNull();
+
+  spy.mockRestore();
+});
+```
+
+The stub implementation is intentionally simple--it only needs to throw an error to trigger the catch block in `registerUser()`. This straightforward approach is often all you need, as stubs should **focus solely on the specific behavior required by your test**.
+
+This technique allows us to test error handling without having to create actual error conditions in a real database system, demonstrating one of the key benefits of using test doubles.
+
+## Mocking the System clock
+
+Vitest provides several mocking mechanisms beyond those we've explored so far. Let's examine one particularly useful technique: [faking the system clock](https://vitest.dev/api/vi.html#fake-timers). This approach is valuable when testing components that rely on the current time as an indirect input.
+
+### A Time Display Application Example
+
+Consider a simple UI application that displays the current time with special formatting:
+
+- t exactly 12:00 AM, it displays "midnight"
+- At exactly 12:00 PM, it displays "noon"
+- At all other times, it displays the standard AM/PM time
+
+Here's the implementation:
+
+```html
+// currentTime.html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Current Time</title>
+    <script type="module" src="currentTime.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <div class="max-w-md mx-auto bg-white rounded-xl shadow-md p-6 m-6 text-center">
+    <p>The current time is</p>
+    <p class="text-3xl"><span id="time-span"></span></p>
+</div>
+  </body>
+</html>
+```
+
+```js
+// currentTime.js
+export function currentTime() {
+  const timeSpan = document.getElementById("time-span");
+  const currentTime = new Date();
+  const hours = currentTime.getHours();
+  const minutes = currentTime.getMinutes();
+
+  let timeString = "";
+  if (hours === 0 && minutes === 0) {
+    timeString = "midnight";
+  } else if (hours === 12 && minutes === 0) {
+    timeString = "noon";
+  } else if (hours === 0) {
+    timeString = `12:${minutes} AM`;
+  } else if (hours === 12) {
+    timeString = `12:${minutes} PM`;
+  } else if (hours > 12) {
+    timeString = `${hours % 12}:${minutes} PM`;
+  } else {
+    timeString = `${hours}:${minutes} AM`;
+  }
+
+  timeSpan.textContent = timeString;
+}
+document.addEventListener("DOMContentLoaded", currentTime);
+```
+
+Notice how the code uses the JavaScript `Date` class to obtain the current time from the system clock. By default, the `new Date()` constructor creates an object representing the current time based on the system clock.
+
+To properly test this application, we need to control the time rather than trying to schedule our tests to run at specific times (like midnight). Vitest's fake timers API allows us to precisely control the system clock for testing purposes.
+
+### Setting Up the Test Environment
+
+Since we're testing a DOM-based application, we first need to set up the appropriate testing environment:
+
+```shell
+npm install --save-dev jsdom @testing-library/dom @testing-library/jest-dom
+```
+
+Then we create our test file with the proper environment configuration:
+
+```js
+// currentTime.test.js
+/**
+ * @vitest-environment jsdom
+ */
+
+import fs from "fs";
+import path from "path";
+import { describe, beforeEach, test, expect, vi } from "vitest";
+import "@testing-library/jest-dom/vitest";
+import { currentTime } from "./currentTime.js";
+import { screen } from "@testing-library/dom";
+
+describe("Current Time Application", () => {
+  beforeEach(() => {
+    const htmlPath = path.resolve(__dirname, "./currentTime.html");
+    const htmlContent = fs.readFileSync(htmlPath, "utf-8");
+    document.body.innerHTML = htmlContent;
+  });
+});
+```
+
+### Implementing the Test with a Fake Clock
+
+Now we can create our test that uses Vitest's fake timers to control the system clock:
+
+```js
+// currentTime.test.js
+test("displays 'midnight' at 00:00", () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date(2024, 3, 16, 0, 0));
+  currentTime();
+  const timeSpan = screen.getByText("midnight");
+  expect(timeSpan).toBeInTheDocument();
+  vi.useRealTimers();
+});
+```
+
+In this test, we use [`vi.useFakeTimers()`](https://vitest.dev/api/vi.html#vi-usefaketimers) to enable fake timers, which allows us to control the system clock. The [`vi.setSystemTime()`](https://vitest.dev/api/vi.html#vi-setsystemtime) method sets the system clock to a specific date and time, in this case, April 16, 2024, at 00:00 (midnight).
+
+The last two arguments are hours and minutes, both set to 0. The month index 3 represents April since JavaScript month indices are 0-based.
+
+This controlled time is what the `new Date()` constructor in our application code will use, allowing us to predictably test time-dependent behavior without waiting for specific times of day.
+
+At the end of the test, we call [`vi.useRealTimers()`](https://vitest.dev/api/vi.html#vi-userealtimers) to restore the original system clock. This is important to ensure that subsequent tests run with the real system time.
+
+### Additional Time-Based Tests
+
+Using the same approach, we could create additional tests for other time conditions:
+
+```js
+// currentTime.test.js
+test("displays 'noon' at 12:00 PM", () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date(2024, 3, 16, 12, 0));
+  currentTime();
+  const timeSpan = screen.getByText("noon");
+  expect(timeSpan).toBeInTheDocument();
+  vi.useRealTimers();
+});
+
+test("displays regular time format at other times", () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date(2024, 3, 16, 15, 30));
+  currentTime();
+  const timeSpan = screen.getByText("3:30 PM");
+  expect(timeSpan).toBeInTheDocument();
+  vi.useRealTimers();
+});
+```
+
+By controlling the system clock, we can thoroughly test time-dependent functionality without the unpredictability of real-time testing.
+
+Note that we could setup test fixtures such as `beforeEach()` and `afterEach()` to avoid repeating the `vi.useFakeTimers()` and `vi.useRealTimers()` calls in each test. This would help keep our tests clean and focused on the specific behavior being tested.
+
+## Mocking Network Calls
+
+When testing applications that communicate with external services via network requests, we face significant challenges. Network operations can be unreliable, slow, and difficult to control during testing--making them perfect candidates for test doubles.
+
+### Why Mock Network Calls?
+
+Test doubles allow us to simulate network communication without making actual network requests during testing. This approach offers several benefits:
+
+- **Reliability**: Tests don't depend on external services being available
+- **Speed**: No waiting for actual network responses
+- **Predictability**: Responses can be precisely controlled
+
+Let's explore how to implement this approach by testing a GitHub repository search application.
+
+### The GitHub Search Application
+
+Our sample application allows users to search for GitHub repositories by:
+
+1. Entering a search query in a text field
+2. Submitting the form to search the [GitHub API](https://docs.github.com/en/rest)
+3. Displaying matching repositories in a list (as clickable URLs)
+
+Here's the implementation:
+
+```html
+// githubSearch.js
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Repository Search</title>
+    <script type="module" src="githubSearch.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <div class="max-w-md mx-auto bg-white rounded-xl shadow-md p-6 m-6">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6">GitHub Repository Search</h1>
+        <form id="search-form" class="mb-6">
+            <div class="flex flex-col mb-6">
+            <input placeholder="Search for a repository" id="query" name="query" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+            />
+        </div>
+            <button type="submit" class="w-full flex justify-center py-2 px-4 mb-6 border border-transparent rounded-md shadow-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+            >Search</button>
+        </form>
+        <ul id="results-list" class="flex flex-col gap-2 justify-center"></ul>
+    </body>
+</html>
+```
+
+```js
+// githubSearch.js
+function displaySearchResults(results) {
+  const resultsList = document.getElementById("results-list");
+  resultsList.innerHTML = "";
+  for (let i = 0; i < results.items.length; i++) {
+    const resultLink = document.createElement("a");
+    resultLink.href = results.items[i].html_url;
+    resultLink.textContent = results.items[i].full_name;
+    const resultElem = document.createElement("li");
+    resultElem.append(resultLink);
+    resultsList.append(resultElem);
+  }
+}
+
+export function setupSearchForm() {
+  const form = document.getElementById("search-form");
+  const queryInput = document.getElementById("query");
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const query = queryInput.value;
+    if (query) {
+      const response = await fetch(
+        `https://api.github.com/search/repositories?q=${query}`
+      );
+      const results = await response.json();
+      displaySearchResults(results);
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", setupSearchForm);
+```
+
+The application uses [GitHub's "search repositories" endpoint](https://docs.github.com/en/rest/search/search?apiVersion=2022-11-28#search-repositories):
+
+```
+https://api.github.com/search/repositories?q={query}
+```
+
+For example, searching for "vitest" would call:
+
+```
+https://api.github.com/search/repositories?q=vitest
+```
+
+The API returns [JSON data](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON) structured like this (abbreviated):
+
+```json
+{
+  "total_count": 7686,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 434708679,
+      "node_id": "R_kgDOGekgxw",
+      "name": "vitest",
+      "full_name": "vitest-dev/vitest",
+      "private": false,
+      "owner": { ... },
+      "html_url": "https://github.com/vitest-dev/vitest",
+      ...
+    },
+    ...
+  ]
+}
+```
+
+The `items` array contains matching repositories, each with properties like `full_name` and `html_url`.
+
+The key element in `githubSearch.js` is the [`fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) function, which makes the [HTTP request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/GET) to GitHub's API. After receiving the JSON response, it passes the results to a `displaySearchResults()` function.
+
+The `displaySearchResults()` function inserts `<li>` elements into the unordered list `<ul>` to display each repository from the items array, showing each repository's `full_name`.
+
+### Using Direct API Calls
+
+Before implementing a fake GitHub API, let's set up a basic test framework to verify our search application's rendering functionality. We'll start with a real network call approach, then transition to using test doubles.
+
+First, let's create a test file with the necessary DOM testing configuration:
+
+```js
+// githubSearch.test.js
+/**
+ * @vitest-environment jsdom
+ */
+
+import fs from "fs";
+import path from "path";
+import { describe, test, expect, beforeEach } from "vitest";
+import { screen } from "@testing-library/dom";
+import "@testing-library/jest-dom/vitest";
+import { userEvent } from "@testing-library/user-event";
+import { setupSearchForm } from "./githubSearch.js";
+
+describe("GitHub Repo Search Application", () => {
+  beforeEach(() => {
+    const htmlPath = path.resolve(__dirname, "./githubSearch.html");
+    const htmlContent = fs.readFileSync(htmlPath, "utf-8");
+    document.body.innerHTML = htmlContent;
+    setupSearchForm();
+  });
+});
+```
+
+Note that we're importing the User Event library, which allows us to simulate user interactions with the application. Install this dependency with:
+
+```
+npm install --save-dev @testing-library/user-event
+```
+
+Our test will:
+
+1. Render the application in the test environment
+2. Locate important UI elements
+3. Simulate user interactions (typing a query and clicking search)
+
+```js
+// githubSearch.test.js
+test("renders GitHub search results", async () => {
+  const queryInput = screen.getByPlaceholderText(/search/i);
+  const submitButton = screen.getByRole("button", { name: /search/i });
+
+  await userEvent.type(queryInput, "vitest");
+  await userEvent.click(submitButton);
+});
+```
+
+An important consideration is that the `fetch()` operation is asynchronous. When the user clicks the search button:
+
+1. The application makes a network request
+2. Waits for the response
+3. Processes the data
+4. Updates the DOM with search results
+
+This means we need to use special query functions that **wait** for elements to appear. The DOM Testing Library provides [`findBy` queries](https://testing-library.com/docs/dom-testing-library/api-async/#findby-queries) for this purpose. These functions:
+
+- Return promises that resolve when elements are found
+- Automatically retry until elements appear or a timeout is reached (default: 1000ms)
+- Fail the test if elements don't appear within the timeout period
+
+We can use `findAllByRole()` to *wait* for our search result list items:
+
+```diff lang="js"
+// githubSearch.test.js
+test("renders GitHub search results", async () => {
+  const queryInput = screen.getByPlaceholderText(/search/i);
+  const submitButton = screen.getByRole("button", { name: /search/i });
+
+  await userEvent.type(queryInput, "vitest");
+  await userEvent.click(submitButton);
+
++  const searchResults = await screen.findAllByRole("listitem");
++  expect(searchResults).not.toHaveLength(0);
++  expect(searchResults[0]).toHaveTextContent("vitest-dev/vitest");
+});
+```
+
+This test works but has a key limitation: it depends on a live network connection to the GitHub API. This introduces several problems:
+
+1. The test will fail if the network is unavailable
+2. Test results may vary based on API changes
+3. Tests run slower due to network latency
+4. GitHub may rate-limit excessive API requests
+
+In the next section, we'll explore how to replace this real network call with a test double to make our tests more reliable and predictable.
+
+### Using a Spy to Mock the Fetch API
+
+Instead of making a real network request, we can use a spy to intercept the `fetch()` call and return a predefined response. This allows us to simulate different scenarios without relying on the actual API.
+
+To do this, we can use `vi.spyOn()` to create a spy on the global `fetch` function. This will allow us to control its behavior during testing. This is similar to what we did with the `Database.save()` method in our earlier example.
+
+```js
+// githubSearch.test.js
+
+test("renders GitHub search results", async () => {
+  vi.spyOn(global, "fetch").mockResolvedValueOnce({
+    ok: true,
+    json: async () => mockSearchResults,
+  });
+
+  const queryInput = screen.getByPlaceholderText(/search/i);
+  const submitButton = screen.getByRole("button", { name: /search/i });
+
+  await userEvent.type(queryInput, "vitest");
+  await userEvent.click(submitButton);
+
+  expect(fetch).toHaveBeenCalledWith(
+    expect.stringMatching(/api\.github\.com\/search\/repositories\?q=vitest/)
+  );
+
+  const searchResults = await screen.findAllByRole("listitem");
+  expect(searchResults).toHaveLength(mockSearchResults.items.length);
+  expect(searchResults[0]).toHaveTextContent("vitest-dev/vitest");
+
+  vi.restoreAllMocks();
+});
+```
+
+In this test, we use `mockResolvedValueOnce()` to specify the response that the spy should return when `fetch()` is called. The `mockSearchResults` variable contains a mock response object that simulates the actual API response. 
+
+We could take the original response from the GitHub API and create a mock version of it, i.e., copy the JSON data returned by the manual API call in a `searchResults.json` file and import it into our test file.
+
+Using a spy allows us to verify that the `fetch()` function was called with the correct URL and parameters, while also controlling the response data. This makes our tests more reliable and faster since they don't depend on actual network communication.
+
+### Using Mock Service Worker (MSW)
+
+[Mock Service Worker (MSW)](https://mswjs.io/) offers a more sophisticated approach to handling network requests in tests compared to directly mocking the `fetch()` function.
+
+While we could use Vitest's `spyOn()` to stub the `fetch()` function as shown earlier, this approach has several limitations:
+
+- **Implementation Coupling**: Mocking `fetch()` directly ties our tests to implementation details, creating brittle tests that break when the underlying HTTP client changes. If we later switch from `fetch()` to Axios, Superagent, or another HTTP client, we'd need to refactor all our tests.
+- **Limited Simulation of HTTP Responses**: Direct mocks don't fully simulate the HTTP request/response cycle.
+
+MSW intercepts network requests at a higher level, creating a fake server that responds to requests regardless of which HTTP client makes them. This approach:
+
+- Keeps implementation details out of tests
+- Isolates the fake implementation within the MSW handlers
+- Works with any HTTP client your application might use
+
+[MSW integrates directly with Vitest.](https://vitest.dev/guide/mocking.html#requests)
+
+#### Setting Up MSW
+
+First, install MSW as a development dependency:
+
+```
+npm install --save-dev msw
+```
+
+Before configuring MSW, we need sample data to simulate GitHub API responses. The easiest approach is to save actual API responses:
+
+- Make a real request to the GitHub API: https://api.github.com/search/repositories?q=vitest
+- Save the JSON response to a file named `searchResults.json` in your test directory
+
+Import the necessary MSW components and your mock data:
+
+```js
+// githubSearch.msw.test.js
+import { afterAll, afterEach, beforeAll, test, expect } from "vitest";
+import { setupServer } from "msw/node";
+import { http, HttpResponse } from "msw";
+import searchResults from "./searchResults.json";
+```
+
+:::note[Understanding RESTful APIs]
+RESTful APIs operate on these key principles:
+
+- Resources are represented by URLs (like GitHub's search repositories endpoint)
+- Standard HTTP methods (GET, POST, PUT, DELETE) define operations on these resources
+- Clients send HTTP requests to these URLs, and servers return responses with data and status codes
+:::
+
+#### Creating a Fake GitHub API Server
+
+Set up an MSW server to intercept requests to the GitHub API:
+
+```js
+// githubSearch.msw.test.js
+export const restHandlers = [
+  http.get("https://api.github.com/search/repositories", ({ request }) => {
+    const url = new URL(request.url);
+    const query = url.searchParams.get("q");
+    if (query) {
+      return HttpResponse.json(searchResults);
+    }
+  }),
+];
+
+const server = setupServer(...restHandlers);
+```
+
+This code creates a handler that:
+
+- Intercepts GET requests to the GitHub search repositories endpoint
+- Returns a mocked HTTP response containing our saved JSON data
+
+#### Setting Up Our Tests
+
+Use Vitest's test lifecycle hooks to manage the server:
+
+```js
+// githubSearch.msw.test.js
+beforeAll(() => server.listen());
+
+afterAll(() => server.close());
+
+afterEach(() => server.resetHandlers());
+```
+
+Now your tests will use the fake server instead of calling the actual GitHub API. This allows for more reliable assertions based on your controlled mock data:
+
+```js
+// githubSearch.msw.test.js
+test("should return search results", async () => {
+  const response = await fetch(
+    "https://api.github.com/search/repositories?q=vitest"
+  );
+  const data = await response.json();
+
+  expect(data).toEqual(searchResults);
+});
+```
+
+You could extend these tests with additional assertions or even snapshot tests to verify that the application correctly renders results based on the data provided by your fake server.
+
+{/* TODO
+
+## Using Fake Implementations
+
+Coming Soon! */}
+
+## Best Practices
+
+When incorporating test doubles into our testing strategy, we must exercise caution. Overuse can lead to tests that are complex, brittle, and ultimately less effective. Here are key guidelines to follow when using test doubles:
+
+### Prefer Real Implementations When Possible
+
+Real implementations should be your first choice over test doubles. Tests using actual dependencies validate your system under conditions that closely match production environments, providing greater confidence that your code will work as intended after deployment.
+
+Excessive use of test doubles artificially isolates the system under test (SUT), increasing the risk that bugs will slip through your testing process. You might not correctly anticipate all the interactions between the SUT and its dependencies.
+
+Additionally, test doubles often require incorporating implementation details into your tests (such as verifying a stubbed function is called in a specific way), making tests more brittle and resistant to implementation changes.
+
+### Value Test Failures from Dependency Bugs
+
+When tests fail because of bugs in the SUT's real dependencies, this is actually beneficial. Such failures indicate problems that would affect your system in production, allowing you to catch issues before users encounter them--which is precisely the purpose of testing.
+
+Overreliance on test doubles can mask failures that would otherwise surface due to bugs in dependencies.
+
+### Use Test Doubles Primarily for Speed and Determinism
+
+The primary reasons to use test doubles should be to improve execution time and ensure test determinism:
+
+- If a dependency is fast and deterministic, generally avoid replacing it with a test double
+- Consider test doubles when real dependencies run too slowly or introduce nondeterminism
+
+Fast-running tests provide quick feedback during development, and avoiding flaky tests prevents wasted debugging time and maintains confidence in your test suite.
+
+### Choose Fakes Over Other Test Doubles
+
+When you do need a test double, prefer fakes over other types. Fakes behave most similarly to real implementations--ideally, the SUT shouldn't even detect it's interacting with a fake.
+
+For this reason, fakes should strive for fidelity to the real implementation they replace whenever possible.
+
+### Reserve Stubbing for Special Cases
+
+Use stubbing judiciously, primarily when you need to get the SUT into a state that's difficult to achieve otherwise. Common legitimate uses include:
+
+- Simulating error conditions
+- Providing specific return values (like timestamps) that are difficult to achieve with real implementations
+
+As a rule of thumb, each stub should directly relate to the test's assertions, which helps prevent overuse.
+
+### Limit Spies to Functions with Side Effects
+
+Spies should generally be used only for functions with side effects--those that send emails, save database records, write logs, etc. Spying can be valuable when you need to verify that these side effects were correctly executed.
+
+For functions without side effects that simply return information to the SUT, assertions about how these return values influence the SUT's behavior are usually sufficient.
 
 ## Additional Resources
 

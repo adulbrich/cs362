@@ -170,6 +170,33 @@ This tells the browser to treat the script as an ESM module, allowing you to use
 
 Again, the assignments will come with a `package.json` file that already has the `"type": "module"` line included, so you don't need to worry about this unless you are creating your own project from scratch.
 
+## Functions in JavaScript
+
+JavaScript is a functional programming language, which means that functions are first-class citizens. This means that you can pass functions as arguments to other functions, return functions from other functions, and assign functions to variables.
+
+Functions in JavaScript can be defined using the `function` keyword, or using [arrow function syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions). Here are some examples:
+
+```js
+function add(a, b) {
+  return a + b;
+};
+const add2 = (a, b) => {
+  return a * b;
+};
+```
+
+We'll often use the arrow function syntax in this course, as it is more concise and easier to read:
+
+```js
+() => expression;
+() => {
+  statements
+};
+(param1, paramN) => {
+  statements
+};
+```
+
 ## Modern Web Development
 
 The modern web development landscape is constantly evolving, with new tools, frameworks, and best practices emerging all the time. 
