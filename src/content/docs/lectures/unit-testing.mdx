@@ -74,7 +74,21 @@ A good testing framework should:
 
 In this class, we'll use [Vitest](https://vitest.dev/) as our testing framework. It has a Jest-compatible API (Jest is still the leader in the JavaScript testing space) and is designed to work seamlessly with Vite, a popular build tool for modern web applications. Vitest is also very fast, thanks to its use of native ESM (Jest only offers experimental support for ESM as of writing this) and parallel test execution.
 
-Other programming languages have their own testing frameworks, but as far as unit testing is concerned, the principles are the same. For example, in Python, you might use `unittest` or `pytest`, while in Java, you might use JUnit. The syntax and specific features may differ, but the underlying concepts remain consistent across languages and frameworks.
+:::note[What If I'm Not Doing Web Development?]
+Other programming languages have their own testing frameworks, but as far as unit testing is concerned, the principles are the same. Here's a non-exhaustive list:
+
+- [unittest](https://docs.python.org/3/library/unittest.html) or [pytest](https://docs.pytest.org/en/stable/) for Python
+- [JUnit](https://junit.org/) or [TestNG](https://testng.org/) for Java and Kotlin
+- [GoogleTest](https://github.com/google/googletest) for C++
+- [NUnit](https://nunit.org/) and [xUnit.net](https://xunit.net/) for C#
+- [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@2.0/manual/index.html) for the Unity Game Engine, integrates C#'s NUnit
+- [testing](https://go.dev/doc/tutorial/add-a-test) for Go
+- [PHPUnit](https://phpunit.de/index.html) for PHP
+- [Swift Testing](https://developer.apple.com/xcode/swift-testing/) for Swift (Xcode)
+- [cargo test](https://doc.rust-lang.org/cargo/commands/cargo-test.html) for Rust
+
+The syntax and specific features may differ, but the underlying concepts remain consistent across languages and frameworks.
+:::
 
 ### Prerequisites for Vitest
 

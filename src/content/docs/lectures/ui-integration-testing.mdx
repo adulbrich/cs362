@@ -5,8 +5,6 @@ sidebar:
   order: 5
 ---
 
-{/* TODO: This should probably be moved to after test doubles, as it is essentially mocking the environment. */}
-
 Integration testing plays a crucial role when developing UI-based applications, bridging the gap between unit tests and full end-to-end tests. We explore how to effectively implement integration tests for web applications.
 
 While we've previously focused on testing library code through a developer's perspective, UI-based applications (web and mobile apps) require a different testing approach. The key difference is in how we interact with the software:
@@ -33,6 +31,16 @@ While there are solutions such as [Storybook](https://storybook.js.org/) and [Ch
 These tests are broader than unit tests because they validate interactions between different parts of the application, yet more focused than full end-to-end tests.
 
 In this lecture, we'll integration testing specifically for client-side web applications, using testing based on general UI testing principles. We'll leverage [Vitest](https://vitest.dev/) and [Testing Library](https://testing-library.com/) to create our tests, which will be run in a browser-like environment using [jsdom](https://github.com/jsdom/jsdom). This allows us to simulate user interactions and validate the expected outcomes. These tests don't rely on a real browser, nor do they render the CSS styles, but they do provide a good approximation of how the UI behaves in a real environment.
+
+:::note[What If I'm Not Doing Web Development?]
+Other programming languages have tools that mock or simulate the UI environment without using a full browser or rendering engine, similar to how jsdom emulates a DOM for web testing. Here's a non-exhaustive list:
+
+- Mobile Emulators for Android ([Android Studio](https://developer.android.com/studio/run/emulator)) and iOS ([Xcode](https://developer.apple.com/documentation/xcode/running-your-app-in-simulator-or-on-a-device/))
+- [Qt Test](https://doc.qt.io/qt-6/qttest-index.html) Framework for C++ Desktop Apps
+- [Xvfb](https://x.org/releases/X11R7.7/doc/man/man1/Xvfb.1.xhtml) for Linux GUI Apps
+- [QEMU](https://www.qemu.org/) and [Renode](https://renode.io/) for Embedded Systems
+- [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@2.0/manual/index.html) and [Unreal Test Engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/testing-and-debugging-user-interfaces-in-unreal-engine) for Game Development
+:::
 
 ## Setting Up jsdom
 
