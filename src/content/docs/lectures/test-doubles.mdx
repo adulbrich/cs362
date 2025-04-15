@@ -843,11 +843,103 @@ test("should return search results", async () => {
 
 You could extend these tests with additional assertions or even snapshot tests to verify that the application correctly renders results based on the data provided by your fake server.
 
-{/* TODO
-
 ## Using Fake Implementations
 
-Coming Soon! */}
+In addition to using spies and stubs, we can also create **fakes**--test doubles that provide a simplified implementation of a real component. Fakes are particularly useful when we want to simulate specific behaviors or interactions without relying on the actual implementation, for example when the real implementation is complex, resource intensive, or time-consuming to set up.
+
+We have different options for creating fakes, depending on the complexity of the component we're replacing. 
+
+Let's revisit our initial example of an app interacting with a database, storing the email and hashed password of a user. The real implementation of the database might involve complex logic, network communication, and error handling. It might use a real database like MySQL or MongoDB, which can be slow and difficult to set up for testing. 
+
+Because the behavior we want to test is relatively simple (storing a user record), we can create a fake implementation of the database that simulates the behavior we need without the overhead of a real database. We could create a simple object that stores user records in memory, or even use a local database to closely mimic the real database behavior.
+
+### Module Substitution with `vi.mock()`
+
+Vitest provides a powerful module mocking feature that allows us to replace entire modules with our own implementations. This is particularly useful when we want to create fakes for complex modules or libraries.
+
+To create a fake implementation of the `Database` module, we can use [`vi.mock()`](https://vitest.dev/api/vi.html#vi-mock) to replace the entire module with our own implementation. This allows us to define custom behavior for the module's functions, making it easy to simulate different scenarios. We can also specify return values, throw errors, or track calls to the mocked functions using `vi.fn()`, providing a flexible way to control the behavior of our dependencies during testing. 
+
+Here's an example of how to create a fake implementation of the `Database` module using `vi.mock()`:
+
+```js
+// registerUser.test.js
+import { Database } from "./database.js";
+
+vi.mock("./database.js", () => {
+  return {
+    Database: {
+      _data: {},
+      _idCounter: 1,
+      save: vi.fn((record) => {
+        const id = Database._idCounter++;
+        Database._data[id] = { ...record, id };
+        return id;
+      }),
+      reset: vi.fn(() => {
+        Database._data = {};
+        Database._idCounter = 1;
+      }),
+    },
+  };
+});
+```
+
+We include a `reset()` method to clear the fake database between tests, ensuring that each test starts with a clean slate. This is important to avoid test pollution and ensure that tests are independent of each other.
+
+Our test fixture will then look like this:
+
+```js
+// registerUser.test.js
+beforeEach(() => {
+  Database.reset();
+  vi.clearAllMocks();
+});
+```
+
+With this, instead of calling the real implementation of `Database.save()`, our tests will call the fake implementation we defined. This allows us to simulate different scenarios without relying on the actual database, making our tests faster and more reliable.
+
+### Dependency Injection
+
+In software engineering, dependency injection is a design pattern that allows a class to receive its dependencies from an external source rather than creating them itself. This promotes loose coupling and enhances testability, as dependencies can be easily replaced with test doubles during testing.
+
+By using dependency injection, we can provide our components with the necessary dependencies without hardcoding them, making it easier to swap out implementations for testing purposes.
+
+This means that we need to change our implementation to accept the `Database` module as a parameter, allowing us to pass in either the real implementation or a fake implementation during testing.
+Here's an example of how to implement dependency injection in our `registerUser()` function:
+
+```js
+// registerUser.js
+import { Database as sqlite } from "./database.js";
+export function registerUser(email, password, , db = sqlite) {
+  const record = {
+    email: email,
+    password: bcrypt.hashSync(password, 8),
+  };
+  try {
+    const userId = Database.save(record);
+    return userId;
+  } catch {
+    return null;
+  }
+}
+```
+
+In this example, we added a third parameter to the `registerUser()` function that defaults to the real `Database` implementation. This allows us to pass in a fake implementation during testing without modifying the original code.
+
+```js
+// registerUser.test.js
+import { Database as FakeDatabase } from "./inMemoryDatabase.js";
+
+// ...
+
+test("saves user record in database", () => {
+  // ...
+  registerUser(email, password, FakeDatabase);
+  // ...
+});
+```
+
+This approach allows us to easily swap out the real implementation for a fake implementation during testing, making our tests faster and more reliable. It also promotes loose coupling between components, making it easier to maintain and extend our code in the future.
 
 ## Best Practices
 
@@ -901,3 +993,5 @@ For functions without side effects that simply return information to the SUT, as
 
 - [Test Double](http://xunitpatterns.com/Test%20Double.html) on xUnitPatterns.com
 - [Techniques for Using Test Doubles](https://abseil.io/resources/swe-book/html/ch13.html#techniques_for_using_test_doubles) in Software Engineering at Google
+- [Test Doubles: The Difference Between Stubs and Mocks](https://womanonrails.com/test-doubles) on WomanOnRails.com
+- [Testing in Go: Test Doubles by Example](https://ieftimov.com/posts/testing-in-go-test-doubles-by-example/) by Ilija Eftimov
