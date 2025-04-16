@@ -6,4 +6,103 @@ sidebar:
   order: 7
 ---
 
+End-to-end testing is crucial for verifying that complete software systems function correctly from the user's perspective. Let me explain this important testing approach in detail.
 
+## What are End-to-End Tests?
+
+While unit tests validate individual code components and integration tests verify how small groups of components work together, **end-to-end (E2E) tests** evaluate entire software systems as they would function in production environments.
+
+E2E tests run a complete application (or a substantial portion of it) in conditions that closely resemble real-world usage, automatically interacting with the system to validate its behavior across interconnected components.
+
+### How E2E Tests Work
+
+For applications with graphical interfaces, E2E testing employs automated processes that mimic human interactions—clicking buttons, entering text, scrolling through pages—and verifies that each action produces the expected outcome.
+
+A key characteristic of E2E testing is its minimal use of test doubles. Unlike smaller test types, E2E tests typically interact with all real dependencies, including those involving network communication or other resource-intensive operations that would normally be mocked in unit or integration tests.
+
+### Cost vs. Benefit Considerations
+
+Due to their comprehensive nature, E2E tests are:
+
+- More expensive to develop and maintain
+- Slower to execute than other test types
+- Typically fewer in number within a test suite
+
+For these reasons, E2E tests are often strategically focused on validating critical user workflows or key business processes rather than attempting to cover every possible interaction.
+
+### E2E Testing for Web Applications
+
+In our course, we'll explore E2E testing using [Playwright](https://playwright.dev/), a powerful tool for automating browser-based testing. Playwright will:
+
+1. Launch real browsers (Chromium-based, Firefox, WebKit-based)
+2. Programmatically interact with your web application
+3. Execute predefined test scenarios
+4. Verify application responses using assertions
+5. Provide detailed reports of test outcomes
+
+Playwright supports not only JavaScript, but also TypeScript, Python, Java, and C#, making it a *versatile* choice for E2E testing across various programming languages. It is cross-platform (Windows, macOS, Linux) and can be used for both web and mobile applications.
+
+This approach allows us to validate complete user journeys through our applications, ensuring they function correctly from start to finish in realistic conditions.
+
+There are other popular E2E testing frameworks, such as [WebDriverIO](https://webdriver.io/), [Cypress](https://www.cypress.io/), and [Selenium](https://www.selenium.dev/), but Playwright stands out for its speed, reliability, and ease of use.
+
+Playwright and WebDriverIO integrate nicely with Vitest.
+
+## Running an Application for E2E Testing 
+
+Before diving into how to use Playwright for end-to-end testing, it's important to understand how to properly configure your application for testing with this tool.
+
+### Setting Up Your Application for E2E Testing
+
+Playwright is designed for end-to-end testing web applications and expects the application to be running on a server during tests. This matches the production environment where web applications operate through servers rather than as local files.
+
+### Starting Your Application Server
+
+For Playwright to interact with your web application, your application server needs to be running. That means you need to first build then preview your build. All frameworks operate a little differently, but the general idea is the same.
+For example, if you're using a framework like React, Vue, or Angular, you would typically run a build command like:
+
+```bash
+npm run build
+```
+
+Then you would start a local server to serve the built files. This is often done with commands such as:
+
+```bash
+npm run serve
+npm run preview
+npm run start
+```
+
+Check your `package.json` file for the exact command to start your server. 
+
+
+### Testing Static Web Applications
+
+If your application consists solely of HTML, CSS, and client-side JavaScript, you can use a simple static server to serve your files. We've done that in previous lecture with the `http-server` package (but others exist, such as `serve`).
+
+### Accessing Your Application
+
+To test your web application, Playwright needs the URL where your application is running. Most development servers, including serve, will display the application URL when starting up (typically something like http://localhost:3000).
+
+In all Playwright test scenarios, you'll need to know this URL to navigate to your application at the beginning of your tests.
+
+### Best Practices
+
+When setting up your testing workflow:
+
+1. Ensure your application server starts reliably
+2. Configure a consistent port for easier test automation
+3. Consider using a dedicated test environment or database
+4. Document the startup procedure for other team members
+
+This server-based setup ensures that your Playwright tests interact with your application in a manner that closely resembles how real users would experience it in production.
+
+Note that Playwright allows you to configure these steps in your test scripts, so you can automate the process of starting your server and running your tests together. This is particularly useful for continuous integration (CI) environments where you want to run tests automatically whenever code changes are made.
+
+## Installing and Setting Up Playwright
+
+Coming Soon!
+
+## Writing Our First Playwright Test
+
+Coming Soon!
