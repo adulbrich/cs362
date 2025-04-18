@@ -7,6 +7,7 @@ lecture_topics=(
     "unit-testing"
     "test-driven-development"
     "ui-integration-testing"
+    "test-doubles"
 )
 
 assignments=(

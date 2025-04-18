@@ -101,7 +101,60 @@ Note that Playwright allows you to configure these steps in your test scripts, s
 
 ## Installing and Setting Up Playwright
 
-Coming Soon!
+To [install Playwright](https://playwright.dev/docs/intro), you can use the following command:
+
+```bash
+npm init playwright@latest
+```
+
+It will ask you a series of questions to set up your project. You can choose the default options or customize them according to your needs. It also creates a `playwright.config.ts` file, which contains the configuration for your Playwright tests.
+
+If your project uses TypeScript, using Playwright with TypeScript is straightforward. The Playwright package includes TypeScript definitions, so you can write your tests in TypeScript without any additional setup.
+
+Playwright expects your tests to be in a specific folder. By default, it will look for tests in the `tests` folder, which might be used by another testing framework. It will then propose to create a new folder called `e2e` for your Playwright tests. 
+
+Playwright also provides a default GitHub Actions workflow file to run your tests in a CI environment. We'll discuss CI/CD and GitHub Actions in a later lecture, but for now, you can ignore this file if you're not using GitHub Actions.
+
+Finally you have the option to install the three main browsers that Playwright supports: Chromium, Firefox, and WebKit. These are the browsers that Playwright will use to run your tests. You can choose to install all three or just the ones you need.
+
+You can change the settings by modifying the `playwright.config.ts` file.
+
+:::caution[ENGR Servers]
+I haven't tested Playwright on the ENGR servers yet, but I do not expect it to work right away (if at all). Please use an alternative environment (local preferred).
+:::
+
+To run Playwright tests, you can use the following command:
+
+```bash
+npx playwright test
+```
+This command will run all the tests in the `tests` folder (or the folder you specified during setup) and generate a report of the test results.
+
+You can use the Playwright UI mode with:
+
+```bash
+npx playwright test --ui
+```
+
+The UI mode is particularly helpful as it provides a visual interface where you can:
+
+- See all your test files
+- Run tests individually or in groups
+- View test results with screenshots
+- Debug tests interactively with time-travel debugging
+
+You can add one or more scripts to your `package.json` file to make it easier to run your tests. For example, you can add the following scripts:
+
+```json
+{
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  }
+}
+```
+
+This way, you can differentiate between different test frameworks and run them separately. 
 
 ## Writing Our First Playwright Test
 
