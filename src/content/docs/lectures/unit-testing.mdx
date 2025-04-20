@@ -623,7 +623,7 @@ It does not mean that a little bit of DRYness is bad. Let's explore a few exampl
 
 A **test fixture** is a piece of code that sets up the initial state for a test. This can include creating objects, setting up mock data, or configuring the environment. Test fixtures are useful for reducing duplication in tests and making them **easier** to read and understand.
 
-Vitest provides a `beforeEach()` function that allows you to set up a fixture before each test. This is useful for creating a common setup for multiple tests.
+Vitest provides a `beforeEach()` function or **hook** that allows you to set up a fixture before each test. This is useful for creating a common setup for multiple tests.
 
 Let's refactor some of our `Calculator` tests to use a fixture:
 
@@ -652,11 +652,11 @@ describe("multiplication operation", () => {
 });
 ```
 
-Here we are using `beforeEach()` to create a new instance of the `Calculator` class before each test. This reduces duplication and makes the tests easier to read and understand. 
+Here we are using the `beforeEach()` hook to create a new instance of the `Calculator` class before each test. This reduces duplication and makes the tests easier to read and understand. 
 
-`afterEach()` is a similar function that runs after each test. This can be useful for cleaning up any resources or state that were created during the test. 
+`afterEach()` is a similar hook that runs after each test. This can be useful for cleaning up any resources or state that were created during the test. 
 
-We could also use `beforeAll()`/`afterAll()` to create/delete the fixture once for all tests in the group. This is useful when the fixture is expensive to create and doesn't change between tests. 
+We could also use the `beforeAll()`/`afterAll()` hooks to create/delete the fixture once for all tests in the group. This is useful when the fixture is expensive to create and doesn't change between tests. 
 
 In the case of our `Calculator`, we could argue that it's better to use `beforeEach()`. On the one hand, creating a new calculator is fast, and on the other hand, if the `Calculator` class is later modified to maintain internal state between operations, using `beforeEach()` ensures tests remain isolated and don't interfere with each other.
 

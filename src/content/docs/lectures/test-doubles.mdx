@@ -482,7 +482,7 @@ test("displays regular time format at other times", () => {
 
 By controlling the system clock, we can thoroughly test time-dependent functionality without the unpredictability of real-time testing.
 
-Note that we could setup test fixtures such as `beforeEach()` and `afterEach()` to avoid repeating the `vi.useFakeTimers()` and `vi.useRealTimers()` calls in each test. This would help keep our tests clean and focused on the specific behavior being tested.
+Note that we could setup test fixtures with `beforeEach()` and `afterEach()` to avoid repeating the `vi.useFakeTimers()` and `vi.useRealTimers()` calls in each test. This would help keep our tests clean and focused on the specific behavior being tested.
 
 ## Mocking Network Calls
 

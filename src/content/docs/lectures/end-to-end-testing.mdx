@@ -59,7 +59,8 @@ Playwright is designed for end-to-end testing web applications and expects the a
 ### Starting Your Application Server
 
 For Playwright to interact with your web application, your application server needs to be running. That means you need to first build then preview your build. All frameworks operate a little differently, but the general idea is the same.
-For example, if you're using a framework like React, Vue, or Angular, you would typically run a build command like:
+
+For example, if you're using a framework like React, Vue, or Angular, you would typically run a build command like (refer to your framework's documentation):
 
 ```bash
 npm run build
@@ -68,13 +69,11 @@ npm run build
 Then you would start a local server to serve the built files. This is often done with commands such as:
 
 ```bash
-npm run serve
 npm run preview
 npm run start
 ```
 
-Check your `package.json` file for the exact command to start your server. 
-
+Check your `package.json` file for the exact commands to build and start your server. 
 
 ### Testing Static Web Applications
 
@@ -82,7 +81,7 @@ If your application consists solely of HTML, CSS, and client-side JavaScript, yo
 
 ### Accessing Your Application
 
-To test your web application, Playwright needs the URL where your application is running. Most development servers, including serve, will display the application URL when starting up (typically something like http://localhost:3000).
+To test your web application, Playwright needs the URL where your application is running. Most development or preview servers will display the application URL when starting up (typically something like http://localhost:3000).
 
 In all Playwright test scenarios, you'll need to know this URL to navigate to your application at the beginning of your tests.
 
@@ -115,12 +114,12 @@ Playwright expects your tests to be in a specific folder. By default, it will lo
 
 Playwright also provides a default GitHub Actions workflow file to run your tests in a CI environment. We'll discuss CI/CD and GitHub Actions in a later lecture, but for now, you can ignore this file if you're not using GitHub Actions.
 
-Finally you have the option to install the three main browsers that Playwright supports: Chromium, Firefox, and WebKit. These are the browsers that Playwright will use to run your tests. You can choose to install all three or just the ones you need.
+Finally you have the option to install the three main browser engines that Playwright supports: Chromium, Firefox, and WebKit. These are the browser engines that Playwright will use to run your tests. You can choose to install all three or just the ones you need. 
 
-You can change the settings by modifying the `playwright.config.ts` file.
+You can [change the test configuration](https://playwright.dev/docs/test-configuration) by modifying the `playwright.config.ts` file.
 
 :::caution[ENGR Servers]
-I haven't tested Playwright on the ENGR servers yet, but I do not expect it to work right away (if at all). Please use an alternative environment (local preferred).
+I haven't tested Playwright on the ENGR servers yet, but I do not expect it to work right away (if at all). Please use an alternative environment for now (local is preferred).
 :::
 
 To run Playwright tests, you can use the following command:
@@ -128,9 +127,10 @@ To run Playwright tests, you can use the following command:
 ```bash
 npx playwright test
 ```
+
 This command will run all the tests in the `tests` folder (or the folder you specified during setup) and generate a report of the test results.
 
-You can use the Playwright UI mode with:
+You can use the [Playwright UI Mode](https://playwright.dev/docs/test-ui-mode) with:
 
 ```bash
 npx playwright test --ui
@@ -156,6 +156,57 @@ You can add one or more scripts to your `package.json` file to make it easier to
 
 This way, you can differentiate between different test frameworks and run them separately. 
 
+If you want to automatically setup a development server before running your tests, you can add the [`webserver` field](https://playwright.dev/docs/test-webserver) to your `playwright.config.ts` file. This will allow Playwright to start your server before running the tests and stop it afterwards.
+
+```ts
+// playwright.config.ts
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  // ... other config options
+  webServer: {
+    command: 'npm run preview', // command you use to start your server
+    url: 'http://localhost:4173/',
+  },
+});
+```
+
+Note that by default Playwright favors TypeScript (`.ts`) for files. TypeScript is a superset of JavaScript that adds static typing, which can help catch errors at compile time rather than runtime. This is particularly useful for larger projects where type safety can prevent many common bugs.
+
 ## Writing Our First Playwright Test
 
-Coming Soon!
+Up to now, we've used the `.test.` file extension for our tests. Playwright uses the `.spec.` file extension in their documentation (also supported by Vitest, as you might remember). It emphasizes that tests are **specifications** of how the application should behave, not just arbitrary checks. Using `.spec.` reflects a mindset rooted in **Behavior-Driven Development (BDD)**, where tests are written to describe the behavior of the system in a human-readable, declarative way.
+
+Let's write our first Playwright test. Create a new file called `todo.spec.js` in the `tests` folder. 
+
+```js
+// tests/todo.spec.js
+import { test, expect } from '@playwright/test';
+
+test('has title', async ({ page }) => {
+	await page.goto('http://localhost:4173/');
+
+	// Expect a title "to contain" a substring.
+	await expect(page).toHaveTitle(/Todo App/);
+});
+```
+
+There's a lot going on in this test, so let's break it down:
+
+- Similarly to other test frameworks such as Vitest,, the `import` statement imports the `test` and `expect` functions from the Playwright library. These functions are used to define tests and make assertions, respectively.
+- The `test` function defines a test case. It takes two arguments: a string describing the test and an asynchronous function that contains the test logic.
+- The function passed to `test` is asynchronous because the framework interacts with web browsers, which involves inherently asynchronous operations such as navigating to pages, interacting with elements, and waiting for network requests or DOM changes.
+- The `page` object is a built-in test fixture provided by Playwright. It represents a new browser page that is created for each test. 
+- The `page.goto` method navigates to the specified URL. In this case, it opens the URL of our application.
+- The `expect` function is used to make assertions about the state of the application. In this case, it checks that the page title contains the substring "Todo App". This is a common way to verify that the correct page has loaded and that the application is functioning as expected.
+- The `toHaveTitle` method is a Playwright-specific assertion that checks the title of the page. It uses a regular expression to match the title, allowing for some flexibility in the expected value.
+
+Note how similar this is to the Vitest tests we've written before. The main difference is that Playwright provides a `page` object that allows us to interact with the browser and the application.
+
+
+
+
+{/* TODO
+- https://playwright.dev/docs/test-fixtures incl. built-in like page
+- https://playwright.dev/docs/browser-contexts
+-  */}
