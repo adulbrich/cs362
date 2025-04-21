@@ -8,6 +8,7 @@ lecture_topics=(
     "test-driven-development"
     "ui-integration-testing"
     "test-doubles"
+    "end-to-end-testing"
 )
 
 assignments=(
