@@ -185,8 +185,8 @@ flowchart TD
   end
   
   Test -->|"1 - Creates"| Dummy
-  Test -->|"2 - Passes dummy to"| SUT
-  SUT -->|"3 - Receives but doesn't use"| Dummy
+  Test -->|"2 - Passes dummy"| SUT
+  Dummy -.->|"3 - Satifies requirements but no impact on outcome"| SUT
   SUT -->|"4 - Returns result"| Test
   
   classDef primary fill:#d2f5ff,stroke:#0066cc,stroke-width:2px
