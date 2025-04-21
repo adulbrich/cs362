@@ -7,7 +7,7 @@ sidebar:
 
 import Mermaid from "../../../components/Mermaid.astro";
 
-End-to-end testing is crucial for verifying that complete software systems function correctly from the user's perspective. Let me explain this important testing approach in detail.
+End-to-end testing is crucial for verifying that complete software systems function correctly from the user's perspective.
 
 ## What are End-to-End Tests?
 
@@ -35,7 +35,7 @@ For these reasons, E2E tests are often strategically focused on validating criti
 
 In our course, we'll explore E2E testing using [Playwright](https://playwright.dev/), a powerful tool for automating browser-based testing. Playwright will:
 
-1. Launch real browsers (Chromium-based, Firefox, WebKit-based)
+1. Launch real browsers (Chromium, Firefox, or WebKit-based)
 2. Programmatically interact with your web application
 3. Execute predefined test scenarios
 4. Verify application responses using assertions
@@ -665,7 +665,19 @@ You can install new browsers using:
 npx playwright install
 ```
 
+## Additional Playwright Features
+
+- [Emulation](https://playwright.dev/docs/emulation) allows you to simulate different devices, network conditions, geolocation settings, and many other environmental factors. This is useful for testing how your application behaves under different conditions.
+- [Clock](https://playwright.dev/docs/clock) allows you to control the passage of time in your tests (i.e., stubbing). This is useful for testing time-dependent features, such as animations, timeouts, and scheduled tasks.
+- You can record [videos](https://playwright.dev/docs/videos) of your tests, which can be helpful for debugging and understanding test failures. Playwright can record videos of the entire test run or just specific parts of it.
+- You can enable [retries](https://playwright.dev/docs/test-retries) for your tests. This is useful for flaky tests that may fail intermittently due to network issues or other factors. Playwright will automatically retry failed tests a specified number of times before marking them as failed.
+- Playwright's [Mock APIs](https://playwright.dev/docs/mock) allow you to intercept and modify network requests and responses.
+- Finally, we can setup [Continuous Integration](https://playwright.dev/docs/ci-intro) to run our tests automatically whenever we push changes to our repository. This is useful for continuous integration and deployment (CI/CD) workflows. This will be covered in a later lecture.
+
 {/* ## Mocking and Faking */}
 
 {/* https://playwright.dev/docs/clock */}
 {/* https://playwright.dev/docs/mock */}
+
+{/* Multiple web servers */}
+{/* https://playwright.dev/docs/test-webserver#multiple-web-servers */}
