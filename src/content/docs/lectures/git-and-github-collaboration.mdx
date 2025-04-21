@@ -1,0 +1,634 @@
+---
+title: Git and GitHub for Collaboration
+description: TODO
+draft: true
+sidebar:
+  order: 8
+---
+
+import Mermaid from "../../../components/Mermaid.astro";
+
+We've already explored how to use Git and GitHub from an individual perspective, covering the most common workflows for personal projects. However, the true power of Git and GitHub emerges when teams collaborate on shared code.
+
+## The Challenge of Team Collaboration
+
+While Git and GitHub facilitate teamwork, successful collaboration requires careful coordination. Each developer must:
+
+- Stay aware of changes made by teammates
+- Ensure their contributions integrate smoothly with the existing codebase
+- Avoid accidentally overwriting or conflicting with others' work
+
+Without proper coordination, developers can unintentionally break the shared codebase by introducing incompatible changes or undoing another's work.
+
+Teams typically adopt specific workflows to help members collaborate effectively. An ideal team workflow should:
+
+- Keep everyone informed about ongoing development efforts
+- Verify that new code integrates properly with the existing codebase
+- Provide clear processes for contribution and review
+
+One of the most popular team-based approaches is the [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow) (also called the [feature branch workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)). This straightforward workflow has gained popularity due to its simplicity and effectiveness.
+
+:::note[Git Flow?]
+[GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) is a branching model for Git created by [Vincent Driessen](https://nvie.com/about/) in 2010 that defines a strict branching structure designed around project releases.
+
+It has two main branches:
+
+- `main` (or master): contains production-ready code
+- `develop`: integration branch for features
+
+And a few supporting branches:
+
+- `feature-*`: for new features (branched from `develop`)
+- `release-*`: for preparing releases (branched from `develop`)
+- `hotfix-*`: for urgent production fixes (branched from `main`)
+
+GitFlow has fallen out of favor primarily due to its complexity and poor alignment with modern development practices. The multiple long-lived branches create overhead that slows down development cycles, while the structured release process doesn't mesh well with continuous deployment approaches. Many teams now prefer simpler alternatives like GitHub Flow that support faster iteration cycles and more frequent releases.
+
+Development practices have shifted toward continuous integration and deployment, making GitFlow's elaborate branching strategy feel unnecessarily cumbersome for most web and cloud applications. While it remains useful for teams managing versioned software releases, its rigid structure has proven too heavyweight for the rapid pace of modern software development.
+:::
+
+## The GitHub Flow
+
+The GitHub flow is a streamlined workflow designed for team collaboration using Git **branches** and GitHub **pull requests**. This approach effectively:
+
+- Isolates each developer's work to prevent code conflicts
+- Creates visibility across the team about ongoing development
+- Establishes a code review process that ensures quality before code reaches production
+
+Here's an overview of the workflow. We'll dig in deeper into each step in the following sections.
+
+1. The `main` branch represents production code
+    - code in the `main` branch should always be deployable
+    - all changes to the `main` branch should be made through pull requests
+    - the `main` branch should be protected to prevent direct pushes
+2. Developers create a new branch for each task
+    - branch off from `main` to work on features, fixes, or improvements
+    - branch names should be descriptive and follow a consistent naming convention
+3. Developers make changes in their branches
+    - work on the task in isolation, committing changes to the branch
+    - keep commits small and focused on a single change or feature
+    - write clear commit messages that explain the purpose of each change
+    - use `git pull` to keep the branch up to date with `main`
+    - push changes to the remote branch on GitHub
+4. Open a pull request when ready for review or production
+    - when the branch is ready for review, open a pull request on GitHub
+    - provide a clear description of the changes and their purpose
+    - tag relevant team members for review
+5. Review and discuss
+    - team members provide feedback in the pull request
+    - you respond to feedback by making changes or explaining your decisions
+6. Test thoroughly
+    - all changes should pass automated tests
+    - when possible, team members should manually test the changes
+7. Merge after approval
+    - after sufficient review and approval from teammates, merge your branch into `main`
+    - resolve any merge conflicts that arise
+    - ensure the code is up to date with `main` before merging
+    - squash commits if necessary to keep the commit history clean
+8. Deploy changes
+    - once merged, deploy the changes to production
+    - ensure the deployment process is automated and reliable
+    - monitor the deployment for any issues or bugs
+
+{/* TODO: change diagram by a normal TD one to illustrate steps above */}
+
+<Mermaid showForPrint="true">
+```
+flowchart TD
+    B[main branch] --> C[Create feature branch]
+    C --> D[Make changes in feature branch]
+    D -->|"When ready"| E[Open/Update Pull Request]
+    E --> F[Review and discuss]
+    F -->|"Changes needed"| D
+    F -->|"Approved"| G[Test thoroughly]
+    G -->|"Tests fail"| D
+    G -->|"Tests pass"| H[Merge to main]
+    H --> I[Deploy changes]
+    B -.pull from main.-> D
+```
+</Mermaid>
+
+## Understanding Git Branches
+
+Git's core purpose is to store a series of snapshots (commits) of your project over time, creating a **commit history**. Without branching, this history is linear—just one commit after another in the main branch:
+
+<Mermaid showForPrint="true">
+```
+gitGraph
+  commit id: "1"
+  commit id: "2"
+  commit id: "3"
+  commit id: "4"
+  commit id: "5"
+```
+</Mermaid>
+
+Branches allow the commit history to diverge into parallel paths, each with its own unique commits:
+
+<Mermaid showForPrint="true">
+```
+gitGraph
+  commit
+  commit
+  branch feature1
+  checkout feature1
+  commit
+  commit
+  checkout main
+  commit
+  branch feature2
+  checkout feature2
+  commit
+  checkout feature1
+  commit
+  commit
+  checkout feature2
+  commit
+  commit
+  checkout main 
+  commit
+```
+</Mermaid>
+
+Key Branch Concepts:
+
+- Each new branch must start from an existing commit
+- Up to the starting commit, branches share history
+- After the starting point, branch histories diverge
+
+For example, in the diagram above, the `feature1` branch was created from the `main` branch at commit `1-*`. Both branches share commits `0-*` and `1-*` but their histories differ after that point.
+
+Branches create isolated environments where developers can work without affecting others. This isolation:
+
+- Prevents code conflicts between team members
+- Allows experimentation without risking the main codebase
+- Enables multiple features to be developed simultaneously
+- Facilitates organized code reviews before integration
+
+This branch-based workflow ensures that changes are properly validated before they affect the production environment.
+
+### Working with Branches
+
+Let's explore how to work with branches in a practical scenario.
+
+Imagine we're working in a repository with a single main branch containing a few commits:
+
+```sh
+git log --oneline
+```
+
+```plaintext
+ed1523e (HEAD -> main) Add document title
+39cfcb0 Add Hello, World header
+5c19c53 Create index.html
+```
+
+We can list all branches with:
+
+```sh
+git branch
+```
+
+```plaintext
+* main
+```
+
+#### Task: Adding CSS
+
+We've been assigned to add CSS to the application. Following good practices, we'll create a new branch for this work:
+
+```sh
+git branch add-css
+```
+
+Checking our branches shows:
+
+
+```sh
+git branch
+```
+
+```plaintext
+  add-css
+* main
+```
+
+The asterisk (`*`) indicates that `main` is still our active branch. To work in our new branch, we need to switch to it:
+
+```sh
+git checkout add-css
+```
+
+:::tip[Git Checkout]
+You can create and switch to a new branch in one command with:
+
+```sh
+git checkout -b add-css
+```
+:::
+
+At this point, both branches point to the same commit.
+
+Let's modify the HTML to link a stylesheet and create the empty CSS file:
+
+```diff lang="html"
+// index.html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++    <link rel="stylesheet" href="style.css">
+    <title>Greetings</title>
+  </head>
+  <body>
+    <h1>Hello, World!</h1>
+  </body>
+</html>
+```
+
+After creating these files, let's commit our changes:
+
+```sh
+git add style.css index.html
+git commit -m "Create style.css and link it to HTML"
+```
+
+Looking at our commit history now shows the branch divergence:
+
+```sh
+git log --oneline
+```
+
+```plaintext
+22854e0 (HEAD -> add-css) Create style.css and link it to HTML
+ed1523e (origin/main, main) Add document title
+39cfcb0 Add Hello, World header
+5c19c53 Create index.html
+```
+
+Visually, our repository now looks like:
+
+<Mermaid showForPrint="true">
+```
+gitGraph
+  commit id: "1"
+  commit id: "2"
+  commit id: "3"
+  branch add-css
+  checkout add-css
+  commit id: "4"
+```
+</Mermaid>
+
+The `origin/main` in our log indicates we have a remote repository. We can verify this:
+
+```sh
+git remote -v
+```
+
+```plaintext
+origin  https://github.com/<username>/<repo>.git (fetch)
+origin  https://github.com/<username>/<repo>.git (push)
+```
+
+Let's push our new branch to GitHub:
+
+```sh
+git push --set-upstream origin add-css
+```
+
+Now our branch is visible in the GitHub interface in the branches dropdown.
+
+![GitHub Branches](./github-branches.png)
+
+Let's add some CSS to our stylesheet:
+
+```css
+// style.css
+html {
+    font-family: sans-serif;
+}
+
+h1 {
+    font-variant: small-caps;
+}
+```
+
+Then commit and push:
+
+```sh
+git add style.css
+git commit -m "Do some work on font styling"
+git push
+```
+
+#### Task: Adding Interactivity with JavaScript
+
+Meanwhile, another developer has been tasked with adding JavaScript functionality, starting from the same `main` branch:
+
+```sh
+git checkout main
+git checkout -b handle-title-click
+```
+
+This developer creates `index.js`:
+
+```js
+// index.js
+const title = document.getElementById("title")
+title.addEventListener("click", function () {
+    alert("You clicked the title!")
+})`
+```
+
+And modifies `index.html`:
+
+```diff lang="html"
+// index.html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Greetings</title>
++    <script src="index.js"></script>
+  </head>
+  <body>
++    <h1 id="title">Hello, World!</h1>
+-    <h1>Hello, World!</h1>
+  </body>
+</html>
+```
+
+They commit and push their changes:
+
+```sh
+git add index.html index.js
+git commit -m "Add title click handler"
+git push --set-upstream origin handle-title-click
+```
+
+Visually, our repository now looks like:
+
+<Mermaid showForPrint="true">
+```
+gitGraph
+  commit id: "1"
+  commit id: "2"
+  commit id: "3"
+  branch add-css
+  checkout add-css
+  commit id: "4"
+  commit id: "5"
+  checkout main
+  branch handle-title-click
+  checkout handle-title-click
+  commit id: "6"
+```
+</Mermaid>
+
+Both features are now complete and ready to be considered for merging into the main branch. According to GitHub Flow, the next step is to create **pull requests** for each branch.
+
+Before we explore pull requests, let's understand what **merging** means in Git.
+
+### Merging Branches
+
+A pull request is fundamentally a request to merge one branch (containing your changes) into another branch. Most commonly, pull requests merge feature branches into the `main` branch.
+
+In Git, **merging** refers to the `git merge` operation, which combines multiple commit sequences into a unified commit history. When you merge branches:
+
+- Changes from the target branch are combined into your current branch
+- The branch you're merging into must be your active branch (the one marked with an asterisk `*` in `git branch`)
+
+Unless conditions allow for a *fast-forward merge*, Git creates a special merge commit when combining branches. This merge commit represents the integration of changes from the target branch into your current branch.
+
+For example, imagine we have a new `feature` branch that we want to merge into the `main` branch of our repo:
+
+<Mermaid showForPrint="true">
+```
+gitGraph
+  commit id: "1"
+  commit id: "2"
+  commit id: "3"
+  branch feature
+  checkout feature
+  commit id: "4"
+  checkout main
+  commit id: "5"
+  checkout feature
+  commit id: "6"
+  checkout main
+  commit id: "7"
+```
+</Mermaid>
+
+After merging the `feature` branch into `main`, a new merge commit will be added to main that incorporates the changes from the feature branch:
+
+<Mermaid showForPrint="true">
+```
+gitGraph
+  commit id: "1"
+  commit id: "2"
+  commit id: "3"
+  branch feature
+  checkout feature
+  commit id: "4"
+  checkout main
+  commit id: "5"
+  checkout feature
+  commit id: "6"
+  checkout main
+  commit id: "7"
+  merge feature id: "Merge Commit"
+```
+</Mermaid>
+
+This process ensures the `main` branch now contains all code implemented in the feature branch.
+
+#### Fast-Forward Merges
+
+A **fast-forward merge** is a special merge that doesn't create a merge commit. This type of merge is only possible under specific circumstances:
+
+- There must be a direct linear path between the current branch and target branch
+- The current branch's tip must be a direct ancestor of the target branch's tip
+
+Visually, this looks like:
+
+<Mermaid showForPrint="true">
+```
+gitGraph
+  commit id: "1"
+  commit id: "2"
+  commit id: "3"
+  branch feature
+  checkout feature
+  commit id: "4"
+  commit id: "5"
+  commit id: "6"
+```
+</Mermaid>
+
+In this scenario, Git can simply "fast forward" the current branch pointer to the position of the target branch:
+
+<Mermaid showForPrint="true">
+```
+gitGraph
+  commit id: "1"
+  commit id: "2"
+  commit id: "3"
+  branch feature
+  checkout feature
+  commit id: "4"
+  commit id: "5"
+  commit id: "6"
+  checkout main
+  merge feature id: "Fast-Forward Merge"
+```
+</Mermaid>
+
+If the branches have diverged in any way (both have unique commits), Git cannot perform a fast-forward merge and will instead create a merge commit using a **three-way merge** process, as discussed above.
+
+## GitHub Pull Requests
+
+GitHub **pull requests** provide a structured mechanism for incorporating proposed changes into the codebase. They serve multiple purposes:
+
+- Notify team members about proposed changes
+- Create a dedicated space to review and discuss modifications
+- Allow collaborators to provide feedback and request adjustments
+- Facilitate formal approval (or rejection) of changes before merging
+
+At its core, a pull request is a request to merge one branch into another--typically merging a feature branch into the `main` branch. Both branches must exist on GitHub for a pull request to be created.
+
+Since we've pushed our `add-css` branch to GitHub and want to merge it into `main` (which is also on GitHub), we have everything needed to create a pull request.
+
+When you push a branch to GitHub, the platform often displays a helpful banner with a prompt:
+
+![GitHub Pull Request Banner](./github-pr-banner.png)
+
+Alternatively, you can navigate to the **Pull Requests** tab in your repository and click the **New pull request** button:
+
+![GitHub New Pull Request](./github-new-pr.png)
+
+In the comparison page:
+
+1. Select your branch (e.g., `add-css`) in the "compare" dropdown
+2. Keep main as the "base" branch
+3. Review the displayed commits and code differences
+4. Click "Create pull request"
+
+![GitHub Create Pull Request](./github-compare-changes.png)
+
+After clicking "Create pull request," you'll need to provide:
+
+- Title: A concise description of the changes
+- Description: A more detailed explanation of what the changes accomplish
+
+Then click "Create pull request" again. Note that you should only select ["Create draft pull request"](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests#draft-pull-requests) for branches not yet ready for review or merging.
+
+![GitHub Pull Request Form](./github-open-a-pr.png)
+
+After creation, you'll be taken to the pull request's "Conversation" tab, which provides:
+
+- A summary of the pull request
+- A list of commits included
+- A discussion area for general feedback
+
+The "Files changed" is another important tab that shows a line-by-line diff of all code modifications, where reviewers can add specific comments and conduct a thorough code review.
+
+This structured process ensures code changes are properly reviewed before being incorporated into the main codebase.
+
+### Code Reviews
+
+**Code review** is a critical part of the development process that improves code quality and distributes knowledge across the team. Since pull requests are the final check before code reaches production, thorough reviews are essential. Let's explore GitHub's tools for effective code reviews.
+
+Imagine another developer has created a pull request for their `handle-title-click` branch. Let's walk through reviewing their changes.
+
+#### Conversation Tab
+
+The "Conversation" tab serves as a general discussion forum for the pull request. You can use this space for:
+
+- Broad comments about the approach
+- Questions about implementation decisions
+- High-level feedback
+
+![GitHub Conversation Tab](./github-pr-conversation.png)
+
+While you can provide general feedback here, detailed code review is better conducted in the "Files changed" tab.
+
+#### Files Changed Tab
+
+The "Files changed" tab is specifically designed for thorough code reviews. It displays a line-by-line diff of all changes and offers specialized review tools:
+
+![GitHub Files Changed Tab](./github-pr-files-changed.png)
+
+If you identify a potential bug or have a suggestion about specific code:
+
+1. Hover over the relevant line
+2. Click the blue "+" button that appears (or drag to select multiple lines)
+3. Type your comment
+4. Choose either:
+    - Add single comment: For standalone feedback
+    - Start a review: To begin a formal review requiring resolution
+
+![GitHub Add Comment](./github-pr-line-comment.png)
+
+When you start a review, your comment is marked as "pending" until you submit the complete review:
+
+![GitHub Pending Review](./github-pr-pending-comment.png)
+
+{/* TODO: missing id="title" on <h1> tag */}
+
+After reviewing a file, you can mark it as "viewed" to:
+
+- Collapse its diff
+- Track your progress through the review
+- Help focus on remaining files
+
+![GitHub Mark File as Viewed](./github-pr-mark-file-as-viewed.png)
+
+Continue adding comments to any files that need attention, for example:
+
+![GitHub Pending File Comment](./github-pr-file-comment.png)
+
+After reviewing all files, submit your complete review by:
+
+1. Clicking "Review changes"
+2. Adding a summary comment
+3. Selecting one of three options:
+    - **Comment**: General feedback with no explicit approval
+    - **Approve**: Changes look good and can be merged
+    - **Request changes**: Issues must be addressed before merging
+
+In our case, the current implementation does not work, so we need to request changes.
+
+The pull request author should then:
+
+- Make commits addressing your requested changes, or
+- Explain why they believe the changes aren't necessary
+
+Once satisfied with their response, you can either approve the changes or dismiss your review.
+
+After the required number of approvals (determined by your team), you can merge the pull request by clicking "Merge pull request" on the conversation tab.
+
+Once merged, all team members should:
+
+1. **Pull the updated `main` branch to their local repositories**
+2. Delete the feature branch both on GitHub and locally to reduce clutter
+
+This structured review process ensures code quality while maintaining clear documentation of decisions made during development.
+
+### Resolving Merge Conflicts
+
+{/* git cherry-pick <commit-hash> */}
+
+## Enforcing Branch Protection
+
+## GitHub Issues and Projects
+
+{/* ### Naming Conventions */}
+
+{/* also for branches */}
+
+{/* TODO: move tags and versioning to CI/CD? */}
+{/* ## Tags and Versioning */}

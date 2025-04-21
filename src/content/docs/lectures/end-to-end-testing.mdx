@@ -53,7 +53,7 @@ Playwright and WebDriverIO integrate nicely with Vitest.
 
 Before diving into how to use Playwright for end-to-end testing, it's important to understand how to properly configure your application for testing with this tool.
 
-In this lecture, we'll work with a simple Todo application built with [Vite](https://vite.dev/) and [Svelte](https://svelte.dev/). This application is a great example of a web app that can be tested end-to-end.
+In this lecture, we'll work with a [simple todo application](https://github.com/adulbrich/local-todo-app) built with [Vite](https://vite.dev/) and [Svelte](https://svelte.dev/). This application is a great example of a web app that can be tested end-to-end.
 
 ### Setting Up Your Application for E2E Testing
 
@@ -673,6 +673,11 @@ npx playwright install
 - You can enable [retries](https://playwright.dev/docs/test-retries) for your tests. This is useful for flaky tests that may fail intermittently due to network issues or other factors. Playwright will automatically retry failed tests a specified number of times before marking them as failed.
 - Playwright's [Mock APIs](https://playwright.dev/docs/mock) allow you to intercept and modify network requests and responses.
 - Finally, we can setup [Continuous Integration](https://playwright.dev/docs/ci-intro) to run our tests automatically whenever we push changes to our repository. This is useful for continuous integration and deployment (CI/CD) workflows. This will be covered in a later lecture.
+
+## Additional Resources
+
+- [Best Practices](https://playwright.dev/docs/best-practices)
+- [Larger Testing](https://abseil.io/resources/swe-book/html/ch14.html) in Software Engineering at Google
 
 {/* ## Mocking and Faking */}
 
