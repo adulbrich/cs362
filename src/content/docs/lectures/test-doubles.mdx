@@ -5,6 +5,8 @@ sidebar:
   order: 6
 ---
 
+import Mermaid from "../../../components/Mermaid.astro";
+
 When testing code that interacts with complex external components—such as third-party libraries or network services—we often face challenges that make testing difficult.
 
 Consider testing a function that fetches data from an external server and stores it in a database. This scenario introduces several testing concerns:
@@ -52,6 +54,35 @@ Test doubles are essential components in the testing toolkit that replace produc
 
 A [**stub**](http://xunitpatterns.com/Test%20Stub.html) is a test-specific implementation that provides predefined responses to calls made by the system under test (SUT).
 
+<Mermaid showForPrint="true">
+```
+flowchart TD
+  subgraph "Testing Environment"
+      Test["Test Code"]
+      SUT["System Under Test (SUT)"]
+      subgraph "Test Double"
+          Stub["`Stub (predefined responses)`"]
+      end
+      DOC["`Real Dependency`"]
+  end
+  
+  Test -->|"1 - Configures"| Stub
+  Test -->|"2 - Invokes"| SUT
+  SUT -->|"3 - Calls"| Stub
+  Stub -->|"4 - Returns response (indirect inputs)"| SUT
+  SUT -.->|"Would normally call (bypassed during test)"| DOC
+  SUT -->|"5 - Returns result"| Test
+  
+  classDef primary fill:#d2f5ff,stroke:#0066cc,stroke-width:2px
+  classDef secondary fill:#ffe6cc,stroke:#ff8c00,stroke-width:2px
+  classDef disabled fill:#f0f0f0,stroke:#999999,stroke-width:1px,stroke-dasharray: 5 5
+  
+  class SUT primary
+  class Stub secondary
+  class DOC disabled
+```
+</Mermaid>
+
 You should use stubs when:
 
 - you need to control indirect inputs that aren't passed directly to the SUT
@@ -62,6 +93,34 @@ You should use stubs when:
 ### Spying: Observing Indirect Outputs
 
 A [**spy**](http://xunitpatterns.com/Test%20Spy.html) records calls made to it by the SUT and captures the parameter values, allowing you to verify these indirect outputs in your tests.
+
+<Mermaid showForPrint="true">
+```
+flowchart TD
+  subgraph "Testing Environment"
+      Test["Test Code"]
+      SUT["System Under Test (SUT)"]
+      subgraph "Test Double"
+          Spy["Spy (records interactions)"]
+      end
+      DOC["Real Dependency"]
+  end
+  
+  Test -->|"1 - Configures"| Spy
+  Test -->|"2 - Invokes"| SUT
+  SUT -->|"3 - Calls (indirect outputs)"| Spy
+  Spy -->|"4 - Forwards call"| DOC
+  DOC -->|"5 - Returns response"| Spy
+  Spy -->|"6 - Forwards response"| SUT
+  Spy -->|"7 - Retrieves indirect outputs from SUT"| Test
+  
+  classDef primary fill:#d2f5ff,stroke:#0066cc,stroke-width:2px
+  classDef secondary fill:#ffe6cc,stroke:#ff8c00,stroke-width:2px
+  
+  class SUT primary
+  class Spy secondary
+```
+</Mermaid>
 
 You should use spies when:
 
@@ -74,6 +133,35 @@ You should use spies when:
 
 A [**fake**](http://xunitpatterns.com/Fake%20Object.html) is a simplified yet functional implementation of a component that the SUT depends on.
 
+<Mermaid showForPrint="true">
+```
+flowchart TD
+  subgraph "Testing Environment"
+      Test["Test Code"]
+      SUT["System Under Test (SUT)"]
+      subgraph "Test Double"
+          Fake["Fake (simplified implementation)"]
+      end
+      DOC["Real Dependency"]
+  end
+  
+  Test -->|"1 - Configures"| Fake
+  Test -->|"2 - Invokes"| SUT
+  SUT -->|"3 - Interacts with"| Fake
+  Fake -->|"4 - Returns functional response"| SUT
+  SUT -.->|"Would normally use (bypassed during test)"| DOC
+  SUT -->|"5  - Returns result"| Test
+  
+  classDef primary fill:#d2f5ff,stroke:#0066cc,stroke-width:2px
+  classDef secondary fill:#ffe6cc,stroke:#ff8c00,stroke-width:2px
+  classDef disabled fill:#f0f0f0,stroke:#999999,stroke-width:1px,stroke-dasharray: 5 5
+  
+  class SUT primary
+  class Fake secondary
+  class DOC disabled
+```
+</Mermaid>
+
 You should use fakes when:
 
 - interactions with the real component would be costly or slow
@@ -84,6 +172,31 @@ You should use fakes when:
 ### Dummy Objects: Fulfilling Parameter Requirements
 
 A [**dummy object**](http://xunitpatterns.com/Dummy%20Object.html) satisfies the API requirements of the SUT without providing any real functionality.
+
+<Mermaid showForPrint="true">
+```
+flowchart TD
+  subgraph "Testing Environment"
+      Test["Test Code"]
+      SUT["System Under Test"]
+      subgraph "Test Double"
+          Dummy["Dummy Object (placeholder with no behavior)"]
+      end
+  end
+  
+  Test -->|"1 - Creates"| Dummy
+  Test -->|"2 - Passes dummy to"| SUT
+  SUT -->|"3 - Receives but doesn't use"| Dummy
+  SUT -->|"4 - Returns result"| Test
+  
+  classDef primary fill:#d2f5ff,stroke:#0066cc,stroke-width:2px
+  classDef secondary fill:#ffe6cc,stroke:#ff8c00,stroke-width:2px
+  classDef disabled fill:#f0f0f0,stroke:#999999,stroke-width:1px,stroke-dasharray: 5 5
+  
+  class SUT primary
+  class Dummy secondary
+```
+</Mermaid>
 
 You should use dummy objects when:
 
@@ -287,7 +400,7 @@ Vitest's mock function API provides many more capabilities for inspecting and co
 
 ### Adding a Stub
 
-By default, spies created with `vi.spyOn()` continue to call the original function they're spying on. This means our previous tests were still executing the real `Database.save()` method.
+By default, spies created with `vi.spyOn()` continue to call the original function they're spying on. This means our previous tests were still calling the real `Database.save()` method.
 
 This behavior isn't ideal for our testing scenario. One of our main goals in mocking `Database.save()` is specifically to prevent calling the real implementation, which might require actual network communication with a database.
 
@@ -710,7 +823,6 @@ To do this, we can use `vi.spyOn()` to create a spy on the global `fetch` functi
 
 ```js
 // githubSearch.test.js
-
 test("renders GitHub search results", async () => {
   vi.spyOn(global, "fetch").mockResolvedValueOnce({
     ok: true,
