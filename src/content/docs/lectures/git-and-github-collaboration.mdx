@@ -739,11 +739,48 @@ GitHub has a newer feature called [Rulesets](https://docs.github.com/en/reposito
 
 ## GitHub Issues and Projects
 
-Coming soon!
+GitHub provides a powerful issue tracking system that allows teams to manage tasks, bugs, and feature requests. Issues can be linked to pull requests, making it easy to track the status of work.
 
-{/* ### Naming Conventions */}
+GitHub also offers a project management feature that allows teams to create Kanban-style boards to organize and prioritize work. Projects can be linked to issues and pull requests, providing a comprehensive view of the team's progress.
 
-{/* also for branches */}
+### Issues
+
+While enabled by default, you can toggle the Issues tab on or off in the repository Settings.
+
+After clicking the **Issues** tab, you can create a new issue by clicking the **New issue** button. This will take you to a form where you can provide:
+
+- **Title**: A concise description of the issue
+- **Description**: A more detailed explanation of the issue, including steps to reproduce, expected behavior/acceptance criteria, and any relevant screenshots or logs
+- **Labels**: Tags to categorize the issue (e.g., bug, enhancement, question)
+- **Assignees**: Team members responsible for addressing the issue
+- **Milestone**: A specific release or version the issue is associated with
+- **Projects**: A project board the issue is linked to
+
+You can also create relationships between issues, for example if you want to follow an **Epic > User Story > Task** hierarchy. This helps navigate complex projects and understand how different issues relate to each other.
+
+All issues get automatically numbered, which is useful for referencing them in pull requests or comments.
+
+A common practice is to use a specific **naming convention for branches** that start with the issue number, like `3-add-background-color`, to easily identify the related issue.
+
+When opening a pull request, you can reference the issue by including `#<issue-number>` in the pull request description. This creates a link to the issue. If you [use certain keywords such as "closes" or "fixes"](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword), GitHub will **automatically close the issue when the pull request is merged**.
+
+In the repository Settings, you can also configure **issue templates** to standardize the information collected when creating new issues. This is particularly useful for larger teams or projects with specific requirements. For example, if your project is open-source, you might want to create a template for bug reports that includes sections for reproduction steps, expected behavior, and actual behavior.
+
+### Projects
+
+Similarly to issues, the Projects tab can be toggled on or off in the repository Settings.
+
+Projects are linked to the owner of the repository (either a user or an organization). One or more projects can be linked to a repository, and one or more repositories can be linked to a project.
+
+You can create a new project by clicking the **New project** button. You'll have a choice between different templates, such as Boards, Tables, or Roadmaps. You can always reconfigure the layout of your project later.
+
+It's very common for teams to follow a Kanban-style workflow, where issues are organized into columns representing different stages of development. For example, you might have columns for "To Do," "In Progress," and "Done." You can create these columns in your project and then drag and drop issues between them as their status changes. 
+
+You can configure specific workflows that will act on your items based on different triggers:
+
+![GitHub Project Workflows](./github-projects-workflows.png)
+
+For example, when a pull request is merged, you can automatically move the associated issue to the "Done" column. This helps keep your project board up to date without manual intervention.
 
 {/* TODO: move tags and versioning to CI/CD? */}
 {/* ## Tags and Versioning */}
