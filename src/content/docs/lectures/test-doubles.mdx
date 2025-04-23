@@ -862,11 +862,18 @@ While we could use Vitest's `spyOn()` to stub the `fetch()` function as shown ea
 - **Implementation Coupling**: Mocking `fetch()` directly ties our tests to implementation details, creating brittle tests that break when the underlying HTTP client changes. If we later switch from `fetch()` to Axios, Superagent, or another HTTP client, we'd need to refactor all our tests.
 - **Limited Simulation of HTTP Responses**: Direct mocks don't fully simulate the HTTP request/response cycle.
 
-MSW intercepts network requests at a higher level, creating a fake server that responds to requests regardless of which HTTP client makes them. This approach:
+MSW intercepts HTTP requests at the network level, creating a "fake server" that responds to requests regardless of which HTTP client makes them. This approach:
 
 - Keeps implementation details out of tests
 - Isolates the fake implementation within the MSW handlers
 - Works with any HTTP client your application might use
+
+When an application makes a network request:
+
+1. MSW **intercepts** the request before it reaches the network
+2. It matches the request against defined **handlers**
+3. The matching handler returns a **mocked HTTP response**
+4. The application receives this response as if it came from a real server
 
 [MSW integrates directly with Vitest.](https://vitest.dev/guide/mocking.html#requests)
 

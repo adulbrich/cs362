@@ -139,7 +139,7 @@ Finally you have the option to install the three main browser engines that Playw
 You can [change the test configuration](https://playwright.dev/docs/test-configuration) by modifying the `playwright.config.ts` file.
 
 :::caution[ENGR Servers]
-I haven't tested Playwright on the ENGR servers yet, but I do not expect it to work right away (if at all). Please use an alternative environment for now (local is preferred).
+Playwright won't work on the OSU ENGR servers because of missing dependencies and lack of permissions to install them. You could in theory install dependencies and browsers in your home directory, then run Playwright pointing to those installations, but it would be a lot of work. Instead, we recommend using Playwright on your local machine or in a cloud-based development environment.
 :::
 
 To run Playwright tests, you can use the following command:
