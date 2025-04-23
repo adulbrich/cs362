@@ -7,6 +7,7 @@ sidebar:
 ---
 
 import Mermaid from "../../../components/Mermaid.astro";
+import { Steps } from '@astrojs/starlight/components';
 
 We've already explored how to use Git and GitHub from an individual perspective, covering the most common workflows for personal projects. However, the true power of Git and GitHub emerges when teams collaborate on shared code.
 
@@ -351,8 +352,8 @@ And modifies `index.html`:
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Greetings</title>
 +    <script src="index.js"></script>
+    <title>Greetings</title>
   </head>
   <body>
 +    <h1 id="title">Hello, World!</h1>
@@ -552,7 +553,8 @@ The "Conversation" tab serves as a general discussion forum for the pull request
 - Questions about implementation decisions
 - High-level feedback
 
-![GitHub Conversation Tab](./github-pr-conversation.png)
+![GitHub Conversation Tab](./github-pr-conversation.png) 
+{/* TODO: update this oneto the JS one */}
 
 While you can provide general feedback here, detailed code review is better conducted in the "Files changed" tab.
 
@@ -620,11 +622,124 @@ This structured review process ensures code quality while maintaining clear docu
 
 ### Resolving Merge Conflicts
 
-{/* git cherry-pick <commit-hash> */}
+When checking our pull request after another developer's changes have been merged into the `main` branch, we may encounter a situation where our PR can no longer be automatically merged due to conflicts:
+
+![GitHub Merge Conflict](./github-pr-merge-conflicts.png)
+
+We must resolve these conflicts by adding at least one commit before our pull request can be merged.
+
+While GitHub offers a "Resolve conflicts" button with a web-based editor, it's generally better practice to resolve conflicts locally in our development environment.
+
+To address these conflicts, follow these steps:
+
+<Steps>
+1. Pull the latest changes to `main` locally:
+
+    ```sh
+    git checkout main
+    git pull
+    ```
+
+2. Ensure you're on your feature branch:
+
+    ```sh
+    git checkout add-css
+    ```
+
+3. Merge the updated `main` branch into your feature branch:
+
+    ```sh
+    git merge main
+    ```
+
+    Git will report the conflicts:
+
+    ```plaintext
+    Auto-merging index.html
+    CONFLICT (content): Merge conflict in index.html
+    Automatic merge failed; fix conflicts and then commit the result.
+    ```
+
+4. Open the conflicted file in your editor, where you'll see something like:
+
+    ```html
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <<<<<<< HEAD
+        <link rel="stylesheet" href="style.css">
+    =======
+        <script src="index.js"></script>
+    >>>>>>> main
+        <title>Greetings</title>
+      </head>
+      <body>
+        <h1 id="title">Hello, World!</h1>
+      </body>
+    </html>
+    ```
+
+    In this example, the conflict occurred because both developers added different lines at the same position in `index.html`. One added a `<script>` tag while we added a `<link>` tag.
+
+5. Edit the file to keep both changes, as they're compatible.
+
+6. Mark the conflict as resolved:
+
+    ```sh
+    git add index.html
+    git commit
+    git push
+    ```
+</Steps>
+
+This should make your pull request automatically mergeable again. Once you receive the required approvals, you can merge the pull request.
+
+**After any pull request is merged, all team members should update their local `main` branch with the latest code. It's crucial that everyone works with the most recent version of the codebase when creating new feature branches to avoid additional conflicts.**
 
 ## Enforcing Branch Protection
 
+While we've explored the GitHub flow workflow, you may have noticed that nothing actually enforces this process. Currently:
+
+- Pull requests can be merged without any reviews or approvals
+- Developers with write access can push commits directly to the `main` branch
+- The GitHub flow is followed only through team agreement, not technical enforcement
+
+To properly enforce the GitHub flow, we can implement [branch protection rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches) (assuming we have administrative permissions on the repository):
+
+1. Navigate to your repository on GitHub
+2. Go to **Settings** → **Branches**
+3. Click the **Add classic branch protection rule** button
+
+When creating your protection rule:
+
+1. Branch name pattern: Enter "main" to protect only the `main` branch
+    - You can use patterns to protect multiple branches, but for now we'll focus on `main`
+2. Enable key protections:
+    - ✅ Require a pull request before merging
+    - ✅ Require approvals (this option appears after enabling pull request requirement)
+
+You can customize protection further based on your team's needs:
+
+- **Require status checks to pass before merging**: Particularly useful once you've set up continuous integration, as it prevents merging code that fails automated tests
+- **Require conversation resolution before merging**: Ensures all discussion points are addressed
+
+Once these rules are in place:
+
+- Direct pushes to the `main` branch will be blocked
+- All changes must go through the pull request workflow
+- Code must receive the required number of approvals before merging
+
+This effectively enforces the GitHub flow process, ensuring code quality and proper review before changes reach your production branch.
+
+:::note[Branch Rulesets]
+GitHub has a newer feature called [Rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) which offers overlapping but more comprehensive functionality than classic branch protection rules. It allows you to define rulesets that can be applied to multiple branches, including `main`, `develop`, and any feature branches.
+:::
+
 ## GitHub Issues and Projects
+
+Coming soon!
 
 {/* ### Naming Conventions */}
 
@@ -632,3 +747,7 @@ This structured review process ensures code quality while maintaining clear docu
 
 {/* TODO: move tags and versioning to CI/CD? */}
 {/* ## Tags and Versioning */}
+
+{/* ## Tips and Tricks */}
+{/* TODO: git cherry-pick <commit-hash> */}
+{/* TODO: git rebase */}
