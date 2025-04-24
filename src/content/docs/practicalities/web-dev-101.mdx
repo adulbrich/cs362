@@ -71,6 +71,29 @@ For packages that are required to build or run your project, you can use the `--
 npm install http-server
 ```
 
+:::note[Microsoft Windows]
+If you have issues with the `npm install` command on Windows, check which shell is being used by npm. You can set the shell to use by running the following command: 
+
+```bash
+npm config set script-shell "<path-to-your-shell-executable>"
+```
+
+Common shells on Windows include:
+
+- PowerShell
+- Command Prompt (cmd)
+- Git Bash
+- Windows Subsystem for Linux (WSL)
+
+You can also check the current shell being used by running:
+
+```bash
+npm config get script-shell
+```
+
+If your current setup is not working, try switching to a different shell and see if that resolves the issue.
+:::
+
 ## `.gitignore`
 
 When you create a new project, it's a good practice to create a `.gitignore` file to specify which files and directories should be ignored by **Git**. This is especially important for Node.js projects, as there are certain files and directories that should not be tracked by version control.

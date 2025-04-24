@@ -167,6 +167,8 @@ Branches create isolated environments where developers can work without affectin
 
 This branch-based workflow ensures that changes are properly validated before they affect the production environment.
 
+Read [git branches: intuition & reality](https://jvns.ca/blog/2023/11/23/branches-intuition-reality/) by Julia Evans for a deeper understanding of how branches work in Git.
+
 ### Working with Branches
 
 Let's explore how to work with branches in a practical scenario.
@@ -697,6 +699,25 @@ This should make your pull request automatically mergeable again. Once you recei
 
 **After any pull request is merged, all team members should update their local `main` branch with the latest code. It's crucial that everyone works with the most recent version of the codebase when creating new feature branches to avoid additional conflicts.**
 
+### Rebasing
+
+While `git rebase` is a powerful tool for rewriting commit history, it can be complex and is often best avoided in favor of simpler alternatives like merging. Rebasing is particularly useful for:
+
+- Cleaning up commit history *before* merging (for example on your own feature branch), alternatively you can use a "squash and merge" approach (`git merge --squash`)
+- Integrating changes from one branch into another while maintaining a linear history (which might be prefered by some teams over merging)
+
+However, it can lead to [confusion and conflicts](https://jvns.ca/blog/2023/11/06/rebasing-what-can-go-wrong-/) if not used carefully.
+
+> In general, [merges, rebases, and squashes](https://gist.github.com/mitchellh/319019b1b8aac9110fcfb1862e0c97fb) are all valid strategies but are situationally dependent. The key is to understand the implications of each approach and choose the one that best fits your needs.
+
+:::note[Linear vs Non-Linear History]
+Linear and non-linear Git histories refer to how commits are organized in a repository's commit graph. The distinction primarily arises from how branches are integrated--through rebasing for linear histories or merging for non-linear histories.
+
+A **linear** history has a single, straight line of commits with no merge commits. Each commit directly follows its parent, forming a sequential chain. This is achieved through a combination of rebasing and fast-forward merges. Linear histories are easier to read and understand. Tools like [`git bisect`](https://git-scm.com/docs/git-bisect) work more effectively, as there's a clear, linear progression of changes. [Angular](https://github.com/angular/angular) bases its commit history on this approach.
+
+A **non-linear** history includes merge commits, reflecting the branching and merging of multiple lines of development. It shows the full structure of how branches were integrated. Merge commits show when and how branches were integrated, preserving the history of collaborative work. Merging is less error-prone than rebasing, as it doesn't require rewriting history or resolving conflicts upfront.
+:::
+
 ## Enforcing Branch Protection
 
 While we've explored the GitHub flow workflow, you may have noticed that nothing actually enforces this process. Currently:
@@ -755,15 +776,80 @@ After clicking the **Issues** tab, you can create a new issue by clicking the **
 - **Milestone**: A specific release or version the issue is associated with
 - **Projects**: A project board the issue is linked to
 
-You can also create relationships between issues, for example if you want to follow an **Epic > User Story > Task** hierarchy. This helps navigate complex projects and understand how different issues relate to each other.
+Let's imagine that we want to add a colored background to our HTML document. We can create a new issue titled "Add background color" and provide a description with the following information:
+
+```markdown
+## Description
+
+Add backgroudn color to the document. Apply the style to the `<body>` tag. Use color [#99ccff](https://www.colorhexa.com/99ccff).
+
+## Acceptance Criteria
+
+- The background color should be a light shade of blue
+- The color should be applied to the entire document
+```
+
+GitHub uses [Markdown for formatting](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax), so you can use headings, lists, and links in your issue description.
+
+![GitHub New Issue](./github-new-issue.png)
+
+On the issue page, you can see the issue's details, change its status, and add comments. An issue is like a living document that can be updated as the task progresses. You can add comments to provide updates, ask questions, or clarify requirements. 
+
+Often, an issue will appear in the **backlog** of a project. The backlog is a prioritized list of tasks that need to be completed. Depending on your team's workflow, your backlog might have issues that are not yet "ready" for development, i.e., the issue is not fully defined or the team is not ready to start working on it.
+
+You can create relationships between issues, for example if you want to follow an **Epic > User Story > Task** hierarchy. This helps navigate complex projects and understand how different issues relate to each other.
+
+Our background color issue might be a **sub-task** of a larger **Epic** issue that covers the entire UI redesign. You can create this relationship by linking the issues together.
 
 All issues get automatically numbered, which is useful for referencing them in pull requests or comments.
 
-A common practice is to use a specific **naming convention for branches** that start with the issue number, like `3-add-background-color`, to easily identify the related issue.
+:::tip[Naming Branches]
+A common practice is to use a specific **naming convention for branches** that start with the issue number, like `1-add-background-color`, to easily identify the related issue.
+:::
 
-When opening a pull request, you can reference the issue by including `#<issue-number>` in the pull request description. This creates a link to the issue. If you [use certain keywords such as "closes" or "fixes"](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword), GitHub will **automatically close the issue when the pull request is merged**.
+Let's create a new branch for this issue:
 
-In the repository Settings, you can also configure **issue templates** to standardize the information collected when creating new issues. This is particularly useful for larger teams or projects with specific requirements. For example, if your project is open-source, you might want to create a template for bug reports that includes sections for reproduction steps, expected behavior, and actual behavior.
+```sh
+git checkout -b 1-add-background-color
+```
+
+Then we can implement the changes and commit them:
+
+```css
+// style.css
+html {
+    font-family: sans-serif;
+}
+
+h1 {
+    font-variant: small-caps;
+}
+
+body {
+    background-color: #99ccff;
+}
+```
+
+```sh
+git add style.css
+git commit -m "Add background color to the document"
+```
+
+When opening a pull request, you can reference the issue by including `#<issue-number>` in the pull request description. This creates a link to the issue. 
+
+![GitHub Issue Reference](./github-new-pr-with-issue.png)
+
+If you [use certain keywords such as "closes" or "fixes"](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword), GitHub will **automatically close the issue when the pull request is merged**.
+
+![GitHub Issue Closed](./github-closed-issue.png)
+
+In the repository Settings, you can also [configure **issue templates**](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository) to standardize the information collected when creating new issues. This is particularly useful for larger teams or projects with specific requirements. For example, if your project is open-source, you might want to create a template for bug reports that includes sections for reproduction steps, expected behavior, and actual behavior.
+
+When you have a large number of issues, you can use **labels** to categorize them. Labels are tags that can be applied to issues and pull requests to indicate their status, priority, or type. For example, you might have labels for "bug," "enhancement," "question," or "high priority." This makes it easier to filter and search for specific issues. 
+
+For larger projects, you can create **milestones** to group issues and pull requests into specific releases or versions. This helps track progress toward specific goals and provides a clear timeline for the project.
+
+Check open-source projects on GitHub to see how they use issues and labels. For example, the [React repository](https://github.com/facebook/react/issues) has well-maintained issues and labels that help users navigate the project.
 
 ### Projects
 
@@ -775,6 +861,17 @@ You can create a new project by clicking the **New project** button. You'll have
 
 It's very common for teams to follow a Kanban-style workflow, where issues are organized into columns representing different stages of development. For example, you might have columns for "To Do," "In Progress," and "Done." You can create these columns in your project and then drag and drop issues between them as their status changes. 
 
+Common columns include:
+
+- **Backlog**: Issues that are not yet ready for development
+- **To Do**: Issues that are ready to be worked on
+- **Blocked**: Issues that cannot be worked on due to dependencies or other issues (could be put back in the backlog instead)
+- **In Progress**: Issues currently being worked on
+- **In Review**: Issues that are ready for review
+- **Done**: Issues that have been completed and merged
+
+Every team and organization has its own workflow, so you can customize your project to fit your needs.
+
 You can configure specific workflows that will act on your items based on different triggers:
 
 ![GitHub Project Workflows](./github-projects-workflows.png)
@@ -783,7 +880,5 @@ For example, when a pull request is merged, you can automatically move the assoc
 
 {/* TODO: move tags and versioning to CI/CD? */}
 {/* ## Tags and Versioning */}
-
-{/* ## Tips and Tricks */}
 {/* TODO: git cherry-pick <commit-hash> */}
-{/* TODO: git rebase */}
+{/* TODO: https://git-scm.com/docs/git-bisect to find bugs -- works better with a linear history */}
