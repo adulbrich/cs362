@@ -6,6 +6,7 @@ sidebar:
 ---
 
 import Mermaid from "../../../components/Mermaid.astro";
+import { Steps } from '@astrojs/starlight/components';
 
 In today's software development landscape, the ability to iterate quickly is crucial. Deploying new code to production frequently offers several key advantages:
 
@@ -562,7 +563,109 @@ jobs:
 
 The `container` section specifies the Docker image to use for the job. The `image` field points to the Playwright container, and the `options` field sets the user ID to `1001`, which runs the container as a non-root user (for security purposes).
 
+{/* TODO */}
+## Code Scanning and Security
+
+Coming soon!
+
 ## Local CI with Hooks
 
-Coming Soon!
+What if you automate tests or other tasks locally before pushing to GitHub? This can help catch issues early and ensure that your code is always in a deployable state.
 
+[Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) are scripts that run automatically at certain points in the Git workflow. They can be used to enforce coding standards, run tests, or perform other tasks before code is committed or pushed.
+
+Hooks can run at various stages in the Git workflow, including:
+
+- `pre-commit`: Runs before a commit is created
+- `pre-push`: Runs before code is pushed to a remote repository
+- `post-commit`: Runs after a commit is created
+- `post-checkout`: Runs after a branch is checked out
+- `post-merge`: Runs after a merge is completed
+
+The easiest way to manage Git hooks is to use a tool like [Lefthook](https://github.com/evilmartians/lefthook) or [Husky](https://typicode.github.io/husky/). These tools allow you to define hooks in a configuration file and automatically install them in your Git repository.
+
+Lefthook is simpler to get started. It uses a YAML configuration file to define hooks and can run tasks in parallel. 
+
+To set up Lefthook in your project, follow these steps:
+
+<Steps>
+1. Install Lefthook as a development dependency:
+
+      ```sh
+      npm install lefthook --save-dev
+      ```
+2. Create a `lefthook.yml` file in the root of your project. Here's a simple example that works with our application:
+
+    ```yaml
+    pre-push:
+      jobs:
+        - run: npm run build
+        - run: npm run test:e2e
+
+    pre-commit:
+      parallel: true
+      jobs:
+        - run: npm run format
+        - run: npm run lint
+    ```
+
+    This configuration runs `npm run lint` and `npm run format` in parallel before each commit, and `npm run build` and `npm run test:e2e` before each push. These scripts have all been defined in our `package.json` file.
+
+3. Initialize Lefthook in your project:
+
+    ```sh
+    npx lefthook install
+    ```
+</Steps>
+
+Now everytime you commit, Lefthook will run the specified tasks. If any of the tasks fail, the commit will be aborted, allowing you to fix the issues before pushing your code. Same applies for the pre-push hook.
+
+If you use the commit and push commands in your IDE, Lefthook will automatically run the hooks for you, but you won't see the output in the terminal. If you use the terminal, Lefthook will run the hooks and show you the output in the terminal.
+
+### Linting and Formatting
+
+Linting and formatting are essential practices in modern software development. They help maintain code quality, readability, and consistency across a codebase. In this section, we'll explore how to set up linting and formatting for our application using [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/), respectively.
+
+> An up and coming alternative to both ESLint and Prettier is [Biome](https://biomejs.dev/), which combines linting, formatting, and type checking into a single tool. It is designed to be fast and efficient, making it a great choice for modern JavaScript and TypeScript projects.
+
+When working on a project, having a consistent code style is crucial for collaboration and maintainability. Linting and formatting tools help enforce coding standards and best practices, making it easier for developers to read and understand each other's code.
+
+Linters analyze your code to detect:
+
+- Potential bugs or errors
+- Problematic patterns
+- Security vulnerabilities
+- Code that doesn't follow best practices
+- Unused variables or imports
+- Deviation from project-specific rules
+
+Linters often provide suggestions but primarily focus on identifying issues rather than automatically fixing them, though many modern linters do offer auto-fix capabilities for certain problems.
+
+Formatters focus exclusively on code style and make automatic changes to enforce consistent formatting:
+
+- Indentation
+- Line length
+- Spacing
+- Bracket placement
+- Quote style
+- Line endings
+
+Formatters are opinionated and automatically rewrite your code to match a specified style, with minimal configuration options.
+
+All languages have their own linters and formatters, but in the JavaScript ecosystem, ESLint and Prettier are the most popular choices. 
+
+The crucial point is that you want **the whole team to agree on a single set of rules for both linting and formatting**. If you don', you might end up with many diffs in your pull requests that are just formatting changes, making it harder to review the actual code changes.
+
+Most of the time, your linter and formatter options will be configured in your reposiory and shared among all developers. 
+
+To enforce it consistently, you can use a **pre-commit hook** to run the linter and formatter before each commit. This ensures that all code added to our git history adheres to the same standards.
+
+### Building and Testing
+
+Making sure your application builds and passes all tests before pushing it to the remote (where it might go through another set of tests and be deployed) is a good practice. This can be done using Lefthook, as we saw before.
+
+In our example, we set up a pre-push hook that runs `npm run build` and `npm run test:e2e` before each push. This ensures that the code being pushed is always in a deployable state.
+
+It's very common to run unit tests in pre-commit hook if the test suite is fast enough. If you have a large test suite, you might want to run only a subset of tests (e.g., the ones that are affected by the changes).
+
+As always, the tests you run (types, number, frequency) depends on many factors. You might prioritize developer experience and run your tests only in remote CI/CD (if they take too long), or you might prioritize code quality and run them locally before every commit, or you find a balance between the two.
