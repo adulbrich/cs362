@@ -19,12 +19,21 @@ Every term:
 - [ ] Use `bun` for everything (incl. running an http server locally)
 - [ ] additional topics to cover
   - [ ] maintenance
-  - [ ] git pre-commit hooks
+  - [x] git pre-commit hooks
   - [ ] feature flags
   - [ ] chaos engineering
-  - [ ] system performance and reliability
+  - [ ] system performance and reliability (k6, sonarQube, Sentry, Winston)
   - [ ] technical debt
-  - [ ] ...
+  - [ ] https://github.com/ladjs/supertest (testing node.js HTTP servers)
+  - [ ] monorepos 
+  - [ ] observability
+  - [ ] cost-analysis frameworks, open-source vs proprietary
+  - [ ] security testing (OWASP ZAP, XSS, SQL injection, ...)
+  - [ ] developer experience metrics (DORA, SPACE)
+  - [ ] cyclomatic complexity, bug density, and mean time to resolution.
+  - [ ] AI-driven testing tools 
+  - [ ] documentation (jsdoc, etc.)
+  
 
 ## PDFs
 

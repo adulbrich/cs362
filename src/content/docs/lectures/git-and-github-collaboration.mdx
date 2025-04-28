@@ -859,7 +859,7 @@ Projects are linked to the owner of the repository (either a user or an organiza
 
 You can create a new project by clicking the **New project** button. You'll have a choice between different templates, such as Boards, Tables, or Roadmaps. You can always reconfigure the layout of your project later.
 
-It's very common for teams to follow a Kanban-style workflow, where issues are organized into columns representing different stages of development. For example, you might have columns for "To Do," "In Progress," and "Done." You can create these columns in your project and then drag and drop issues between them as their status changes. 
+It's very common for teams to follow a [Kanban-style workflow](https://www.atlassian.com/agile/kanban), where issues are organized into columns representing different stages of development. For example, you might have columns for "To Do," "In Progress," and "Done." You can create these columns in your project and then drag and drop issues between them as their status changes. 
 
 Common columns include:
 
@@ -897,6 +897,38 @@ You can configure specific workflows that will act on your items based on differ
 ![GitHub Project Workflows](./github-projects-workflows.png)
 
 For example, when a pull request is merged, you can automatically move the associated issue to the "Done" column. This helps keep your project board up to date without manual intervention.
+
+## Definition of Done
+
+The [**Definition of Done** (DoD)](https://www.atlassian.com/agile/project-management/definition-of-done) is a shared understanding among the team of what it means for a task to be considered complete. This definition should be agreed upon by the entire team and can include criteria such as:
+
+- Code is written and committed
+- Code is linted and formatted according to team standards
+- Code is reviewed and approved by at least one other team member
+- Code is tested and passes all automated tests
+- Code is merged into the `main` branch
+- Code passes acceptance criteria defined in the issue (if applicable)
+- Documentation is updated (if applicable)
+- Issue is closed and linked to the pull request
+
+Depending on the type of project, the DoD may also include additional criteria, for example:
+
+- Code is deployed to a staging (or production) environment
+- All images are optimized
+- Release notes are updated
+- Compliance standards are met
+- Accessibility standards are met
+
+The DoD should be visible to the entire team and can be included in the project board or as a checklist in the issue template. This helps ensure that everyone is on the same page and that tasks are completed to a consistent standard.
+
+Every team should have its own DoD, and it should be reviewed and updated regularly to reflect the team's evolving needs. With a good DoD, the team knows how to test their code and what to look for when reviewing pull requests.
+
+## Additional Resources
+
+- [Dealing with diverged git branches](https://jvns.ca/blog/2024/02/01/dealing-with-diverged-git-branches/) by Julia Evans
+- [Naming conventions for Git Branches — a Cheatsheet](https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534)
+- Check out [Linear](https://linear.app/), [Jira](https://www.atlassian.com/software/jira), [Trello](https://trello.com/), [Notion](https://www.notion.com/), [Basecamp](https://basecamp.com/) as alternatives to GitHub Projects (non-exhaustive list)
+
 
 {/* TODO: move tags and versioning to CI/CD? */}
 {/* ## Tags and Versioning */}
