@@ -24,7 +24,7 @@ Every term:
   - [ ] chaos engineering
   - [ ] system performance and reliability (k6, sonarQube, Sentry, Winston)
   - [ ] technical debt
-  - [ ] https://github.com/ladjs/supertest (testing node.js HTTP servers)
+  - [ ] https://github.com/ladjs/supertest or Playwright API Testing (testing node.js HTTP servers or REST API endpoints)
   - [ ] monorepos 
   - [ ] observability
   - [ ] cost-analysis frameworks, open-source vs proprietary
@@ -33,6 +33,7 @@ Every term:
   - [ ] cyclomatic complexity, bug density, and mean time to resolution.
   - [ ] AI-driven testing tools 
   - [ ] documentation (jsdoc, etc.)
+
   
 
 ## PDFs

@@ -8,6 +8,8 @@ sidebar:
 
 import Mermaid from "../../../components/Mermaid.astro";
 
+{/* TODO: add mermaid diagrams to illustrate coverage (branch, path) */}
+
 Code coverage is a measure of how much of your code is executed when you run your tests. It helps you identify untested parts of your codebase and can guide you in writing more comprehensive tests.
 
 Code coverage metrics can be interpreted in various ways, and expectations around coverage vary widely across teams and organizations.
@@ -72,6 +74,15 @@ if (isAdmin || (isEditor && contentBelongsToUser)) {
 
 Full condition coverage requires tests that evaluate each subexpression (`isAdmin`, `isEditor`, and `contentBelongsToUser`) to both true and false values.
 
+We can achieve this with four tests:
+
+| Test | `isAdmin` | `isEditor` | `contentBelongsToUser` | Outcome |
+|------|-----------|------------|------------------------|---------|
+| 1    | true      | not evaluated      | not evaluated                  | true    |
+| 2    | false     | true       | true                   | true    |
+| 3    | false     | true       | false                  | false   |
+| 4    | false     | false      | not evaluated                  | false   |
+
 Condition coverage is particularly valued in high-reliability domains like fintech, healthcare, and safety-critical systems, where edge cases in complex logic can have significant consequences.
 
 ### Path Coverage
@@ -84,9 +95,27 @@ Critical paths refer to the most important execution paths in a program that are
 
 ### Modified Condition/Decision Coverage (MC/DC)
 
-MC/DC is an advanced metric used in safety-critical systems that ensures each condition in a decision independently affects the outcome. It's required by standards like DO-178C in aviation software.
+MC/DC is an advanced metric used in safety-critical systems that ensures **each condition in a decision independently affects the outcome**. It's required by standards like DO-178C in aviation software.
 
 MC/DC is primarily used in regulated industries where software failures could lead to physical harm, such as aerospace, automotive, and medical devices.
+
+Given this example:
+
+```js
+if (isAdmin || (isEditor && contentBelongsToUser)) {
+  // Allow edit
+}
+```
+
+We'd need a minimum of 5 tests to achieve MC/DC, i.e., to prove that each condition can independently affect the outcome of the decision:
+
+| Test | `isAdmin` | `isEditor` | `contentBelongsToUser` | Outcome |
+|------|-----------|------------|------------------------|---------|
+| 1    | true      | false      | false                  | true    |
+| 2    | false     | false      | false                  | false   |
+| 3    | false     | true       | true                   | true    |
+| 4    | false     | true       | false                  | false   |
+| 5    | false     | false      | true                   | false   |
 
 ## Coverage Targets and Industry Standards
 
@@ -134,11 +163,85 @@ Let's try it out on examples from previous lectures.
 
 ## Mutation Testing
 
-Coming Soon!
+Mutation testing is an advanced testing technique that evaluates the quality of your test suite by **introducing small, deliberate faults (mutations) into your code** and then checking if your tests can detect these changes. Unlike traditional coverage metrics that only measure which code is executed, mutation testing assesses how effective your tests are at identifying incorrect behavior.
 
-## AI-Assisted Testing
+1. **Mutation generation**: The mutation testing framework creates variants of your code by applying mutation operators. These operators make small syntactic changes like replacing `+` with `-`, changing true to false, or removing statements.
+2. **Test execution**: Each mutant (modified version of your code) is tested against your existing test suite.
+3. **Analysis**: If your tests fail when run against a mutant, that mutation is considered "killed" (good). If tests pass despite the mutation, the mutation "survives" (bad), indicating a weakness in your test suite.
 
-Coming Soon!
+Traditional coverage metrics can be misleading—code might be executed but not actually verified. Consider this function and test:
+
+```js
+function isAdult(age) {
+  return age >= 18;
+}
+
+test('returns true if age >= 18', () => {
+  const result = isAdult(18);
+  // Missing assertion!
+});
+```
+
+This achieves 100% line coverage but doesn't verify the function's behavior. Mutation testing would identify this issue by creating mutations like:
+
+```js
+function isAdult(age) {
+  return age < 18; // '>=' changed to '<'
+}
+
+```
+
+Since the test would still pass with this mutation, it reveals that the test isn't actually checking the function's output.
+
+Mutation testing is particularly valuable for **catching weak assertions or missing edge cases**, but it's not meant to test every possible code change.
+
+One of the most popular mutation testing tools for JavaScript is [Stryker](https://stryker-mutator.io/). It integrates with various testing frameworks, including [Vitest](https://stryker-mutator.io/docs/stryker-js/vitest-runner/).
+
+To install Stryker, run:
+
+```sh
+npm init stryker
+```
+
+You can specify Vitest as the test runner during setup. Stryker will create a [configuration file](https://stryker-mutator.io/docs/stryker-js/configuration/) (`stryker.conf.json`) where you can customize options like mutation operators, test framework, and coverage thresholds.
+
+Now that the configuration is set up, you can run Stryker with:
+
+```sh
+npx stryker run
+```
+
+This will execute your tests against the generated mutants and provide a report on how many were killed or survived.
+
+Let's try it out on some examples from previous lectures.
+
+{/* TODO */}
+
+### Possible Mutations
+
+Mutation testing frameworks typically [support a variety of mutation operators or mutators](https://stryker-mutator.io/docs/mutation-testing-elements/supported-mutators/), which are the rules for generating mutants. 
+
+Stryker's mutators are designed to be practical and representative of common errors, but they don't exhaustively cover every syntactic or semantic alteration possible in JavaScript.
+
+The number of possible mutations in a codebase grows exponentially with code complexity. For example, a single function with multiple conditionals and operators could theoretically have thousands of unique mutations if every combination were considered. 
+
+Some mutants are [equivalent](https://stryker-mutator.io/docs/mutation-testing-elements/equivalent-mutants/), meaning they produce the same behavior as the original code despite syntactic changes.
+
+### Computational cost
+
+Mutation testing can be computationally expensive, especially for large codebases or complex applications. Each mutant requires a full test suite execution, which can lead to long feedback loops.
+
+To mitigate this, consider the following strategies:
+
+- **Selective mutation**: Focus on high-risk areas of your codebase or specific modules rather than running mutation tests on the entire codebase.
+- **Parallel execution**: Use parallel test runners to distribute the workload across multiple CPU cores or machines.
+- **Incremental mutation testing**: Only run mutation tests on code that has changed since the last run, rather than the entire codebase.
+- **Test suite optimization**: Ensure your test suite is efficient and fast. Use techniques like test parallelization, mocking, and minimizing external dependencies to reduce execution time.
+- **Mutation sampling**: Instead of running all possible mutations, randomly select a subset to test. This can provide a good indication of test suite quality without the full computational cost.
+
+{/* ## AI-Assisted Testing
+
+TODO: Coming Soon! */}
 
 ## Best Practices
 
@@ -179,6 +282,11 @@ Most enterprise development workflows integrate coverage checks into CI/CD pipel
 - Trends tracked over time using tools like [SonarQube](https://www.sonarsource.com/solutions/code-coverage/) or [Codecov](https://about.codecov.io/)
 - Pull requests that decrease coverage flagged for review
 - Coverage thresholds enforced as merge gates
+
+## Additional Resources
+
+- [Mutation-testing our JavaScript SDKs](https://sentry.engineering/blog/js-mutation-testing-our-sdks) by Sentry Engineering
+- [A Practical Tutorial on Modified Condition/Decision Coverage](https://ntrs.nasa.gov/citations/20010057789) by NASA
 
 
 {/* <Mermaid showForPrint="true">
