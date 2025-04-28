@@ -16,30 +16,172 @@ Some teams aim for high coverage percentages (e.g., 80% or higher), while others
 
 Many use coverage primarily to identify untested code rather than to celebrate tested code. This approach focuses on examining what's missing rather than the overall percentage.
 
+At its core, code coverage answers the question: "What parts of my code have been tested?" But it doesn't answer the equally important question: "How well has my code been tested?" This distinction is crucial for properly interpreting and using coverage data in professional settings.
+
+In industry contexts, code coverage serves several purposes:
+
+1. **Quality assurance**: Higher coverage generally correlates with fewer bugs reaching production, though this relationship isn't perfect.
+2. **Technical debt identification**: Low-coverage areas often indicate legacy code or functionality that isn't well understood by the current team.
+3. **Onboarding aid**: Coverage reports help new team members identify critical paths through the codebase and understand testing expectations.
+4. **Continuous integration gate**: Many organizations set minimum coverage thresholds that must be maintained for code to be merged.
+5. **Refactoring safety net**: High coverage provides confidence when refactoring, as tests will catch most regressions.
+
 ## Coverage Metrics
 
-There are several types of code coverage metrics, including:
+Different coverage metrics measure different aspects of code execution. Understanding each metric's strengths and limitations is essential for effective use.
 
-- **Line Coverage**: Measures the percentage of lines of code that have been executed by tests. This is the most common metric and is often reported as a percentage.
-- **Function Coverage**: Measures the percentage of functions or methods that have been called by tests. This metric can help identify untested functions in your codebase.
-- **Branch Coverage**: Measures the percentage of branches (e.g., if/else statements) that have been executed. This metric provides a more detailed view of code execution than line coverage.
-- **Condition Coverage**: Measures the percentage of boolean expressions that have been evaluated to both true and false. This metric helps ensure that all possible outcomes of conditional statements are tested.
+### Line Coverage
 
-There are other metrics such as statement, path, [MC/DC](https://en.wikipedia.org/wiki/Modified_condition/decision_coverage), toggle, or mutation.
+Line coverage (sometimes called statement coverage, even though there are not an exact match) is the most basic and commonly used metric, reporting the percentage of code lines executed during testing. While intuitive, it has limitations—a line with complex logic might be "covered" even if only one code path through it is tested.
 
-## Branch and Condition Coverage
+Line coverage is often used as the default metric because it's easy to understand and communicate across technical and non-technical stakeholders. Many teams start with targets around 70-80% line coverage.
 
-Let's take a look at a simple example to illustrate the difference between branch and condition coverage.
+### Function Coverage
+
+Function coverage measures the percentage of functions or methods executed during testing. This metric is valuable for identifying completely untested functionality but says nothing about how thoroughly each function is tested.
+
+Function coverage is particularly valuable in microservice architectures or libraries, where ensuring each public API endpoint has at least minimal testing is critical.
+
+### Branch Coverage
+
+Branch coverage measures the percentage of possible branches (decision points) in the code that have been executed. This provides deeper insight than line coverage by ensuring that both outcomes of conditional statements are tested.
 
 ```js
-if (x > 10) {
-  console.log("branch 1");
+if (userIsAuthenticated) {
+  // Branch 1
+  return dashboard();
 } else {
-  console.log("branch 2");
+  // Branch 2
+  return loginPage();
 }
 ```
 
-<Mermaid showForPrint="true">
+For full branch coverage, tests must exercise both the authenticated and unauthenticated paths.
+
+There are other metrics such as statement, path, [MC/DC](https://en.wikipedia.org/wiki/Modified_condition/decision_coverage), toggle, or mutation.
+
+### Condition Coverage
+
+Condition coverage measures whether each boolean subexpression has been evaluated to both true and false. This becomes especially important with compound conditions.
+
+```js
+if (isAdmin || (isEditor && contentBelongsToUser)) {
+  // Allow edit
+}
+```
+
+Full condition coverage requires tests that evaluate each subexpression (`isAdmin`, `isEditor`, and `contentBelongsToUser`) to both true and false values.
+
+Condition coverage is particularly valued in high-reliability domains like fintech, healthcare, and safety-critical systems, where edge cases in complex logic can have significant consequences.
+
+### Path Coverage
+
+Path coverage measures the percentage of possible execution paths through a function that have been tested. This is the most comprehensive but also the most difficult to achieve, as the number of paths grows exponentially with code complexity.
+
+Complete path coverage is rarely targeted except in the most critical systems. Instead, teams often focus on covering **critical paths** and high-risk scenarios identified through risk analysis.
+
+Critical paths refer to the most important execution paths in a program that are essential to its core functionality, business logic, or safety requirements. These paths often handle high-risk, high-value, or frequently executed operations.
+
+### Modified Condition/Decision Coverage (MC/DC)
+
+MC/DC is an advanced metric used in safety-critical systems that ensures each condition in a decision independently affects the outcome. It's required by standards like DO-178C in aviation software.
+
+MC/DC is primarily used in regulated industries where software failures could lead to physical harm, such as aerospace, automotive, and medical devices.
+
+## Coverage Targets and Industry Standards
+
+Coverage targets vary widely across industries and organizations:
+
+- **Startups and web applications**: Often target 60-80% line coverage, focusing on business-critical paths (that's if they test at all)
+- **Enterprise software**: Typically aims for 70-90% line and branch coverage
+- Financial services: Often requires 80-95% branch coverage for core transaction systems. Standards like ISO/IEC 25010 (software quality) and regulations (e.g., PCI DSS for payment systems) indirectly drive such high targets.
+- Healthcare software: Coverage of 80-95% is common, with a focus on condition coverage to ensure complex logic (e.g., diagnostic algorithms) is thoroughly tested.
+- Safety-critical systems: Can require 100% MC/DC coverage for the highest criticality components
+
+## Coverage Tools
+
+Vitest supports [two different coverage tools](https://vitest.dev/guide/coverage.html):
+
+- native with [`v8`](https://v8.dev/blog/javascript-code-coverage)
+- instrumented with [`istanbul`](https://istanbul.js.org/)
+
+Instrumented means that the code is transformed to add coverage tracking, which can be more accurate but also slower. `v8` relies on the JavaScript engine to track coverage, which can be faster but less accurate in some cases.
+
+By default, Vitest uses `v8`. You can run your test suite with `--coverage` to generate a coverage report
+
+```sh
+npx vitest --coverage
+```
+
+If you want to use `istanbul`, you can set the `coverage` option in your `vitest.config.ts` file:
+
+```js
+// vitest.config.ts
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    coverage: {
+      provider: 'istanbul' // or 'v8'
+    },
+  },
+})
+```
+
+Let's try it out on examples from previous lectures.
+
+{/* TODO */}
+
+## Mutation Testing
+
+Coming Soon!
+
+## AI-Assisted Testing
+
+Coming Soon!
+
+## Best Practices
+
+Code coverage is an invaluable tool in the modern developer's toolkit, but its true value comes from how it's interpreted and applied. 
+
+### Coverage as a Guide, Not a Goal
+
+In mature development organizations, coverage is viewed as a tool for identifying testing gaps rather than as an end in itself. This perspective shift is important--the goal isn't to achieve an arbitrary percentage but to use coverage data to guide testing efforts toward untested or under-tested code paths.
+
+Remember: high coverage doesn't guarantee high-quality tests. A test suite can achieve 100% coverage with tests that don't verify correct behavior--they simply execute code without meaningful assertions.
+
+### Risk-Based Coverage Targets
+
+Modern industry practices often involve setting different coverage targets for different parts of the codebase based on risk:
+
+- **High-risk code**: Core business logic, authentication, payment processing, etc. (90%+ branch coverage)
+- **Medium-risk code**: UI controllers, data transformations (70-80% coverage)
+- **Low-risk code**: Configuration, logging, etc. (50-60% coverage)
+
+This approach allocates testing resources more efficiently than a one-size-fits-all target.
+
+### Coverage Debt Management
+
+When working with legacy codebases, teams often implement a "coverage debt" strategy:
+
+1. Establish current coverage as the baseline
+2. Require all new code to meet higher coverage standards
+3. When modifying legacy code, improve its coverage
+4. Gradually increase overall coverage over time
+
+This approach prevents technical debt from growing while acknowledging it's impractical to immediately retrofit tests onto all legacy code.
+
+### Integration with CI/CD
+
+Most enterprise development workflows integrate coverage checks into CI/CD pipelines:
+
+- Coverage reports generated automatically on every build
+- Trends tracked over time using tools like [SonarQube](https://www.sonarsource.com/solutions/code-coverage/) or [Codecov](https://about.codecov.io/)
+- Pull requests that decrease coverage flagged for review
+- Coverage thresholds enforced as merge gates
+
+
+{/* <Mermaid showForPrint="true">
 ```
 graph TD
   A[Function start] --> B{if x > 10}
@@ -55,22 +197,4 @@ graph TD
   class A,B,C,E covered
   class D uncovered
   ```
-</Mermaid>
-
-In this case, if we test with `x > 10`, we achieve 50% branch coverage, and 50% condition coverage, because we only executed the true branch of the `if` statement.
-
-{/* TODO: diagram with nested if statements or multiple branches (not only two) */}
-
-Here's a more complex example:
-
-```js
-if (x > 10 || y < 5) {
-  console.log("branch 1");
-} else {
-  console.log("branch 2");
-}
-```
-
-In this case, if we test with `x > 10`, we achieve 50% branch coverage, but only 25% condition coverage. Indeed, because of short-circuiting, we never evaluate the second condition `y < 5` if `x > 10`. 
-
-{/* TODO: verify actual condition coverage */}
+</Mermaid> */}

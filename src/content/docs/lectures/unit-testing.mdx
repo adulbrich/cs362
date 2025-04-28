@@ -133,7 +133,7 @@ The `"scripts"` section defines a custom command that you can run using `npm run
 
 To run your tests, use the following command:
 
-```shell
+```sh
 npm run test
 ```
 
@@ -147,6 +147,21 @@ exclude:  **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,out
 ```
 
 This message indicates that Vitest didn't find any test files to run. By default, Vitest looks for files with names that end in `.test.js`, `.spec.js`, or similar patterns. You can change this behavior by modifying the `include` and `exclude` patterns in the configuration file. For example, you could add a specific directory for your tests or change the file name pattern to match your project's conventions.
+
+Alternatively, you can run Vitest without adding a script to your `package.json` file. Just run the following command:
+
+```sh
+npx vitest
+```
+
+:::note[UI Mode]
+Since version 3.1.2, Vitest added a [UI mode](https://vitest.dev/guide/ui.html) that provides a more interactive experience. First, install the dependency, then run Vitest in UI mode by using the `--ui` flag:
+
+```sh
+npm i -D @vitest/ui
+npx vitest --ui
+```
+:::
 
 ### Writing Your First Test
 
