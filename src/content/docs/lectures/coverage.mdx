@@ -93,6 +93,38 @@ Complete path coverage is rarely targeted except in the most critical systems. I
 
 Critical paths refer to the most important execution paths in a program that are essential to its core functionality, business logic, or safety requirements. These paths often handle high-risk, high-value, or frequently executed operations.
 
+Here's an example that has four possible execution paths and six branches:
+
+<Mermaid showForPrint="true">
+```
+graph TD
+  A[Start] --> B{isAdmin} 
+  B -->|true| C[Grant full access] 
+  B ==>|false| D{isAuthor} 
+  D ==>|true| E{isPublished} 
+  D -->|false| F[Access denied] 
+  E ==>|true| G[Grant read-only access] 
+  E -->|false| H[Grant edit access] 
+  C --> I[End] 
+  F --> I 
+  G ==> I 
+  H --> I
+
+  linkStyle 2,3,5,9 stroke:#16a34a, color:#16a34a
+
+  classDef covered fill:#9f9,stroke:#484,stroke-width:2px 
+  classDef uncovered fill:#f99,stroke:#844,stroke-width:2px 
+  classDef partial fill:#ff9,stroke:#884,stroke-width:2px
+
+  class B,D,E,G covered
+  class C,F,H uncovered
+```
+</Mermaid>
+
+We outline one of the possible paths (in greenb bold) which will be executed if `isAdmin` is false, `isAuthor` is true, and `isPublished` is true.
+
+In this example, the path coverage is 25% (1 out of 4 paths) and the branch coverage is 50% (3 out of 6 branches).
+
 ### Modified Condition/Decision Coverage (MC/DC)
 
 MC/DC is an advanced metric used in safety-critical systems that ensures **each condition in a decision independently affects the outcome**. It's required by standards like DO-178C in aviation software.
@@ -239,9 +271,22 @@ To mitigate this, consider the following strategies:
 - **Test suite optimization**: Ensure your test suite is efficient and fast. Use techniques like test parallelization, mocking, and minimizing external dependencies to reduce execution time.
 - **Mutation sampling**: Instead of running all possible mutations, randomly select a subset to test. This can provide a good indication of test suite quality without the full computational cost.
 
-{/* ## AI-Assisted Testing
+{/* ## Fuzzing */}
 
-TODO: Coming Soon! */}
+{/* https://fast-check.dev/ */}
+{/* https://www.npmjs.com/package/@fast-check/vitest */}
+
+{/* Fuzzing involves generating random or semi-random inputs to test software, aiming to uncover crashes, bugs, or vulnerabilities by stressing the system in unexpected ways. Modern fuzzers, like those in Code Intelligence, use AI to intelligently guide input generation. */}
+
+{/* Fuzzing excels at finding critical security issues like buffer overflows, memory leaks, or input validation errors that could be exploited by attackers. It's particularly effective for testing edge cases that human testers might overlook. It scales well for large, complex applications (e.g., APIs, network protocols, or file parsers) where manual testing is impractical. */}
+
+{/* Fuzzing shines in security testing and stress testing, especially for uncovering unexpected bugs or vulnerabilities in complex or external-facing systems. Its strength lies in its ability to operate with minimal code knowledge and rapidly explore edge cases, enhanced by AI for smarter input generation. */}
+
+{/* ## AI-Assisted Testing */}
+
+{/* https://github.com/magnitudedev/magnitude */}
+{/* copilot in GitHub with context or custom/specialty AI agents */}
+{/* https://www.code-intelligence.com/ for fuzzing*/}
 
 ## Best Practices
 
@@ -287,22 +332,3 @@ Most enterprise development workflows integrate coverage checks into CI/CD pipel
 
 - [Mutation-testing our JavaScript SDKs](https://sentry.engineering/blog/js-mutation-testing-our-sdks) by Sentry Engineering
 - [A Practical Tutorial on Modified Condition/Decision Coverage](https://ntrs.nasa.gov/citations/20010057789) by NASA
-
-
-{/* <Mermaid showForPrint="true">
-```
-graph TD
-  A[Function start] --> B{if x > 10}
-  B -->|True Path| C[Execute 'x is greater than 10']
-  B -->|False Path| D[Execute 'x is not greater than 10']
-  C --> E[Function end]
-  D --> E
-
-  classDef covered fill:#9f9,stroke:#484,stroke-width:2px
-  classDef uncovered fill:#f99,stroke:#844,stroke-width:2px
-  classDef partial fill:#ff9,stroke:#884,stroke-width:2px
-    
-  class A,B,C,E covered
-  class D uncovered
-  ```
-</Mermaid> */}

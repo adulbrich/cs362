@@ -1,0 +1,50 @@
+---
+title: Maintainability
+description: TODO
+draft: true
+sidebar:
+  order: 10
+---
+
+Software maintainability is a critical quality attribute that determines the long-term viability of any software system. It refers to the ease with which software can be **understood, modified, and extended throughout its lifecycle**. While initial development often captures the spotlight, studies show that maintenance activities account for 60-80% of total software costs over a system's lifetime.
+
+Maintainable software exhibits several key characteristics:
+
+- **Readability** (i.e., understandable): clear structure and consistent conventions that help new developers quickly grasp the codebase
+- **Modularity** (i.e., modifiable and extensible): allowing changes to be made with minimal risk of introducing unintended side effects and enabling new functionality to be added without architectural overhauls
+- **Testability**: well-defined components that can be verified independently
+- **Resiliency**: the ability handle and recover from problems effectively, avoiding cascading failures
+
+## Technical Debt
+
+The significance of maintainability becomes apparent when examining the consequences of its neglect. Poorly maintained systems accumulate what [Ward Cunningham termed "technical debt"](https://en.wikipedia.org/wiki/Technical_debt#Origin_of_the_concept)--shortcuts and suboptimal solutions that, like financial debt, accrue interest over time. 
+
+As this debt compounds, teams experience decreased velocity, increased defect rates, and growing resistance to change. What might have taken hours in a well-maintained system could require weeks in one plagued by maintenance issues.
+
+## SOLID
+
+Maintaining software effectively requires both technical practices and organizational commitment. At the technical level, principles like SOLID guide developers toward more maintainable architectures:
+
+1. Single Responsibility Principle (SRP)
+2. Open/Closed Principle
+3. Liskov's Substitution Principle (LSP)
+4. Interface Segregation Principle (ISP)
+5. Dependency Inversion Principle (DIP)
+
+{/* https://www.geeksforgeeks.org/solid-principle-in-programming-understand-with-real-life-examples/ */}
+
+## DORA and SPACE Metrics
+
+Measuring maintainability presents unique challenges. Unlike functional requirements, maintainability can't be directly observed in running software. Instead, teams rely on proxy metrics like cyclomatic complexity, change failure rate, and time to implement features. 
+
+More holistic frameworks like DORA (DevOps Research and Assessment) and SPACE (Satisfaction, Performance, Activity, Communication, Efficiency) provide broader perspectives on maintenance effectiveness by examining both technical and human factors.
+
+{/* https://dora.dev/guides/dora-metrics-four-keys/ */}
+{/* https://en.wikipedia.org/wiki/Goodhart%27s_law */}
+{/* The SPACE of Developer Productivity: https://queue.acm.org/detail.cfm?id=3454124 */}
+
+{/* ## How to Handle Technical Debt */}
+
+{/* ## Case Study: COBOL */}
+
+{/* Is it technical debt? Pros and cons. */}
