@@ -596,7 +596,7 @@ A new directory and file will be created in your `/tests` directory. You'll noti
 
 Browser rendering can vary based on different factors. It is recommended to run these snapshot tests in the same environment where the baseline was generated.
 
-## Testing on Different Browsers and Devices
+## Testing in Different Browsers, Devices, and Environments
 
 So far, our tests have run on the default browser engine (Chromium).
 
@@ -664,6 +664,48 @@ You can install new browsers using:
 ```sh
 npx playwright install
 ```
+
+We can also split tests into groups. These groups can be [different environments](https://playwright.dev/docs/test-projects#configure-projects-for-multiple-environments) with different base URLs and configuration options, or [different test subsets](https://playwright.dev/docs/test-projects#splitting-tests-into-projects).
+
+You can configure different environments in the `playwright.config.ts` file by naming your projects and providing different configuration options including base URLs, timeouts, and retries. This is useful for testing your application in different environments, such as staging and production. 
+
+```ts
+// playwright.config.ts
+  projects: [
+    {
+      name: 'staging',
+      use: {
+        baseURL: 'staging.example.com',
+      },
+    },
+    {
+      name: 'production',
+      use: {
+        baseURL: 'production.example.com',
+      },
+    },
+  ],
+```
+
+You can also configure different test subsets by using the `testMatch` option. This allows you to run only a specific set of tests based on their file names or tags. For example, you can run only the tests that match a specific pattern:
+
+```ts
+// playwright.config.ts
+  projects: [
+    {
+      name: 'Smoke',
+      testMatch: /.*smoke.spec.ts/,
+    },
+    {
+      name: 'Default',
+      testIgnore: /.*smoke.spec.ts/,
+    },
+  ],
+```
+
+:::note[Smoke Tests]
+Smoke tests are a subset of tests that cover the most critical functionality of an application. They are designed to quickly verify that the application is working as expected after a new build or deployment. Smoke tests are typically run before more extensive testing, such as regression testing, to ensure that the application is stable enough for further testing.
+:::
 
 ## Additional Playwright Features
 
