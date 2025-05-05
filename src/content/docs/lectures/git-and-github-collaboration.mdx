@@ -757,6 +757,57 @@ This effectively enforces the GitHub flow process, ensuring code quality and pro
 GitHub has a newer feature called [Rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) which offers overlapping but more comprehensive functionality than classic branch protection rules. It allows you to define rulesets that can be applied to multiple branches, including `main`, `develop`, and any feature branches.
 :::
 
+## READMEs and Other Repository FIles
+
+Your `README.md` file is the first thing users see when they visit your repository. It should provide a clear overview of the project, including:
+
+- Project description
+- Installation instructions
+- Usage examples
+- Where to get help
+- Contribution guidelines
+- Contributor list
+- Credits, inspiration, alternatives
+
+You can find out more about what constitutes a good README in [The Art of README](https://github.com/hackergrrl/art-of-readme). 
+
+### `LICENSE`
+
+The `LICENSE` file contains the legal terms under which the project's code can be used, modified, and distributed. It's important to choose an appropriate license that aligns with your project's goals and community values.
+
+Licenses can vary widely in terms of permissions and restrictions. For example, some licenses allow for commercial use, while others may restrict it. Some licenses require modifications to be shared under the same license, while others do not.
+
+Choosing the right license is crucial for open-source projects, as it defines how others can use your code. It's important to consider the implications of different licenses on your project's future and community.
+
+For example, the [MIT License](https://opensource.org/licenses/MIT) is a **permissive** license that allows for commercial use and modification, while the [GNU General Public License (GPL)](https://www.gnu.org/licenses/gpl-3.0.en.html) requires that any modifications be shared under the same license (i.e., **copyleft**).
+
+The copyleft licensing ensures that a work remains freely available for use, modification, and distribution, with the condition that derivatives also retain these freedoms. It's often described as a *reciprocal* license because it requires anyone who distributes the work or its derivatives to do so under the same or compatible terms, preventing the addition of restrictive proprietary conditions.
+
+Check out [Choose an open source license
+](https://choosealicense.com/) for a guide to selecting the right license for your project.
+
+If you project is not code, you can still use a license file to clarify how others can use your work. For example, if you have a blog or website, you might want to specify whether others can reuse your content, and under what conditions. See also the [Creative Commons licenses](https://creativecommons.org/) for non-code projects.
+
+### `CONTRIBUTING.md`
+
+The `CONTRIBUTING.md` file is a markdown file that provides guidelines for contributing to the project. It typically includes information on how to report issues, submit pull requests, and any specific coding standards or practices the team follows.
+
+### `CODE_OF_CONDUCT.md`
+
+The `CODE_OF_CONDUCT.md` file outlines the expected behavior of contributors and maintainers in the project. It sets the tone for a respectful and inclusive community, providing guidelines for communication and conflict resolution.
+
+### `SECURITY.md`
+
+The `SECURITY.md` file provides guidelines for reporting security vulnerabilities in the project. It typically includes information on how to report issues, the process for handling security reports, and any specific security practices the team follows.
+
+### `CHANGELOG.md`
+
+The `CHANGELOG.md` file is a markdown file that provides a chronological list of changes made to the project. It typically includes information on new features, bug fixes, and any breaking changes introduced in each release. This file helps users and contributors understand the evolution of the project over time.
+
+### `ARCHITECTURE.md`
+
+The `ARCHITECTURE.md` file provides an overview of the project's architecture and design decisions. It typically includes information on the project's structure, key components, and any specific architectural patterns or practices the team follows. This file helps new contributors understand the project's design and how to navigate its codebase.
+
 ## GitHub Issues and Projects
 
 GitHub provides a powerful issue tracking system that allows teams to manage tasks, bugs, and feature requests. Issues can be linked to pull requests, making it easy to track the status of work.
@@ -923,14 +974,103 @@ The DoD should be visible to the entire team and can be included in the project 
 
 Every team should have its own DoD, and it should be reviewed and updated regularly to reflect the team's evolving needs. With a good DoD, the team knows how to test their code and what to look for when reviewing pull requests.
 
+## Tags and Versioning 
+
+Versioning is the process of assigning unique version numbers to different releases of a software product. This helps track changes and updates over time. 
+
+You can use [Git's tagging feature](https://git-scm.com/book/en/v2/Git-Basics-Tagging) to create version tags. Tags are like branches that don't change over time. They are used to mark specific points in the commit history as important.
+
+You can create a lightweight tag with:
+
+```sh
+git tag v1.0
+```
+
+You can also create an annotated tag with:
+
+```sh
+git tag -a v1.0 -m "Version 1.0"
+```
+
+Annotated tags are stored as full objects in the Git database and include a message, author, and date. They can be signed. This is useful for keeping track of important releases.
+
+A tag is thus asssociated with a specific commit, and you can use it to refer to that commit in the future. For example, if you want to check out the code from version 1.0, you can do:
+
+```sh
+git checkout v1.0
+```
+
+By default, tags are not pushed to the remote repository. You can push a specific tag with:
+
+```sh
+git push origin v1.0
+```
+
+It's common to prefix your tags with a `v` (for "version") to indicate that they are version tags. For example, you might have tags like `v1.0`, `v1.1`, and `v2.0`.
+
+You can use tags for other purposes, for example by tagging commits used for demos, specific deployments, or backups.
+
+### Semantic Versioning
+
+[Semantic Versioning](https://semver.org/) (SemVer) is a versioning scheme that uses three numbers separated by dots (e.g., `1.0.0`). Each number has a specific meaning:
+
+- **Major version**: Incremented for incompatible API changes
+- **Minor version**: Incremented for backward-compatible new features
+- **Patch version**: Incremented for backward-compatible bug fixes
+- **Pre-release version**: Optional, used for pre-release versions (e.g., `1.0.0-alpha`)
+
+SemVer is widely used in the software industry and is a good choice for most projects. It provides a clear and consistent way to communicate changes to users and developers.
+
+It's common to use version major version 0 (`0.x.x`) for early development, where anything may change at any time. Once the software is stable and ready for production, you can start using version `1.0.0`.
+
+Check the SemVer specification for more details on how to use it. Note that the `v` prefix is not part of the SemVer specification. You might tag a commit with `v1.0.0`, but the SemVer version number itself is just `1.0.0`.
+
+You can use a simpler versioning scheme, such as `1.0`, `1.1`, etc., if your project doesn't require the complexity of SemVer.
+
+Ubuntu's versionsing schene, for example, includes the year and month of release (e.g., 20.04 for April 2020).
+
+#### Pre-Releases
+
+Pre-release versions are used to indicate that a version is not yet stable or ready for production. They are typically used for `alpha`, `beta`, or release candidate (`rc`) versions. 
+
+- `alpha` are early versions of the software that are not feature-complete and may contain bugs. They are typically used for internal testing and feedback.
+- `beta` versions are more stable than alpha versions and are typically used for external testing. They may still contain bugs, but they are feature-complete and ready for user feedback.
+- `rc` versions are the final versions of the software that are ready for production. They may still contain minor bugs, but they are feature-complete and have been thoroughly tested.
+
+You can find other identifies such as `nightly` or `canary` in some projects. These are typically used for continuous integration or continuous delivery (CI/CD) pipelines, where the software is built, tested automatically on a regular basis, and sometimes exposed to a limited set of users.
+
+:::note[Canary Releases]
+A **canary release** is a deployment strategy where a new version of the software is gradually rolled out to a small subset of users before being released to the entire user base. This allows teams to monitor the new version for issues and gather feedback before a full rollout. The term "canary" comes from the practice of using canaries in coal mines to detect toxic gases--if the canary showed signs of distress, it was a warning to miners that conditions were unsafe.
+{/* add mermaid diagram showing small percentage of users directed ot new version */}
+{/* TODO: move to CI/CD? */}
+:::
+
+### Creating Releases in GitHub
+
+A common practice is to create a **release** in GitHub for each version of your project. A release is a snapshot of your code at a specific point in time, along with release notes and other information.
+
+The release bundles the code and any assets (e.g., binaries, documentation) into a single package that can be downloaded and used by others.
+
+To create a release:
+
+1. Go to the **Releases** section in your repository
+2. Click the **Create a new release** button
+3. Select the tag you want to use for the release (or create a new tag)
+4. Provide a title and description for the release
+5. Optionally, attach any assets (e.g., binaries, documentation)
+6. Click the **Publish release** button
+
+If you haven't created a tag yet, one will be created using the latest commit on the branch you selected. 
+
+In your description, you can include release notes that summarize the changes in this version. This is a good place to include information about any breaking changes, new features, or bug fixes. Many projects also include the name of the contributors who worked on the items listed.
+
 ## Additional Resources
 
 - [Dealing with diverged git branches](https://jvns.ca/blog/2024/02/01/dealing-with-diverged-git-branches/) by Julia Evans
 - [Naming conventions for Git Branches — a Cheatsheet](https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534)
+- [`ARCHITECTURE.md`](https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html) by Alex Kladov
 - Check out [Linear](https://linear.app/), [Jira](https://www.atlassian.com/software/jira), [Trello](https://trello.com/), [Notion](https://www.notion.com/), [Basecamp](https://basecamp.com/) as alternatives to GitHub Projects (non-exhaustive list)
 
-
 {/* TODO: move tags and versioning to CI/CD? */}
-{/* ## Tags and Versioning */}
 {/* TODO: git cherry-pick <commit-hash> */}
 {/* TODO: https://git-scm.com/docs/git-bisect to find bugs -- works better with a linear history */}

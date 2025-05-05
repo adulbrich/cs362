@@ -9,6 +9,8 @@ lecture_topics=(
     "ui-integration-testing"
     "test-doubles"
     "end-to-end-testing"
+    "git-and-github-collaboration"
+    "ci-cd"
 )
 
 assignments=(
