@@ -1040,10 +1040,21 @@ Pre-release versions are used to indicate that a version is not yet stable or re
 You can find other identifies such as `nightly` or `canary` in some projects. These are typically used for continuous integration or continuous delivery (CI/CD) pipelines, where the software is built, tested automatically on a regular basis, and sometimes exposed to a limited set of users.
 
 :::note[Canary Releases]
-A **canary release** is a deployment strategy where a new version of the software is gradually rolled out to a small subset of users before being released to the entire user base. This allows teams to monitor the new version for issues and gather feedback before a full rollout. The term "canary" comes from the practice of using canaries in coal mines to detect toxic gases--if the canary showed signs of distress, it was a warning to miners that conditions were unsafe.
-{/* add mermaid diagram showing small percentage of users directed ot new version */}
-{/* TODO: move to CI/CD? */}
+A [**canary release**](https://martinfowler.com/bliki/CanaryRelease.html) is a deployment strategy where a new version of the software is gradually rolled out to a small subset of users before being released to the entire user base. This allows teams to monitor the new version for issues and gather feedback before a full rollout. The term "canary" comes from the practice of using canaries in coal mines to detect toxic gases--if the canary showed signs of distress, it was a warning to miners that conditions were unsafe.
+
+<Mermaid showForPrint="true">
+```
+flowchart TD
+    Users -->|95% of traffic| Prod[Production Version]
+    Users -->|5% of traffic| Canary[Canary Version]
+    Canary --> Monitor[Data Collection, Monitoring, and Analysis]
+    Monitor -->|Issues detected| Rollback[Rollback Canary]
+    Monitor -->|No issues| FullDeploy[Progressively increase traffic until 100%]
+```
+</Mermaid>
 :::
+
+It is very common for software engineering teams to internally use their own software (also known as **dogfooding**) before releasing it to customers. This allows them to test the software in a real-world environment and gather early feedback. It helps developers identify bugs, improve usability, and ensure the product meets real-world needs by experiencing it as a user would. For example, a company building a messaging app might have its team use it for internal communication to catch issues early.
 
 ### Creating Releases in GitHub
 
@@ -1069,8 +1080,8 @@ In your description, you can include release notes that summarize the changes in
 - [Dealing with diverged git branches](https://jvns.ca/blog/2024/02/01/dealing-with-diverged-git-branches/) by Julia Evans
 - [Naming conventions for Git Branches — a Cheatsheet](https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534)
 - [`ARCHITECTURE.md`](https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html) by Alex Kladov
+- [Awesome README](https://github.com/matiassingers/awesome-readme)
 - Check out [Linear](https://linear.app/), [Jira](https://www.atlassian.com/software/jira), [Trello](https://trello.com/), [Notion](https://www.notion.com/), [Basecamp](https://basecamp.com/) as alternatives to GitHub Projects (non-exhaustive list)
 
-{/* TODO: move tags and versioning to CI/CD? */}
 {/* TODO: git cherry-pick <commit-hash> */}
 {/* TODO: https://git-scm.com/docs/git-bisect to find bugs -- works better with a linear history */}
