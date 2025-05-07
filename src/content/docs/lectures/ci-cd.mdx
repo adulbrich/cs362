@@ -57,7 +57,7 @@ Automating as much of the deployment process as possible reduces repetitive over
 As projects grow in size and complexity, [Google's Software Engineering team recommends additional strategies](https://abseil.io/resources/swe-book/html/ch24.html):
 
 - **Feature Flags**: Simple configuration settings that can toggle specific features on or off within the deployed application, providing granular control over feature visibility and timing.
-- **Staged Rollouts**: Releasing features gradually to increasing percentages of users, which 
+- **Staged Rollouts**: Releasing features gradually to increasing percentages of users (e.g., canary deployments), which 
   - Makes bug resolution more manageable (affecting fewer users initially)
   - Ensures adequate infrastructure capacity for new features
 - **Data-Driven Deployment**: Using metrics to guide deployment decisions, such as *A/B testing* where different user groups experience different versions of the product while performance data is collected.
