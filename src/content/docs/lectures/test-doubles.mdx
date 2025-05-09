@@ -980,7 +980,7 @@ To create a fake implementation of the `Database` module, we can use [`vi.mock()
 Here's an example of how to create a fake implementation of the `Database` module using `vi.mock()`:
 
 ```js
-// registerUser.test.js
+// registerUser.fake.test.js
 import { Database } from "./database.js";
 
 vi.mock("./database.js", () => {
@@ -1007,7 +1007,7 @@ We include a `reset()` method to clear the fake database between tests, ensuring
 Our test fixture will then look like this:
 
 ```js
-// registerUser.test.js
+// registerUser.fake.test.js
 beforeEach(() => {
   Database.reset();
   vi.clearAllMocks();
@@ -1028,7 +1028,7 @@ Here's an example of how to implement dependency injection in our `registerUser(
 ```js
 // registerUser.js
 import { Database as sqlite } from "./database.js";
-export function registerUser(email, password, , db = sqlite) {
+export function registerUser(email, password, Database = sqlite) {
   const record = {
     email: email,
     password: bcrypt.hashSync(password, 8),
@@ -1045,14 +1045,14 @@ export function registerUser(email, password, , db = sqlite) {
 In this example, we added a third parameter to the `registerUser()` function that defaults to the real `Database` implementation. This allows us to pass in a fake implementation during testing without modifying the original code.
 
 ```js
-// registerUser.test.js
-import { Database as FakeDatabase } from "./inMemoryDatabase.js";
+// registerUser.fake.test.js
+import { Database } from "./inMemoryDatabase.js";
 
 // ...
 
 test("saves user record in database", () => {
   // ...
-  registerUser(email, password, FakeDatabase);
+  registerUser(email, password, Database);
   // ...
 });
 ```
