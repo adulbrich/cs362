@@ -11,6 +11,7 @@ lecture_topics=(
     "end-to-end-testing"
     "git-and-github-collaboration"
     "ci-cd"
+    "coverage"
 )
 
 assignments=(
