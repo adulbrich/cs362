@@ -243,9 +243,7 @@ npx stryker run
 
 This will execute your tests against the generated mutants and provide a report on how many were killed or survived.
 
-Let's try it out on some examples from previous lectures.
-
-{/* TODO */}
+We can try it out on some examples from previous lectures.
 
 ### Possible Mutations
 
@@ -269,13 +267,28 @@ To mitigate this, consider the following strategies:
 - **Test suite optimization**: Ensure your test suite is efficient and fast. Use techniques like test parallelization, mocking, and minimizing external dependencies to reduce execution time.
 - **Mutation sampling**: Instead of running all possible mutations, randomly select a subset to test. This can provide a good indication of test suite quality without the full computational cost.
 
+## Property-Based Testing and fuzzing
+
+**Property-based testing** is a testing technique where you define properties or invariants that your code should satisfy, and the testing framework **generates random inputs** to verify these properties. This approach can uncover edge cases and unexpected behavior that traditional example-based tests might miss.
+
+Property-based testing is particularly useful for functions with complex input domains or side effects, as it can explore a wide range of scenarios without requiring exhaustive test case definitions.
+
+Fuzzing is a related technique that involves generating random or semi-random inputs to test software, aiming to uncover crashes, bugs, or vulnerabilities by stressing the system in unexpected ways. Fuzzing is often used in security testing to identify vulnerabilities in software.
+
+A common property-based testing library for JavaScript is [fast-check](https://fast-check.dev/) which integrates with [Vitest](https://www.npmjs.com/package/@fast-check/vitest). It allows you to define properties and automatically generates test cases to verify them. It also support [fuzzing](https://fast-check.dev/docs/advanced/fuzzing/).
+
+{/* TODO: test with previous assignments and mutation testing reports */}
+
+{/* TODO */}
 {/* ## Property-Based Testing */}
 
 {/* https://fast-check.dev/ */}
 {/* https://www.npmjs.com/package/@fast-check/vitest */}
 
+{/* TODO */}
 {/* ## Fuzzing */}
 
+{/* https://fast-check.dev/docs/advanced/fuzzing/ */}
 {/* https://github.com/AFLplusplus/AFLplusplus */}
 {/* https://llvm.org/docs/LibFuzzer.html */}
 {/* https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/jsfuzz */}
@@ -336,3 +349,4 @@ Most enterprise development workflows integrate coverage checks into CI/CD pipel
 
 - [Mutation-testing our JavaScript SDKs](https://sentry.engineering/blog/js-mutation-testing-our-sdks) by Sentry Engineering
 - [A Practical Tutorial on Modified Condition/Decision Coverage](https://ntrs.nasa.gov/citations/20010057789) by NASA
+- [Why Property-Based](https://fast-check.dev/docs/introduction/why-property-based/) by Nicolas Dubien
