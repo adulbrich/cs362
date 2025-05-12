@@ -20,21 +20,19 @@ Every term:
 - [ ] additional topics to cover
   - [ ] maintenance
   - [x] git pre-commit hooks
-  - [ ] feature flags
+  - [x] feature flags
   - [ ] chaos engineering
   - [ ] system performance and reliability (k6, sonarQube, Sentry, Winston)
   - [ ] technical debt
-  - [ ] https://github.com/ladjs/supertest or Playwright API Testing (testing node.js HTTP servers or REST API endpoints)
-  - [ ] monorepos 
+  - [x] https://github.com/ladjs/supertest or Playwright API Testing (testing node.js HTTP servers or REST API endpoints)
+  - [ ] monorepos
   - [ ] observability
   - [ ] cost-analysis frameworks, open-source vs proprietary
   - [ ] security testing (OWASP ZAP, XSS, SQL injection, ...)
   - [ ] developer experience metrics (DORA, SPACE)
   - [ ] cyclomatic complexity, bug density, and mean time to resolution.
-  - [ ] AI-driven testing tools 
+  - [ ] AI-driven testing tools
   - [ ] documentation (jsdoc, etc.)
-
-  
 
 ## PDFs
 

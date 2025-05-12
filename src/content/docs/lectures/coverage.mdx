@@ -8,8 +8,6 @@ sidebar:
 
 import Mermaid from "../../../components/Mermaid.astro";
 
-{/* TODO: add mermaid diagrams to illustrate coverage (branch, path) */}
-
 Code coverage is a measure of how much of your code is executed when you run your tests. It helps you identify untested parts of your codebase and can guide you in writing more comprehensive tests.
 
 Code coverage metrics can be interpreted in various ways, and expectations around coverage vary widely across teams and organizations.
@@ -271,10 +269,16 @@ To mitigate this, consider the following strategies:
 - **Test suite optimization**: Ensure your test suite is efficient and fast. Use techniques like test parallelization, mocking, and minimizing external dependencies to reduce execution time.
 - **Mutation sampling**: Instead of running all possible mutations, randomly select a subset to test. This can provide a good indication of test suite quality without the full computational cost.
 
-{/* ## Fuzzing */}
+{/* ## Property-Based Testing */}
 
 {/* https://fast-check.dev/ */}
 {/* https://www.npmjs.com/package/@fast-check/vitest */}
+
+{/* ## Fuzzing */}
+
+{/* https://github.com/AFLplusplus/AFLplusplus */}
+{/* https://llvm.org/docs/LibFuzzer.html */}
+{/* https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/jsfuzz */}
 
 {/* Fuzzing involves generating random or semi-random inputs to test software, aiming to uncover crashes, bugs, or vulnerabilities by stressing the system in unexpected ways. */}
 

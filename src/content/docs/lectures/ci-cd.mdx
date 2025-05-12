@@ -395,6 +395,8 @@ on:
   workflow_call:
   workflow_dispatch:
 ```
+
+Note that `workflow_dispatch:` will only be available if the workflow is on the *default* branch, but you can run it on any branches.
 :::
 
 ### Deploying Our Application
@@ -566,7 +568,205 @@ The `container` section specifies the Docker image to use for the job. The `imag
 {/* TODO */}
 ## Code Scanning and Security
 
-Coming soon!
+While we already discussed best practices regarding code reviews and branch protections, and we'll discuss linting in the next section, there are additional security features available in GitHub that can help you identify and fix vulnerabilities in your code.
+
+By embedding security checks into CI/CD, we catch issues early, reduce manual effort, and maintain trust in our applications.
+
+### Code Scanning with CodeQL
+
+[CodeQL](https://docs.github.com/en/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning-with-codeql) is GitHub's static analysis tool for identifying security vulnerabilities and code quality issues. It treats code as data, allowing you to query it for patterns that indicate potential problems. CodeQL supports JavaScript (and TypeScript), making it perfect for analyzing Node.js applications, React frontends, or Express servers.
+
+Manual code reviews can miss subtle vulnerabilities, like SQL injection or cross-site scripting (XSS). CodeQL automates this process, scanning code for known vulnerability patterns and integrating results into your CI/CD pipeline. This ensures that every pull request or commit is checked before deployment.
+
+:::note[What are SQL Injections and XSS?]
+**SQL Injections** is a code injection technique that allows attackers to execute arbitrary SQL queries against a database. This can lead to unauthorized access, data leakage, or even complete database compromise.
+
+**Cross-Site Scripting (XSS)** is a vulnerability that allows attackers to inject malicious scripts into web pages viewed by other users. This can lead to session hijacking, data theft, or defacement of the website.
+:::
+
+You can enable CodeQL scanning in your repository by following these steps:
+
+1. Go to your repository on GitHub
+2. Click on the **Settings** tab
+3. Click on **Advanced Security**
+4. Go to the **Code Scanning** section and setup CodeQL analysis
+
+You can select the default configuration or customize it to suit your needs. The latter will allow you to configure a workflow that runs CodeQL analysis, tailored to your specific codebase.
+
+Here's an example. Assume we have a Node.js Express application with a vulnerable endpoint:
+
+```js
+// server.js
+const express = require('express');
+const app = express();
+
+app.get('/user', (req, res) => {
+  const username = req.query.name;
+  // Vulnerable to XSS: Directly embedding user input in response
+  res.send(`Hello, ${username}`);
+});
+```
+
+Let's go ahead and add a CodeQL workflow to our repository through the "Advanced" code scanning setup. This will create a new workflow file in the `.github/workflows/` directory (default comments removed for clarity, refer to GitHub for the original file):
+
+```yaml
+// codeql.yml
+name: "CodeQL Advanced"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '32 17 * * 2'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    permissions:
+      # required for all workflows
+      security-events: write
+
+      # required to fetch internal or private CodeQL packs
+      packages: read
+
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: actions
+          build-mode: none
+        - language: javascript-typescript
+          build-mode: none
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+    - if: matrix.build-mode == 'manual'
+      shell: bash
+      run: |
+        echo 'If you are using a "manual" build mode for one or more of the' \
+          'languages you are analyzing, replace this with the commands to build' \
+          'your code, for example:'
+        echo '  make bootstrap'
+        echo '  make release'
+        exit 1
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
+```
+
+This workflow:
+
+- Triggers on push or pull requests to the main branch. and on a schedule (at 17:32 UTC every Tuesday).
+- Checks out the code, initializes CodeQL, and analyzes Actions and JavaScript files.
+- Reports findings in the GitHub UI under the “Security” tab.
+- Runs on Ubuntu by default, but uses macOS for Swift code analysis.
+- Sets the specific permissions the workflow needs:
+  - `security-events: write`: To write security scanning results
+  - `packages: read`: To access CodeQL packages
+  - `actions: read and contents: read`: For accessing repository content
+- Uses a matrix strategy to scan multiple languages in parallel:
+  - GitHub Actions workflows (YAML files)
+  - JavaScript/TypeScript code
+  - Both use "none" build mode, meaning CodeQL will automatically figure out how to analyze the code
+
+:::note[`cron`]
+The `cron` syntax is a time-based job scheduler in Unix-like operating systems. It allows you to schedule tasks to run at specific intervals. The format is:
+
+```
+* * * * *
+```
+
+Where each asterisk represents a field:
+- Minute (0-59)
+- Hour (0-23)
+- Day of the month (1-31)
+- Month (1-12)
+- Day of the week (0-6, where 0 is Sunday)
+
+In the example above (`'32 17 * * 2'`), the job runs at 17:32 UTC every Tuesday. The `*` means "every" for that field.
+:::
+
+Running this workflow will analyze your code and report any vulnerabilities or issues it finds. You can view the results in the "Security" tab of your repository. It will report something along the lines of:
+
+> Directly writing user input (for example, an HTTP request parameter) to an HTTP response without properly sanitizing the input first, allows for a cross-site scripting vulnerability.
+
+### Dependencies
+
+[Dependabot](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-supply-chain-security#what-is-dependabot) is GitHub's tool for managing dependencies by automatically updating them and flagging vulnerabilities. In JavaScript projects, where `package.json` files list dependencies like `express` or `lodash`, outdated or vulnerable dependencies are a common attack vector.
+
+A single vulnerable dependency can compromise your application. For example, an old version of `lodash` might allow [prototype pollution attacks](https://cheatsheetseries.owasp.org/cheatsheets/Prototype_Pollution_Prevention_Cheat_Sheet.html). Dependabot scans your dependencies, checks them against vulnerability databases, and optionally creates pull requests to update them.
+
+You can enable dependencies scanning in your repository by following these steps:
+
+1. Go to your repository on GitHub
+2. Click on the **Settings** tab
+3. Click on **Advanced Security**
+4. Go to the **Dependabot** section and enable Dependabot
+
+You can configure a [custom workflow for Dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates).
+
+### Secrets
+
+[Secret scanning](https://docs.github.com/en/enterprise-cloud@latest/code-security/secret-scanning/introduction/about-secret-scanning) detects sensitive information (e.g., API keys, passwords) in your code, commits, or pull requests. In JavaScript projects, secrets often appear in configuration files or environment variables, like a .env file or hardcoded API keys.
+
+Leaking secrets can lead to unauthorized access to your systems. For example, a hardcoded AWS key in a public repository could allow attackers to spin up costly resources. GitHub's secret scanning automatically identifies and protects secrets, preventing exposure (for supported partners).
+
+Secret scanning is enabled by default for public repositories on GitHub. For private repositories, enable it under the repository's **Settings** tab then **Advanced Security** section.
+
+If a secret is detected, take these steps:
+
+1. Rotate the secret: Invalidate the exposed key and generate a new one.
+2. Remove the secret: Delete the hardcoded value and use environment variables.
+
+If you need to store secrets in your repository, use [GitHub Secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions). These are encrypted environment variables that can be accessed in your workflows without exposing them in the code.
+
+### Container Scanning
+
+While we haven't discussed containers in this course yet, they are a common deployment method for modern applications. Containers package applications and their dependencies into isolated environments, ensuring consistent behavior across different systems.
+
+[Container scanning](https://www.docker.com/blog/automating-your-containers-security-scanning/) identifies vulnerabilities in container images. This is crucial for applications that rely on Docker or other container technologies, as vulnerabilities in base images can compromise the entire application.
+
+One common tool for container scanning is [Trivy](https://trivy.dev/latest/), an open-source vulnerability scanner for containers. It scans images for known vulnerabilities and provides detailed reports.
+
+### Dynamic Scanning
+
+Dynamic Application Security Testing (DAST) tests your application while it's running, simulating real-world attacks to identify vulnerabilities. This is particularly useful for web applications, where user input can lead to security issues.
+
+Dynamic scanning tools like [ZAP](https://www.zaproxy.org/) can automatically crawl your application and identify vulnerabilities like SQL injection, cross-site scripting (XSS), and insecure configurations.
+
+These tools can be integrated into your CI/CD pipeline to ensure that security testing is part of your development process. For example, you can set up a GitHub Actions workflow that runs a dynamic scanner against your application after it has been deployed to a staging environment.
+
+In the example below, we run our application aginast the live version of our application. This is a simple example, but you can customize it to suit your needs.
+
+```yaml
+//zap-scan.yaml
+name: DAST with OWASP ZAP
+on:
+  push:
+    branches: [main]
+jobs:
+  zap-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: zaproxy/action-baseline@v0.14.0
+        with:
+          target: https://cs362.alexulbrich.com
+          fail_action: true
+```
 
 ## Local CI with Hooks
 
