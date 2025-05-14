@@ -1,0 +1,99 @@
+---
+title: Project Peer-Evaluation
+description: Learn how project peer-evaluation works in CS362 - including criteria ratings, point distribution methods, grade calculation formulas, and submission guidelines for fairly assessing individual contributions to team projects.
+sidebar:
+  order: 3
+---
+
+{/* TODO: add distributions at the end of the term */}
+
+import Latex from '../../../components/Latex.astro';
+
+The peer evaluation is a way for you to evaluate the contributions of your team members to the final project. The evaluation will be used to determine the final project grade for each team member, so it is important that you take this seriously.
+
+:::caution
+A failure to complete the peer evaluation will result in a 60/100 for the student who did not complete the survey.
+:::
+
+The peer evaluation will be done using a Qualtrics Survey, which you'll receive a link to via email. The survey will be open for a limited time, so make sure to complete it before the deadline.
+
+All answers are anonymous, and the results will be shared with the instructor only. If you have questions regarding your grade, please contact the instructor directly.
+
+## Tasks
+
+In the survey, you will have two quantitative tasks to complete, and a few optional qualitative questions to answer. This metholod of evaluation is based on the work of Gardner (2003)[^1] and is designed to be fair and effective in assessing individual contributions to group projects.
+
+### Quantitative Questions
+
+Your **first task** is to rate each member of your team on the following five criteria. You will be asked to provide a rating for each member of your team, including yourself.
+
+| Criteria | Description |
+|----------|-------------|
+| 1       | Did the member do an appropriate quantity of work? |
+| 2       | How about the quality of the member's work? |
+| 3       | Rate the member's attitude as a team player (eager to do assigned work, communicated with others, kept appointments, etc.). |
+| 4       | Rate the overall value of the member's technical contribution. |
+| 5       | Would you want to work with this person on a project again? |
+
+For each of the **first four criteria**, you'll rate each member of your team on a scale from 1 to 5, where:
+
+- 1 = Better off without member, in this regard
+- 2 = Some obvious shortcomings
+- 3 = OK, but nothing special
+- 4 = Good solid effort; took initiative
+- 5 = Outstanding! Super asset to team
+
+For the **fifth criteria**, you'll rate each member of your team on a scale from 1 to 5, where:
+
+- 1 = Definitely not
+- 2 = Only if no one else available
+- 3 = OK, but not my first choice
+- 4 = Yes, I have no reservations
+- 5 = I'd consider myself lucky!
+
+The **second task** is to distribute 100 points among your team members, including yourself. You can give each member a score between 0 and 100, but the total must equal 100. This is a way to quantify the contributions of each member of your team. 
+
+You must **give yourself at least 100/N points**, where N is the number of members in your team, whether you honestly feel you deserve them or not. This is to avoid an unrealistic “self-incrimination” requirement. For example, if you have a team of 4 members, you must give yourself at least 25 points. You can give yourself more than 25 points, but the total must equal 100. 
+
+### Qualitative Feedback
+
+Finally, you will be asked to provide any additional comments you would like to make about your team members. This is optional, but it can be helpful for the instructor to understand the dynamics of your team.
+
+- For particularly high or low allocations, provide concrete examples to illustrate your reasoning. What particular behaviors of the team members are particularly valuable or detrimental?
+- Overall, how effectively is your team working? Explain.
+- What did you learn about working in a team that you will carry into the future?
+
+Again, everything is anonymous, and the results will be shared with the instructor only. If you have questions regarding your grade, please contact the instructor directly.
+
+## Grade Calculation
+
+For the **five criteria**, the steps are outlined below:
+
+1. Convert the ratings to a 60-100 scale, where 
+    - 1 = 60, 
+    - 2 = 70, 
+    - 3 = 80, 
+    - 4 = 90, 
+    - 5 = 100.
+2. Average the ratings for each member of the team (*excluding* self)
+
+Each individual score is thus the average of the ratings given by the other team members, scaled to a 60-100 scale. 
+
+For the **100-point distribution**, the steps are outlined below:
+
+1. Verify that self-evaluation is at least 100/N points and total score is 100 in each survey.
+2. Average the ratings for each member of the team (*excluding* self)
+3. If the team has more or less than 4 members:
+    - Multiply the average by N (the number of team members )
+    - Divide by 4
+4. If the average is less than 10, set it to 10 (85%)
+5. If the average is greater than 40, set it to 40 (115%)
+6. Apply the following formula: <Latex formula="0.65 + 0.0225\cdot x - 0.00025\cdot x^2"/>, where <Latex formula="x"/> is the average score from the 100-point distribution. 
+
+Using this formula with the minimum and maximum values, we can see that the 100-point distribution score will be strictly between 85% and 115%, which is pretty generous. Scoring over 100% means your team members were particularly generous in their ratings, and you will be rewarded for your work.
+
+**The final score for each member of the team is the average of the scores from the five criteria and the 100-point distribution score.**
+
+## References
+
+[^1]: “Fairly Assessing Individual Contributions to Group Software Projects.” Accessed: Mar. 31, 2025. [Online]. Available: https://www.cs.ubc.ca/wccce/Program03/papers/Gardner-Group/Gardner-Group.htm
