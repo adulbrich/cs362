@@ -22,9 +22,9 @@ assignments=(
     "project"
 )
 
-# practicalities=(
-#     "TODO"
-# )
+practicalities=(
+    "peer-evaluation"
+)
 
 for topic in "${lecture_topics[@]}"; do
   node print.js "https://cs362.alexulbrich.com/lectures/$topic" "lecture-notes-$topic.pdf"
@@ -34,6 +34,6 @@ for topic in "${assignments[@]}"; do
   node print.js "https://cs362.alexulbrich.com/assignments/$topic" "assignment-$topic.pdf"
 done
 
-# for topic in "${practicalities[@]}"; do
-#   node print.js "https://cs362.alexulbrich.com/practicalities/$topic" "practicalities-$topic.pdf"
-# done
+for topic in "${practicalities[@]}"; do
+  node print.js "https://cs362.alexulbrich.com/practicalities/$topic" "practicalities-$topic.pdf"
+done

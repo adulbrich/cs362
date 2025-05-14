@@ -45,6 +45,58 @@ More holistic frameworks like DORA (DevOps Research and Assessment) and SPACE (S
 
 {/* ## How to Handle Technical Debt */}
 
-{/* ## Case Study: COBOL */}
-
 {/* Is it technical debt? Pros and cons. */}
+
+## Case Study: Pinnacle Insurance and the Legacy Mainframe Dilemma
+
+*This is a fictional case study for illustrative purposes, based on real-world experience from yours truly.*
+
+## Background
+
+Pinnacle Insurance, a Chicago-based insurer founded in 1975, serves 2 million policyholders with life, auto, and home insurance, generating $5 billion annually. Its 500-strong IT department, led by CTO Maria Alvarez, maintains “CoreSys,” a suite of IBM z/OS mainframe systems programmed in COBOL since the 1990s. CoreSys handles policy administration, claims processing, underwriting, and billing, processing 50,000 transactions daily with 99.99% uptime. COBOL's performance excels, executing complex transactions in milliseconds, surpassing many modern languages for batch processing. Its operational costs are low, with software expenses at $2 million annually (vs. $10 million for hardware and IBM licensing) and minimal resource usage (10% CPU at peak).
+
+Outside the mainframe, Pinnacle is a Microsoft shop, using SQL Server for databases, C# for backend development, and ASP.NET for web interfaces in non-core applications like customer relationship management. CoreSys integrates poorly with these systems, requiring custom middleware. All new IT employees undergo a mandatory two-week COBOL training program, but its basic coverage leaves hires like junior developer Priya Sharma unprepared for CoreSys's complexity.
+
+The insurance industry is evolving, with InsureTech startups offering real-time quoting and mobile apps. Pinnacle's leadership aims to launch a digital platform, but CoreSys's limitations raise questions about modernization, technical debt, and developer productivity.
+
+## The Situation
+
+CoreSys comprises 2 million lines of COBOL code across 12 modules. While COBOL's speed and low software costs keep it efficient, technical debt is mounting. Only 40% of CoreSys is documented, with critical knowledge held by veterans like lead architect Tom Reynolds, nearing retirement. The 500,000-line policy administration module takes weeks to modify due to tight coupling and no automated tests. Batch processing prevents real-time data access for a planned mobile app, and linking CoreSys to Microsoft SQL Server requires costly middleware. The two-week COBOL training fails to equip new hires for CoreSys's monolithic codebase, slowing onboarding.
+
+The IT team, averaging 45 years old, includes 200 COBOL experts, with 30% planning to retire within five years. Annual mainframe costs total $15 million. Software releases occur monthly, with the third week dedicated to extensive manual testing. Deployments happen overnight on Fridays, with engineers on standby Saturdays to monitor outcomes. Critical bugs must be fixed over the weekend; otherwise, the release is rolled back. Minor bugs are deferred for later patches. Despite this rigor, one in four releases fails, risking regulatory fines. Preparing changes takes 4-6 weeks, slowed by manual reviews and testing. When failures occur, restoring service takes two days on average, as basic logs offer little insight without modern monitoring tools.
+
+Developers are frustrated, rating job satisfaction low due to outdated COBOL tools, weekend standbys, and the disconnect between mainframe and Microsoft systems. The slow pace of delivering new features leads to customer complaints about delayed services. Much of the team's time is spent reworking failed releases, leaving little room for innovation. Onboarding new hires takes six months due to knowledge silos and inadequate training. Manual testing and batch job monitoring frequently interrupt developers' focus, reducing their efficiency.
+
+### The Challenge
+
+CEO David Kim wants a mobile app by 2027 for real-time quotes and policy management. Maria Alvarez's team must decide:
+
+1. Maintain CoreSys: Add observability (e.g., IBM Z monitoring), automate testing, and enhance COBOL training.
+2. Incremental Modernization: Refactor key modules and use APIs to link with Microsoft systems.
+3. Full Migration: Replace CoreSys with a cloud-native platform (e.g., Azure, C#), leveraging Pinnacle's Microsoft expertise.
+4. Hybrid Approach: Migrate non-critical functions to Azure, keeping CoreSys for transactions.
+
+Maintaining CoreSys leverages COBOL's speed and low costs but struggles with real-time needs and manual processes. Migration aligns with the Microsoft stack but risks $50 million and years of effort. Technical debt and low morale (10% turnover) complicate the decision.
+
+### Recent Incident
+
+A regulatory update to the billing module failed, overcharging 5,000 customers. The Saturday standby team traced the issue to an undocumented COBOL subroutine, but fixing it required Tom Reynolds' expertise, exposing knowledge gaps. A weekend rollback cost $500,000, intensifying modernization debates.
+
+### Reflections
+
+After reading the case study, answer the following questions:
+
+- How do COBOL's low costs, high performance, and monthly release cycle affect migration decisions? Compare to cloud costs and Microsoft alignment.
+- What risks does migration to Azure/C# pose? How does maintaining CoreSys impact agility?
+- Identify CoreSys's technical debt. How does it affect maintainability and Microsoft integration?
+- Propose a debt prioritization plan, considering the release process. Which delivery or team metrics would improve?
+- How do COBOL training, manual testing, and weekend standbys impact team morale and efficiency? Suggest improvements (e.g., automation).
+- How can Pinnacle retain talent like Priya and reduce reliance on experts like Tom?
+- Recommend an approach (maintain, modernize, migrate, hybrid). Justify using delivery and team metrics, plus Microsoft context.
+- Outline a 6-month plan to address debt and support the mobile app, considering the release cycle.
+
+Consider pros and cons, costs, developer experience, hiring, and risks. Use metrics to support your recommendations. Discuss the impact of technical debt on maintainability.
+
+## Additional Resources
+
+- Flyvbjerg, Bent and Budzier, Alexander and Aaen, Jon and Keil, Mark and Zottoli, M., The Uniqueness of IT Cost Risk: A Cross-Group Comparison of 23 Project Types (May 08, 2025). Available at SSRN: https://ssrn.com/abstract=5247223 or http://dx.doi.org/10.2139/ssrn.5247223
