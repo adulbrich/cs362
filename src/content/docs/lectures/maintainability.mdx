@@ -6,6 +6,8 @@ sidebar:
   order: 10
 ---
 
+import Mermaid from "../../../components/Mermaid.astro";
+
 Software maintainability is a critical quality attribute that determines the long-term viability of any software system. It refers to the ease with which software can be **understood, modified, and extended throughout its lifecycle**. While initial development often captures the spotlight, studies show that maintenance activities account for 60-80% of total software costs over a system's lifetime.
 
 Maintainable software exhibits several key characteristics:
@@ -21,23 +23,488 @@ The significance of maintainability becomes apparent when examining the conseque
 
 As this debt compounds, teams experience decreased velocity, increased defect rates, and growing resistance to change. What might have taken hours in a well-maintained system could require weeks in one plagued by maintenance issues.
 
+### Understanding Technical Debt
+
+Technical debt occurs when development teams choose a quick, expedient solution over a better approach that would take longer to implement. Just as financial debt has principal and interest payments, technical debt has immediate benefits but ongoing costs:
+
+- **Principal**: The original suboptimal code or design decision.
+- **Interest**: The ongoing cost of working around, maintaining, and extending the flawed solution.
+- **Compound Interest**: As debt accumulates, it becomes increasingly expensive to make changes.
+
+<Mermaid showForPrint="true">
+```
+quadrantChart
+  title Technical Debt Quadrants
+  x-axis Reckless --> Prudent
+  y-axis Inadvertent --> Deliberate
+  quadrant-1 Deliberate-Prudent
+  quadrant-2 Deliberate-Reckless
+  quadrant-3 Inadvertent-Reckless
+  quadrant-4 Inadvertent-Prudent
+  Shortcuts taken: [0.25, 0.85] radius: 0
+  despite knowing: [0.25, 0.8] radius: 0
+  better approaches: [0.25, 0.75] radius: 0
+  Strategic decisions: [0.75, 0.85] radius: 0
+  made with full awareness: [0.75, 0.8] radius: 0
+  Poor practices: [0.25, 0.35] radius: 0
+  due to lack of: [0.25, 0.3] radius: 0
+  knowledge: [0.25, 0.25] radius: 0
+  Learning debt: [0.75, 0.35] radius: 0
+  that becomes apparent: [0.75, 0.3] radius: 0
+  over time: [0.75, 0.25] radius: 0
+```
+</Mermaid>
+
+#### Deliberate-Prudent
+
+```javascript
+// Quick fix to meet critical deadline
+function calculateTax(amount) {
+  // TODO: Replace with proper tax service integration after Q4 release
+  return amount * 0.08; // Hardcoded tax rate for MVP
+}
+```
+
+#### Deliberate-Reckless
+
+```javascript
+// "We don't have time for design patterns"
+class OrderManager {
+  processOrder(order) {
+    // 200 lines of mixed responsibilities
+    // Database logic, email sending, inventory updates all in one method
+  }
+}
+```
+
+#### Inadvertent-Prudent
+
+```javascript
+// Original implementation seemed fine, but now we know better
+class User {
+  validateEmail(email) {
+    return email.includes('@'); // Too simplistic, learned better validation later
+  }
+}
+```
+
+#### Inadvertent-Reckless
+
+```javascript
+// No understanding of best practices
+let userData = {}; // Global variable used throughout application
+function updateUser(name, email) {
+  userData.name = name;
+  userData.email = email;
+  // Direct DOM manipulation mixed with business logic
+  document.getElementById('userName').innerHTML = name;
+}
+```
+
+### Measuring Technical Debt
+
+Measuring technical debt is challenging, as it often involves subjective assessments of code quality and maintainability. However, several metrics can help quantify the impact of technical debt.
+
+{/* TODO */}
+
+#### Code Quality Metrics
+
+{/* TODO */}
+
+#### Development Velocity Metrics
+
+{/* TODO */}
+
+#### Team Health Metrics
+
+{/* TODO */}
+
+### Managing Technical Debt
+
+Managing technical debt requires a proactive approach that balances short-term needs with long-term sustainability. Here are some strategies:
+
+1. Create a technical debt backlog with items categorized by:
+    - **Impact**: How much does this debt slow down development?
+    - **Risk**: What's the probability and severity of failure?
+    - **Effort**: How much work is required to address it?
+2. Allocate 20% of development capacity to addressing technical debt.
+3. Use the "Boy Scout Rule" -- leave code better than you found it.
+
+
+### When NOT to Address Technical Debt
+
+While addressing technical debt is crucial, there are times when it may not be the right priority:
+
+- **End-of-Life Systems:** Don't invest in systems being retired within 6-12 months.
+- **Stable, Rarely-Changed Code:** If code works reliably and changes infrequently, debt may be acceptable.
+- **Experimental Features:** For prototypes or A/B tests, perfect code may be premature optimization.
+- **Resource Constraints:** During critical business periods, defer non-critical debt work.
+
+### Strategies for Teams
+
+To effectively manage technical debt, teams should:
+
+- **Make Debt Visible:** Use code comments, documentation, and issue trackers to highlight areas of technical debt.
+- **Regular Debt Review:** Hold monthly "debt retrospectives" to review accumulating debt areas, celebrate successfully paid-down debt, and adjust debt allocation based on team velocity
+- **Educate the Team:** Train teams to recognize debt patterns and make informed trade-offs between speed and quality.
+
+The key to managing technical debt is treating it as a business concern, not just a technical one. Like financial debt, some technical debt is strategic and manageable, while excessive debt can cripple an organization's ability to respond to market changes and customer needs.
+
 ## SOLID
 
 Maintaining software effectively requires both technical practices and organizational commitment. At the technical level, principles like SOLID guide developers toward more maintainable architectures:
 
 1. Single Responsibility Principle (SRP)
-2. Open/Closed Principle
+2. Open/Closed Principle (OCP)
 3. Liskov's Substitution Principle (LSP)
 4. Interface Segregation Principle (ISP)
 5. Dependency Inversion Principle (DIP)
 
 {/* https://www.geeksforgeeks.org/solid-principle-in-programming-understand-with-real-life-examples/ */}
 
-## DORA and SPACE Metrics
+### Single Responsibility Principle (SRP)
 
-Measuring maintainability presents unique challenges. Unlike functional requirements, maintainability can't be directly observed in running software. Instead, teams rely on proxy metrics like cyclomatic complexity, change failure rate, and time to implement features. 
+The Single Responsibility Principle states that a class should have only one reason to change, meaning it should only have one job or responsibility. This reduces complexity and makes the code easier to understand and maintain. It reduces the risk of unintended side effects when changes are made, as each class is focused on a single task.
 
-More holistic frameworks like DORA (DevOps Research and Assessment) and SPACE (Satisfaction, Performance, Activity, Communication, Efficiency) provide broader perspectives on maintenance effectiveness by examining both technical and human factors.
+Here's an example that violates SRP:
+
+```javascript
+class User {
+  constructor(name, email) {
+    this.name = name;
+    this.email = email;
+  }
+
+  saveUser() {
+    // Logic to save user to a database
+  }
+
+  sendEmail(message) {
+    // Logic to send an email
+  }
+}
+```
+
+In this example, the `User` class has two responsibilities: managing user data and sending emails. If we need to change the email logic, we risk affecting the user data management.
+
+Refactor the code to separate responsibilities into two classes:
+
+```javascript
+class User {
+  constructor(name, email) {
+    this.name = name;
+    this.email = email;
+  }
+
+  saveUser() {
+    // Logic to save user to a database
+  }
+}
+class EmailService {
+  sendEmail(user, message) {
+    // Logic to send an email to the user
+  }
+}
+```
+
+This refactoring adheres to SRP by creating a dedicated `EmailService` class for email-related functionality, allowing each class to focus on its specific responsibility. This also makes it easier to test and maintain each class independently, as changes to email logic won't affect user data management, and vice versa.
+
+### Open/Closed Principle (OCP)
+
+The Open/Closed Principle states that software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. This means you can add new functionality without changing existing code, reducing the risk of introducing bugs.
+
+Here's an example that violates OCP:
+
+```javascript
+function calculateDiscount(customer) {
+  if (customer.type === "regular") {
+    return customer.total * 0.1; // 10% discount
+  } else if (customer.type === "premium") {
+    return customer.total * 0.2; // 20% discount
+  } else if (customer.type === "vip") {
+    return customer.total * 0.3; // 30% discount
+  }
+  return 0;
+}
+```
+
+To add a new customer type (e.g., "student"), you must modify the calculateDiscount function, violating OCP. This can lead to errors and requires retesting the entire function.
+
+Refactor the code to adhere to OCP by using polymorphism:
+
+```javascript
+class Customer {
+  constructor(total) {
+    this.total = total;
+  }
+
+  calculateDiscount() {
+    return 0; // Default implementation
+  }
+}
+class RegularCustomer extends Customer {
+  calculateDiscount() {
+    return this.total * 0.1; // 10% discount
+  }
+}
+class PremiumCustomer extends Customer {
+  calculateDiscount() {
+    return this.total * 0.2; // 20% discount
+  }
+}
+class VipCustomer extends Customer {
+  calculateDiscount() {
+    return this.total * 0.3; // 30% discount
+  }
+}
+class StudentCustomer extends Customer {
+  calculateDiscount() {
+    return this.total * 0.15; // 15% discount
+  }
+}
+```
+
+In this refactored code, each customer type is represented by a separate class that extends the base `Customer` class. Each subclass implements its own `calculateDiscount` method. This allows you to add new customer types without modifying existing code, adhering to the Open/Closed Principle. You can simply create a new subclass for any new customer type, and the existing code remains unchanged.
+
+:::note[Strategy Pattern]
+This refactoring is an example of the Strategy Pattern, where different discount strategies are encapsulated in separate classes. This allows for flexible and maintainable code, as new strategies can be added without modifying existing logic.
+:::
+
+### Liskov's Substitution Principle (LSP)
+
+The Liskov's Substitution Principle states that objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program. This means that subclasses should extend the behavior of the superclass without changing its expected behavior.
+
+Here's [an example that violates LSP](https://stackoverflow.com/questions/56860/what-is-an-example-of-the-liskov-substitution-principle):
+
+```javascript
+class Rectangle {
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
+  }
+
+  setWidth(width) {
+    this.width = width;
+  }
+
+  setHeight(height) {
+    this.height = height;
+  }
+
+  getArea() {
+    return this.width * this.height;
+  }
+}
+
+class Square extends Rectangle {
+  constructor(size) {
+    super(size, size); // calls the parent constructor
+  }
+
+  // Override to enforce square properties
+  setWidth(width) {
+    this.width = width;
+    this.height = width; // Square must have equal sides
+  }
+
+  setHeight(height) {
+    this.width = height;
+    this.height = height; // Square must have equal sides
+  }
+}
+```
+
+While this might seem perfectly logical in mathematical terms, it violates LSP because a `Square` cannot be substituted for a `Rectangle` without changing the expected behavior. For example, if you set the width of a `Square`, it also changes the height, which is not the case for a `Rectangle`.
+
+To adhere to LSP, we redesign the system so subclasses can be substituted for the base class without breaking expected behavior. Here, we use a `Shape` base class with an abstract `getArea` method, and both `Rectangle` and `Square` implement it correctly.
+
+```javascript
+class Shape {
+  getArea() {
+    throw new Error("Method 'getArea()' must be implemented.");
+  }
+}
+class Rectangle extends Shape {
+  constructor(width, height) {
+    super();
+    this.width = width;
+    this.height = height;
+  }
+
+  getArea() {
+    return this.width * this.height;
+  }
+}
+class Square extends Shape {
+  constructor(size) {
+    super();
+    this.size = size;
+  }
+
+  getArea() {
+    return this.size * this.size;
+  }
+}
+```
+
+In this refactored code, both `Rectangle` and `Square` extend the `Shape` class and implement the `getArea` method correctly. If we have to substitute a `Square` or `Rectangle` for a `Shape`, it will work as expected without breaking the program's correctness. This adheres to Liskov's Substitution Principle.
+
+### Interface Segregation Principle (ISP)
+
+The Interface Segregation Principle states that no client should be forced to depend on methods it does not use. This means that interfaces should be small and specific to the clients that use them, rather than large and general-purpose.
+
+Here's an example that violates ISP:
+
+```javascript
+class Printer {
+  print() { throw new Error('Must implement'); }
+  scan() { throw new Error('Must implement'); }
+  fax() { throw new Error('Must implement'); }
+}
+
+// Simple printer forced to implement methods it doesn't support
+class BasicPrinter extends Printer {
+  print() {
+    // Logic to print a document
+  }
+  
+  scan() {
+    throw new Error('This printer cannot scan');
+  }
+  
+  fax() {
+    throw new Error('This printer cannot fax');
+  }
+}
+```
+
+In this example, the `Printer` class has methods for printing, scanning, and faxing documents. If a client only needs to print documents, it is forced to depend on the `scan` and `fax` methods, which it does not use.
+
+To adhere to ISP, we can create smaller, more focused interfaces:
+
+```javascript
+class Printable {
+  print() { throw new Error('Must implement print'); }
+}
+
+class Scannable {
+  scan() { throw new Error('Must implement scan'); }
+}
+
+class Faxable {
+  fax() { throw new Error('Must implement fax'); }
+}
+
+class Stapleable {
+  staple() { throw new Error('Must implement staple'); }
+}
+
+// Simple printer only implements what it needs
+class BasicPrinter extends Printable {
+  print() {
+    // Logic to print a document
+  }
+}
+```
+
+In this refactored code, we have separate classes for `Printable`, `Scannable`, and `Faxable`. Each class has a single responsibility and clients can depend only on the interfaces they need. If a client only needs to print documents, it can use the `Printable` class without being forced to depend on scanning or faxing methods. This adheres to the Interface Segregation Principle, promoting better maintainability and flexibility in the codebase.
+
+### Dependency Inversion Principle (DIP)
+
+The Dependency Inversion Principle states that high-level modules should not depend on low-level modules; both should depend on abstractions. This means that the design should be such that high-level components are not tightly coupled to low-level components, allowing for easier changes and testing.
+
+Here's an example that violates DIP:
+
+```javascript
+// Low-level module
+class Database {
+  saveOrder(order) {
+    // Database-specific logic
+  }
+}
+
+// High-level module
+class OrderProcessor {
+  constructor() {
+    this.database = new Database(); // Direct dependency on concrete Database
+  }
+
+  processOrder(order) {
+    this.database.saveOrder(order); // Tightly coupled to Database
+  }
+}
+```
+
+In this example, the `OrderProcessor` class directly depends on the concrete `Database` class, violating DIP. If we want to change the database implementation (e.g., switch to a different database technology), we must modify the `OrderProcessor` class, which is not ideal.
+
+To adhere to DIP, we can introduce an abstraction (interface) for the database and make the `OrderProcessor` depend on that abstraction instead of a concrete implementation:
+
+```javascript
+// Abstraction (interface-like class)
+class Storage {
+  saveOrder(order) {
+    throw new Error("Method 'saveOrder()' must be implemented.");
+  }
+}
+
+// Low-level module: Database implementation
+class DatabaseStorage extends Storage {
+  saveOrder(order) {
+    // Database-specific logic
+  }
+}
+
+// Low-level module: File system implementation
+class FileStorage extends Storage {
+  saveOrder(order) {
+    // File system-specific logic
+  }
+}
+
+// High-level module
+class OrderProcessor {
+  constructor(storage) {
+    this.storage = storage; // Depend on abstraction, not concrete class
+  }
+
+  processOrder(order) {
+    this.storage.saveOrder(order); // Use the injected storage
+  }
+}
+```
+
+In this refactored code, we have an abstract `Storage` class that defines the `saveOrder` method. The `OrderProcessor` class now depends on this abstraction rather than a concrete implementation. We can inject any storage implementation (e.g., `DatabaseStorage`, `FileStorage`) into the `OrderProcessor` constructor, allowing for greater flexibility and easier testing. This adheres to the Dependency Inversion Principle, promoting better maintainability and reducing coupling between high-level and low-level modules.
+
+:::note[Factory Pattern]
+In the example above, we could further enhance the design by using a Factory Pattern to create the appropriate storage implementation based on configuration or runtime conditions. This allows us to encapsulate the instantiation logic and keep the `OrderProcessor` class focused on its primary responsibility.
+
+Here's a brief example of how a Factory Pattern could be applied:
+
+```javascript
+class StorageFactory {
+  static createStorage(type) {
+    if (type === 'database') {
+      return new DatabaseStorage();
+    } else if (type === 'file') {
+      return new FileStorage();
+    }
+    throw new Error('Unknown storage type');
+  }
+}
+// Usage
+const storageType = 'database'; // This could come from configuration
+const storage = StorageFactory.createStorage(storageType);
+const orderProcessor = new OrderProcessor(storage);
+```
+:::
+
+{/* Observer Design Pattern */}
+
+{/* ## DORA and SPACE Metrics */}
+
+{/* Measuring maintainability presents unique challenges. Unlike functional requirements, maintainability can't be directly observed in running software. Instead, teams rely on proxy metrics like cyclomatic complexity, change failure rate, and time to implement features.  */}
+
+{/* More holistic frameworks like DORA (DevOps Research and Assessment) and SPACE (Satisfaction, Performance, Activity, Communication, Efficiency) provide broader perspectives on maintenance effectiveness by examining both technical and human factors. */}
 
 {/* https://dora.dev/guides/dora-metrics-four-keys/ */}
 {/* https://en.wikipedia.org/wiki/Goodhart%27s_law */}
@@ -99,4 +566,6 @@ Consider pros and cons, costs, developer experience, hiring, and risks. Use metr
 
 ## Additional Resources
 
+- [The SOLID Principles, Explained with Motivational Posters](https://www.globalnerdy.com/2009/07/15/the-solid-principles-explained-with-motivational-posters/)
+- [What is the difference between Factory and Strategy patterns?](https://stackoverflow.com/questions/616796/what-is-the-difference-between-factory-and-strategy-patterns)
 - Flyvbjerg, Bent and Budzier, Alexander and Aaen, Jon and Keil, Mark and Zottoli, M., The Uniqueness of IT Cost Risk: A Cross-Group Comparison of 23 Project Types (May 08, 2025). Available at SSRN: https://ssrn.com/abstract=5247223 or http://dx.doi.org/10.2139/ssrn.5247223
