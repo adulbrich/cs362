@@ -19,7 +19,7 @@ Maintainable software exhibits several key characteristics:
 
 ## Technical Debt
 
-The significance of maintainability becomes apparent when examining the consequences of its neglect. Poorly maintained systems accumulate what [Ward Cunningham termed "technical debt"](https://en.wikipedia.org/wiki/Technical_debt#Origin_of_the_concept)--shortcuts and suboptimal solutions that, like financial debt, accrue interest over time. 
+The significance of maintainability becomes apparent when examining the consequences of its neglect. Poorly maintained systems accumulate what [Ward Cunningham termed "technical debt"](https://en.wikipedia.org/wiki/Technical_debt#Origin_of_the_concept): shortcuts and suboptimal solutions that, like financial debt, accrue interest over time. 
 
 As this debt compounds, teams experience decreased velocity, increased defect rates, and growing resistance to change. What might have taken hours in a well-maintained system could require weeks in one plagued by maintenance issues.
 
@@ -30,6 +30,8 @@ Technical debt occurs when development teams choose a quick, expedient solution 
 - **Principal**: The original suboptimal code or design decision.
 - **Interest**: The ongoing cost of working around, maintaining, and extending the flawed solution.
 - **Compound Interest**: As debt accumulates, it becomes increasingly expensive to make changes.
+
+Technical debt [can be categorized into four quadrants](https://martinfowler.com/bliki/TechnicalDebtQuadrant.html) based on two axes: **reckless vs. prudent** and **inadvertent vs. deliberate**. This framework helps teams understand the nature of their technical debt and prioritize remediation efforts.
 
 <Mermaid showForPrint="true">
 ```
@@ -105,19 +107,57 @@ function updateUser(name, email) {
 
 Measuring technical debt is challenging, as it often involves subjective assessments of code quality and maintainability. However, several metrics can help quantify the impact of technical debt.
 
-{/* TODO */}
-
 #### Code Quality Metrics
 
-{/* TODO */}
+We have already discussed one code quality metric, *code coverage*, which measures the percentage of code executed during automated tests. 
 
-#### Development Velocity Metrics
+Other common code quality metrics include:
 
-{/* TODO */}
+- **[Cyclomatic Complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity)**: Measures the number of linearly independent paths through a program's source code. Higher complexity indicates more difficult-to-maintain code.
+- **Code Churn**: Measures the amount of code added, modified, or deleted over time, for a given piece of code. High churn can indicate instability or frequent changes, i.e., design issues.
+- **Code Duplication**: Measures the percentage of code that is duplicated across the codebase. High duplication can lead to increased maintenance effort, i.e., refactoring opportunities.
 
-#### Team Health Metrics
+#### DORA Metrics: Measuring Delivery Performance
 
-{/* TODO */}
+The [DORA (DevOps Research and Assessment) metrics](https://dora.dev/guides/dora-metrics-four-keys/) provide a comprehensive view of how technical debt impacts software delivery performance:
+
+1. **Deployment Frequency**: How often your team deploys code to production. High technical debt often reduces deployment frequency as teams become more cautious about changes.
+2. **Lead Time for Changes**: The time from code commit to production deployment. Technical debt increases this metric as changes require more careful testing and coordination.
+3. **Change Failure Rate**: The percentage of deployments that cause failures in production. Systems with high technical debt typically have higher failure rates due to poor modularity and testing.
+4. **Time to Restore Service**: How long it takes to recover from failures. Technical debt makes systems harder to understand and debug, increasing recovery time.
+
+Take the [DORA Quick Check](https://dora.dev/quickcheck/) to better understand how these metrics apply to your team and how different industries compare.
+
+#### SPACE Metrics: Understanding Developer Experience
+
+The [SPACE framework](https://queue.acm.org/detail.cfm?id=3454124) complements DORA by examining how technical debt affects developer productivity and well-being:
+
+- **Satisfaction**: Measures how developers feel about their work, tools, and team environment. It includes job satisfaction, sense of accomplishment, and well-being. *Correlates with productivity.* Example metrics:
+  - Developer survey scores on job satisfaction.
+  - Retention rates or turnover.
+  - Net Promoter Score (NPS) for internal tools or processes.
+- **Performance**: Focuses on the *outcomes* of development work, emphasizing quality and impact over quantity. It looks at the value delivered to users or the business. Example metrics:
+  - Reliability (e.g., system uptime or error rates).
+  - Customer satisfaction with features.
+  - Business impact (e.g., revenue from a feature or adoption rates).
+- **Activity**: Tracks the volume or frequency of development actions, providing context for what developers are doing. It's not a direct measure of productivity but helps understand workflows. Example metrics:
+  - Number of commits or pull requests.
+  - Code review frequency.
+  - Tickets closed or stories completed.
+- **Communication**: Evaluates how effectively teams collaborate and share knowledge. This includes clarity and quality of interactions. Example metrics:
+  - Time to resolve code review comments.
+  - Frequency of team interactions (e.g., meetings or chat activity).
+  - Documentation quality or contribution rates.
+- **Efficiency**: Measures how smoothly work flows with minimal waste or delays. It focuses on reducing friction in processes. Example metrics:
+  - Time from code commit to deployment (cycle time).
+  - Number of interruptions or context switches.
+  - Percentage of time spent on productive tasks vs. administrative overhead.
+
+Technical debt negatively impacts all SPACE dimensions: frustrated developers work in hard-to-understand codebases, reduced performance due to careful navigation of brittle systems, increased communication overhead to coordinate risky changes, and constant context switching to handle debt-related issues.
+
+:::note[Goodhart's Law]
+Remember [Goodhart's Law](https://en.wikipedia.org/wiki/Goodhart%27s_law): "When a measure becomes a target, it ceases to be a good measure." Use these metrics to understand trends and guide decisions, not as rigid targets that might encourage *gaming* behaviors.
+:::
 
 ### Managing Technical Debt
 
@@ -228,7 +268,7 @@ function calculateDiscount(customer) {
 }
 ```
 
-To add a new customer type (e.g., "student"), you must modify the calculateDiscount function, violating OCP. This can lead to errors and requires retesting the entire function.
+To add a new customer type (e.g., "student"), you must modify the `calculateDiscount` function, violating OCP. This can lead to errors and requires retesting the entire function.
 
 Refactor the code to adhere to OCP by using polymorphism:
 
@@ -498,21 +538,7 @@ const orderProcessor = new OrderProcessor(storage);
 ```
 :::
 
-{/* Observer Design Pattern */}
-
-{/* ## DORA and SPACE Metrics */}
-
-{/* Measuring maintainability presents unique challenges. Unlike functional requirements, maintainability can't be directly observed in running software. Instead, teams rely on proxy metrics like cyclomatic complexity, change failure rate, and time to implement features.  */}
-
-{/* More holistic frameworks like DORA (DevOps Research and Assessment) and SPACE (Satisfaction, Performance, Activity, Communication, Efficiency) provide broader perspectives on maintenance effectiveness by examining both technical and human factors. */}
-
-{/* https://dora.dev/guides/dora-metrics-four-keys/ */}
-{/* https://en.wikipedia.org/wiki/Goodhart%27s_law */}
-{/* The SPACE of Developer Productivity: https://queue.acm.org/detail.cfm?id=3454124 */}
-
-{/* ## How to Handle Technical Debt */}
-
-{/* Is it technical debt? Pros and cons. */}
+{/* TODO: Observer Design Pattern */}
 
 ## Case Study: Pinnacle Insurance and the Legacy Mainframe Dilemma
 
@@ -569,3 +595,4 @@ Consider pros and cons, costs, developer experience, hiring, and risks. Use metr
 - [The SOLID Principles, Explained with Motivational Posters](https://www.globalnerdy.com/2009/07/15/the-solid-principles-explained-with-motivational-posters/)
 - [What is the difference between Factory and Strategy patterns?](https://stackoverflow.com/questions/616796/what-is-the-difference-between-factory-and-strategy-patterns)
 - Flyvbjerg, Bent and Budzier, Alexander and Aaen, Jon and Keil, Mark and Zottoli, M., The Uniqueness of IT Cost Risk: A Cross-Group Comparison of 23 Project Types (May 08, 2025). Available at SSRN: https://ssrn.com/abstract=5247223 or http://dx.doi.org/10.2139/ssrn.5247223
+- [Developer productivity with Dr. Nicole Forsgren (creator of DORA, co-creator of SPACE)](https://newsletter.pragmaticengineer.com/p/developer-productivity-with-dr-nicole)
