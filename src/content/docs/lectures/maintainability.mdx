@@ -16,6 +16,18 @@ Maintainable software exhibits several key characteristics:
 - **Testability**: well-defined components that can be verified independently
 - **Resiliency**: the ability handle and recover from problems effectively, avoiding cascading failures
 
+These characteristics are not just technical niceties; they have profound implications for team productivity, software quality, and business agility.
+
+:::note[The Epic Meltdown of TSB Bank]
+In April 2018, [TSB Bank migrated 5.4 million customer accounts](https://www.computerweekly.com/news/252528519/TSB-hit-with-huge-fine-after-IT-migration-disaster) from Lloyds Banking Group's legacy IT system to a new platform, Proteo4UK, provided by its parent company, Sabadell. The migration was rushed, with inadequate testing and poor due diligence on the supplier's capabilities. 
+
+[The new system lacked proper capacity management controls, and non-functional testing (e.g., performance and stress tests) was incomplete]((https://www.henricodolfing.com/2019/03/case-study-epic-meltdown-of-tsb-bank.html)). After the migration, the platform collapsed, locking 1.9 million customers out of online and mobile banking, exposing sensitive data, and causing some customers to see others' accounts.
+
+It took up to 8 months to fully restore services. The incident resulted in a £48 million fine from the UK's Financial Conduct Authority (FCA) for breaching data protection regulations, and TSB's CEO resigned. The bank's reputation suffered, with customers losing trust in its ability to manage their data securely.
+:::
+
+{/* Other problems: CrowdStrike,  */}
+
 ## Technical Debt
 
 The significance of maintainability becomes apparent when examining the consequences of its neglect. Poorly maintained systems accumulate what [Ward Cunningham termed "technical debt"](https://en.wikipedia.org/wiki/Technical_debt#Origin_of_the_concept): shortcuts and suboptimal solutions that, like financial debt, accrue interest over time. 
