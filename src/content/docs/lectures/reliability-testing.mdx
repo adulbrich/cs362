@@ -214,6 +214,12 @@ Effective alerting is an art that balances being informed about problems with av
 - **Actionable alerts**: Every alert should have a clear response procedure
 - **Escalation policies**: Ensure critical alerts reach the right people quickly
 
+:::note[Blue Brain Nexus Monitoring]
+Interestingly, monitoring must be accounted for by software engineers while developing software. They must decide what to monitor, how to monitor it, and how to alert on it. 
+
+While the Blue Brain Nexus backend [leverages Prometheus, Grafana, and alerts in Slack](https://bluebrainnexus.io/docs/running-nexus/index.html#monitoring-and-alerting), developers have to [setup metrics and logs collection directly in the application](https://bluebrainnexus.io/docs/running-nexus/delta.html).
+:::
+
 ## Best Practices for Reliability Testing
 
 Building reliable systems requires more than just running tests--it demands a systematic approach that integrates reliability considerations into every aspect of your development process. The following best practices represent hard-learned lessons from companies that have built some of the world's most reliable systems.
@@ -230,8 +236,6 @@ Implementation Strategy:
 - **Continuous Monitoring**: Deploy monitoring with your first feature
 - **Regular Testing Cycles**: Schedule weekly/monthly reliability tests
 - **Performance Budgets**: Set and enforce performance limits for new features
-
-{/* Google runs performance tests on every code commit, automatically rejecting changes that degrade search latency by more than a few milliseconds. */}
 
 ### Define Clear SLAs and SLOs
 
@@ -250,12 +254,6 @@ In addition to the Spotify example mentioned earlier, here are some other real-w
 - **AWS EC2**: [99.99% monthly uptime commitment with service credits for breaches](https://aws.amazon.com/compute/sla/)
 - **Google Workspace**: [99.9% uptime with financial penalties for downtime](https://workspace.google.com/terms/sla/)
 - **Salesforce**: [99.9% availability with detailed incident reporting requirements](https://salesforce.stackexchange.com/questions/22016/what-are-the-details-of-the-salesforce-sla-specifically-the-maximum-downtime)
-
-{/* SLO Setting Guidelines:
-- **Start Conservative**: It's easier to tighten SLOs than to loosen them
-- **Align with User Experience**: SLOs should reflect what users actually care about
-- **Leave Error Budget**: Don't aim for 100% - reserve budget for deployments and experiments
-- **Review Regularly**: Adjust SLOs as your system and user expectations evolve */}
 
 ### Test in Production-Like Environments
 
@@ -500,3 +498,4 @@ The goal isn't perfection--it's understanding your system's limits, planning for
 - [Google's Site Reliability Engineering Book](https://sre.google/sre-book/table-of-contents/)
 - [Performance Under Load](https://netflixtechblog.medium.com/performance-under-load-3e6fa9a60581) by Netflix Technology Blog
 - [Observability: the present and future, with Charity Majors](https://newsletter.pragmaticengineer.com/p/observability-the-present-and-future) by The Pragmatic Engineer (Podcast)
+- [Why is observability so expensive?](https://mattklein123.dev/2024/04/03/observability-cost-crisis/) by Matt Klein
