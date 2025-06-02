@@ -17,18 +17,6 @@ Consider these high-profile reliability failures:
 
 These incidents highlight why reliability testing is crucial--it's not just about user experience, but business continuity, revenue protection, and maintaining customer trust.
 
-## Why Reliability Testing Matters
-
-**Business Perspective:**
-- **Revenue Protection**: Amazon estimates that every second of downtime costs them $220,000
-- **Customer Retention**: Studies show that 88% of users won't return to a website after a bad user experience
-- **Brand Trust**: Reliability issues can damage brand reputation that takes years to rebuild
-
-**Technical Perspective:**
-- **Scalability Planning**: Understanding how your system behaves under load helps with capacity planning
-- **Cost Optimization**: Identifying performance bottlenecks early prevents expensive emergency fixes
-- **Risk Mitigation**: Proactive testing reduces the likelihood of production incidents
-
 ## What is Reliability Testing?
 
 Reliability testing evaluates whether a software application can:
@@ -40,6 +28,20 @@ Reliability testing evaluates whether a software application can:
 - Continue operating in adverse conditions
 
 The goal is to identify potential points of failure before they impact real users and to ensure your application meets its reliability requirements.
+
+### Why Reliability Testing Matters
+
+From a business perspective, reliability testing is essential for:
+
+- **Revenue Protection**: Amazon estimates that every second of downtime costs them $220,000
+- **Customer Retention**: Studies show that 88% of users won't return to a website after a bad user experience
+- **Brand Trust**: Reliability issues can damage brand reputation that takes years to rebuild
+
+From a technical perspective, reliability testing helps you with:
+
+- **Scalability Planning**: Understanding how your system behaves under load helps with capacity planning
+- **Cost Optimization**: Identifying performance bottlenecks early prevents expensive emergency fixes
+- **Risk Mitigation**: Proactive testing reduces the likelihood of production incidents
 
 ### Key Reliability Metrics
 
@@ -369,7 +371,7 @@ Choosing the right tools is crucial for effective reliability testing. Here's a 
 
 ### Open Source Monitoring/Observability Stack
 
-The [https://prometheus.io/] + [Grafana](https://grafana.com/) stack is a popular open-source stack for monitoring and observability:
+The [Prometheus](https://prometheus.io/) + [Grafana](https://grafana.com/) stack is a popular open-source stack for monitoring and observability:
 
 - **Prometheus**: Time-series database with powerful querying
 - **Grafana**: Visualization and alerting platform
@@ -441,27 +443,22 @@ Reliability testing is essential for building robust applications that users can
    - Implement performance tests from day one
    - Set up monitoring with your first deployment
    - Establish performance budgets for new features
-
 2. **Define clear objectives** with measurable SLAs and SLOs
    - Use the SLI → SLO → SLA hierarchy
    - Set realistic targets based on user needs
    - Implement error budgets for informed decision-making
-
 3. **Use appropriate tools** for different types of reliability testing
    - Choose tools that fit your technology stack
    - Start with open-source solutions and scale up as needed
    - Consider both testing and monitoring tools
-
 4. **Monitor continuously** in production with proper alerting
    - Implement the three pillars: metrics, logs, and traces
    - Alert on symptoms that affect users, not just system metrics
    - Use dashboards for quick health overviews
-
 5. **Plan for failure** with circuit breakers and graceful degradation
    - Implement bulkhead patterns to isolate failures
    - Design fallback mechanisms for critical user journeys
    - Practice chaos engineering to build confidence
-
 6. **Test regularly** as your application evolves
    - Schedule recurring reliability tests
    - Update tests as your architecture changes
@@ -483,18 +480,4 @@ The goal isn't perfection--it's understanding your system's limits, planning for
 
 - [Larger Testing](https://abseil.io/resources/swe-book/html/ch14.html) in Software Engineering at Google
 - [The Need for Speed](https://www.nngroup.com/articles/the-need-for-speed/) by Nielsen Norman Group
-
-**Books:**
-- "Site Reliability Engineering" by Google
-- "Building Secure and Reliable Systems" by Google
-- "Release It!" by Michael Nygard
-
-**Online Resources:**
-- Google SRE Workbook (free online)
-- K6 Documentation and Tutorials
-- Chaos Engineering community resources
-
-**Tools to Explore:**
-- Start with K6 for load testing
-- Try Prometheus + Grafana for monitoring
-- Experiment with Chaos Toolkit for chaos engineering
+- [Google's Site Reliability Engineering Book](https://sre.google/sre-book/table-of-contents/)
