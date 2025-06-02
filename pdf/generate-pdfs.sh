@@ -12,6 +12,7 @@ lecture_topics=(
     "git-and-github-collaboration"
     "ci-cd"
     "coverage"
+    "maintainability"
 )
 
 assignments=(
