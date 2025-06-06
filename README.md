@@ -2,53 +2,45 @@
 
 This repository contains the source code for the CS362 website.
 
+Future Improvements (post-Spring 2025):
+
+- [ ] Mention monorepos with examples
+- [ ] Explain the different types of documentation
+- [ ] Discuss cost-analysis frameworks, open-source vs proprietary
+- [ ] Add in-class examples for property-based testing
+- [ ] Add in-class examples for reliability testing
+- [ ] Find a less time-consuming way to grade project demos
+- [ ] Cover DevTools a little more for debugging purposes (networking, application, storage, console)
+- [ ] Fix team formation schedule (due date for joining a team vs deadline for being assigned randomly based on form submission)
+
 ## Instructor Checklist
 
 Every term:
 
 - [ ] Update the version of this repository if making changes (`package.json`)
-- [x] Add TAs to Canvas
-- [x] Create team **Bookings** page for assignment demo and set up slots: not working, creating individual pages instead
-- [x] Update Bookings link in Canvas
-- [x] Create **GitHub Classroom** class and add TAs
-- [x] Update GitHub Classroom link in Canvas
-- [x] Create form for random team assignment for final project and add to Canvas
-- [ ] Review project code and complete assignment using vitest and playwright (optionally, use something else than SvelteKit)
-- [x] Check feasibility of project demo (time-wise): about 12 hours in final's week
-- [x] Use mermaid for flow charts and git flows
-- [ ] Use `bun` for everything (incl. running an http server locally)
-- [ ] additional topics to cover
-  - [ ] maintenance
-  - [x] git pre-commit hooks
-  - [x] feature flags
-  - [ ] chaos engineering
-  - [ ] system performance and reliability (k6, sonarQube, Sentry, Winston)
-  - [ ] technical debt
-  - [x] https://github.com/ladjs/supertest or Playwright API Testing (testing node.js HTTP servers or REST API endpoints)
-  - [ ] monorepos
-  - [ ] observability
-  - [ ] cost-analysis frameworks, open-source vs proprietary
-  - [ ] security testing (OWASP ZAP, XSS, SQL injection, ...)
-  - [ ] developer experience metrics (DORA, SPACE)
-  - [ ] cyclomatic complexity, bug density, and mean time to resolution.
-  - [ ] AI-driven testing tools
-  - [ ] documentation (jsdoc, etc.)
+- [ ] Add TAs to Canvas
+- [ ] Create team **Bookings** page for assignment demo and set up slots (**not working**, creating individual pages instead)
+- [ ] Update Bookings link in Canvas
+- [ ] Create **GitHub Classroom** class and add TAs
+- [ ] Update GitHub Classroom link in Canvas
+- [ ] Create form for random team assignment for final project and add to Canvas
 
 ## PDFs
 
-To generate the documentation in PDF format, use [starlight-to-pdf](https://github.com/Linkerin/starlight-to-pdf).
+Note: For some reason [starlight-to-pdf](https://github.com/Linkerin/starlight-to-pdf) does not properly render Mermaid diagrams even after the various updates. Switching to custom build.
 
-Here's the command to generate one large PDF.
-
-```bash
-npx starlight-to-pdf https://cs362.alexulbrich.com --footer ./footer.html --header ./header.html --filename cs362.pdf --no-contents --margins '2cm 1cm 2cm 1cm'
-```
-
-To generate lecture notes in separate files (one per page), use the corresponding bash script:
+To generate lecture notes, assignments, and practicalities, in separate files (one per web page), use the following bash script:
 
 ```shell
-chmod +x ./pdf/generate-lecture-notes.sh
-./pdf/generate-lecture-notes.sh
+chmod +x ./pdf/generate-individual-pdfs.sh
+./pdf/generate-individual-pdfs.sh
+```
+
+To generate one PDF with all lecture notes, assignments, and practicalities, use the following command:
+
+```shell
+chmod +x ./pdf/generate-combined-pdf.sh
+./pdf/generate-combined-pdf.sh --all
 ```
 
 To generate slides from marp, use:

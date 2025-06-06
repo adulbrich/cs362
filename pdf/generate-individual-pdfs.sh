@@ -13,6 +13,7 @@ lecture_topics=(
     "ci-cd"
     "coverage"
     "maintainability"
+    "reliability-testing"
 )
 
 assignments=(
