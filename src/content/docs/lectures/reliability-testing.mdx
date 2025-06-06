@@ -32,9 +32,9 @@ The goal is to identify potential points of failure before they impact real user
 
 The importance of reliability testing becomes clear when you consider its impact from multiple perspectives. Organizations that invest in comprehensive reliability testing see measurable benefits in their bottom line, customer satisfaction, and operational efficiency. Understanding these benefits helps justify the time and resources needed to implement effective reliability testing practices:
 
-- **Revenue Protection**: Amazon estimates that every second of downtime costs them $220,000
-- **Customer Retention**: Studies show that 88% of users won't return to a website after a bad user experience
-- **Brand Trust**: Reliability issues can damage brand reputation that takes years to rebuild
+- **Revenue Protection**: [Every minute of downtime costs amazon $220,000](https://www.gremlin.com/ecommerce-cost-of-downtime)
+- **Customer Retention**: [Studies show that 88% of users won't return to a website after a bad user experience](https://www.zippia.com/advice/user-experience-statistics/)
+- **Brand Trust**: [Reliability issues](https://x.com/GergelyOrosz/status/1748990361660211264) [can damage brand reputation that takes years to rebuild](https://www.vendasta.com/blog/reputation-crisis/)
 
 While the business case is compelling, the technical benefits of reliability testing are equally important for development teams and system architects. These advantages directly impact your ability to maintain and scale your applications effectively:
 
@@ -217,7 +217,7 @@ Effective alerting is an art that balances being informed about problems with av
 :::note[Blue Brain Nexus Monitoring]
 Interestingly, monitoring must be accounted for by software engineers while developing software. They must decide what to monitor, how to monitor it, and how to alert on it. 
 
-While the Blue Brain Nexus backend [leverages Prometheus, Grafana, and alerts in Slack](https://bluebrainnexus.io/docs/running-nexus/index.html#monitoring-and-alerting), developers have to [setup metrics and logs collection directly in the application](https://bluebrainnexus.io/docs/running-nexus/delta.html).
+While the [Blue Brain Nexus](https://github.com/BlueBrain/nexus) backend [leverages Prometheus, Grafana, and alerts in Slack](https://bluebrainnexus.io/docs/running-nexus/index.html#monitoring-and-alerting), developers have to [setup metrics and logs collection directly in the application](https://bluebrainnexus.io/docs/running-nexus/delta.html).
 :::
 
 ## Best Practices for Reliability Testing
@@ -418,7 +418,6 @@ Chaos engineering is the practice of intentionally introducing failures to test 
 - **Features**: Comprehensive failure injection (CPU, memory, network, disk)
 - **Safety**: Built-in safeguards and rollback mechanisms
 - **Use Cases**: Enterprise chaos engineering programs
-- **Real-World Usage**: Target uses Gremlin to test their e-commerce platform's resilience
 
 #### Chaos Toolkit (Open Source)
 
@@ -499,3 +498,4 @@ The goal isn't perfection--it's understanding your system's limits, planning for
 - [Performance Under Load](https://netflixtechblog.medium.com/performance-under-load-3e6fa9a60581) by Netflix Technology Blog
 - [Observability: the present and future, with Charity Majors](https://newsletter.pragmaticengineer.com/p/observability-the-present-and-future) by The Pragmatic Engineer (Podcast)
 - [Why is observability so expensive?](https://mattklein123.dev/2024/04/03/observability-cost-crisis/) by Matt Klein
+- [Ɔhaos Ǝnginǝǝring @ Target - Part 1](https://tech.target.com/blog/chaos-engineering-at-target-part-1)
