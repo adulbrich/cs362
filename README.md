@@ -4,6 +4,9 @@ This repository contains the source code for the CS362 website.
 
 Future Improvements (post-Spring 2025):
 
+- [ ] Add a section in CI/CD on [act](https://github.com/nektos/act) to run GitHub Actions locally for testing purposes
+- [ ] Figure out how to deploy from a branch instead of GH Actions (because of risk of running out of minutes)
+- [ ] Add a lecture on Docker and containerization (before CI/CD, so that it can be used for playwright containers and act)
 - [ ] Mention monorepos with examples
 - [ ] Explain the different types of documentation
 - [ ] Discuss cost-analysis frameworks, open-source vs proprietary
