@@ -43,7 +43,7 @@ To generate one PDF with all lecture notes, assignments, and practicalities, use
 
 ```shell
 chmod +x ./pdf/generate-combined-pdf.sh
-./pdf/generate-combined-pdf.sh --all
+./pdf/generate-combined-pdf.sh
 ```
 
 To generate slides from marp, use:

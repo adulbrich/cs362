@@ -5,7 +5,6 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 // TODO: move the lists in the bash script and call this script with arguments
 
 async function combinePDFs() {
-  // Lists from your existing script
   const lectureTopics = [
     "introduction",
     "git-and-github",
