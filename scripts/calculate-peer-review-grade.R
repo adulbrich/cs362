@@ -155,3 +155,21 @@ ggplot() +
     axis.title = element_text(face = "bold"),
     legend.position = "top"
   )
+
+
+# merge with gradebook
+
+filename_gradebook <- "data/2025-06-10T0945_Grades-SOFTWARE_ENGINEERING_II_(CS_362_001_S2025).csv"
+
+gradebook <- fread(filename_gradebook, header = TRUE)
+
+output[, `SIS Login ID` := Email]
+
+gradebook <- merge(gradebook, output[, .(`SIS Login ID`, PeerEvaluationScore)], by = "SIS Login ID", all.x = TRUE)
+
+gradebook[, `Project Peer-Evaluation (10042163)` := PeerEvaluationScore]
+gradebook[, PeerEvaluationScore := NULL]
+
+gradebook[is.na(`Project Peer-Evaluation (10042163)`), `Project Peer-Evaluation (10042163)` := 60]
+
+fwrite(gradebook, "data/CS_362_001_S2025_Peer_Review_Grades_Gradebook.csv", row.names = FALSE)
