@@ -2,8 +2,14 @@
 
 This repository contains the source code for the CS362 website.
 
+> What should we have students be doing so that they become way more competent software engineers by the end of this course?
+
 Future Improvements (post-Spring 2025):
 
+- [ ] Consider a flip classroom approach for the course
+- [ ] Shuffle lecture order to match assignments better
+  - space out the different types of testing (unit, integration, e2e)
+  - add coverage in between unit and integration testing
 - [ ] Add a section in CI/CD on [act](https://github.com/nektos/act) to run GitHub Actions locally for testing purposes
 - [ ] Figure out how to deploy from a branch instead of GH Actions (because of risk of running out of minutes)
 - [ ] Add a lecture on Docker and containerization (before CI/CD, so that it can be used for playwright containers and act)

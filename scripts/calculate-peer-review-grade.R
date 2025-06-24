@@ -8,7 +8,7 @@ team_sizes <- fread(filename_groups, header = TRUE)
 team_sizes <- team_sizes[, .(n = .N), by = group_name]
 setnames(team_sizes, "group_name", "Team")
 
-filename <- "data/CS_362_001_S2025 Team Peer Evaluations_June 10, 2025_09.57.csv"
+filename <- "data/CS_362_001_S2025 Team Peer Evaluations_June 12, 2025_10.46.csv"
 
 dt <- fread(filename, header = TRUE)
 
@@ -173,3 +173,4 @@ gradebook[, PeerEvaluationScore := NULL]
 gradebook[is.na(`Project Peer-Evaluation (10042163)`), `Project Peer-Evaluation (10042163)` := 60]
 
 fwrite(gradebook, "data/CS_362_001_S2025_Peer_Review_Grades_Gradebook.csv", row.names = FALSE)
+
