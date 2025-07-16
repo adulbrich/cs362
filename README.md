@@ -6,6 +6,7 @@ This repository contains the source code for the CS362 website.
 
 Future Improvements (post-Spring 2025):
 
+- [ ] Slow down during classtime to allow students to write code at the same time
 - [ ] Consider a flip classroom approach for the course
 - [ ] Shuffle lecture order to match assignments better
   - space out the different types of testing (unit, integration, e2e)
@@ -21,6 +22,7 @@ Future Improvements (post-Spring 2025):
 - [ ] Find a less time-consuming way to grade project demos
 - [ ] Cover DevTools a little more for debugging purposes (networking, application, storage, console)
 - [ ] Fix team formation schedule (due date for joining a team vs deadline for being assigned randomly based on form submission)
+- [ ] Replace mermaid component with starlight plugin
 
 ## Instructor Checklist
 
