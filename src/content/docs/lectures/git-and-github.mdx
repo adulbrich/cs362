@@ -32,17 +32,99 @@ When you create a new version (known as a "commit"), Git saves a snapshot of all
 
 Git optimizes storage by avoiding duplication. If a file remains unchanged, Git doesn't store a new copy; instead, it links to the previous version.
 
-This stream of snapshots is stored in a Git repository (repo) located within the project directory:
+This stream of snapshots (chekins over time) is stored in a Git repository (repo) located within the project directory:
 
-{/* TODO: replace by mermaid diagram */}
-![Git Repository Structure](https://git-scm.com/book/en/v2/images/snapshots.png)
+```mermaid
+block-beta
+columns 5
+block
+  columns 1
+  v1(["Version 1"]) a1["File A"] b1["File B"] c1["File C"]
+end
+block
+  columns 1
+  v2(["Version 2"]) a2["A1"] b2["B"] c2["C1"]
+end
+block
+  columns 1
+  v3(["Version 3"]) a3["A1"] b3["B"] c3["C2"]
+end
+block
+  columns 1
+  v4(["Version 4"]) a4["A2"] b4["B1"] c4["C2"]
+end
+block
+  columns 1
+  v5(["Version 5"]) a5["A2"] b5["B2"] c5["C3"]
+end
+a1 --- a2
+a2 --- a3
+a3 --- a4
+a4 --- a5
+b1 --- b2
+b2 --- b3
+b3 --- b4
+b4 --- b5
+c1 --- c2
+c2 --- c3
+c3 --- c4
+c4 --- c5
+style b2 stroke-dasharray: 5 5
+style b3 stroke-dasharray: 5 5
+style a3 stroke-dasharray: 5 5
+style a5 stroke-dasharray: 5 5
+style c4 stroke-dasharray: 5 5
+style v1 fill:#a60a00,color:#fff;
+style v2 fill:#a60a00,color:#fff;
+style v3 fill:#a60a00,color:#fff;
+style v4 fill:#a60a00,color:#fff;
+style v5 fill:#a60a00,color:#fff;
+```
+
+The dashed lines indicate that the file has not changed since the previous version. For example, `File A` remains unchanged from `Version 2` to `Version 3`, so Git does not store a new copy of it in those versions.
 
 Representing data as snapshots enables powerful features like [branches](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell), which we will explore later.
 
 Another defining feature of Git is that it is a distributed VCS. Every location containing the version history is a complete mirror of the entire history, including every version, commit, and snapshot.
 
-{/* TODO: replace by mermaid diagram */}
-![Distributed Version Control](https://git-scm.com/book/en/v2/images/distributed.png)
+{/* ![Distributed Version Control](https://git-scm.com/book/en/v2/images/distributed.png) */}
+
+```mermaid
+flowchart LR
+    subgraph server["Server"]
+        direction TB
+        subgraph versionServer["Version Database"]
+            direction TB
+            versionServer1["Version 1"] --- versionServer2["Version 2"]
+            versionServer2 --- versionServer3["Version 3"]
+        end
+    end
+    subgraph computerOne["Computer 1"]
+        direction TB
+        fileComputerOne(["File"])
+        subgraph versionComputerOne["Version Database"]
+            direction TB
+            versionComputerOne1["Version 1"] --- versionComputerOne2["Version 2"]
+            versionComputerOne2 --- versionComputerOne3["Version 3"]
+        end
+        fileComputerOne --> versionComputerOne
+    end
+    subgraph computerTwo["Computer 2"]
+        direction TB
+        fileComputerTwo(["File"])
+        subgraph versionComputerTwo["Version Database"]
+            direction TB
+            versionComputerTwo1["Version 1"] --- versionComputerTwo2["Version 2"]
+            versionComputerTwo2 --- versionComputerTwo3["Version 3"]
+        end
+        fileComputerTwo --> versionComputerTwo
+    end
+    computerOne <--> computerTwo
+    computerOne <--> server
+    server <--> computerTwo
+    style fileComputerOne fill:#a60a00,color:#fff;
+    style fileComputerTwo fill:#a60a00,color:#fff;
+```
 
 This distributed nature has both advantages and challenges. A significant advantage is that every **clone** of the repository acts as a complete backup, increasing resilience to machine failures.
 
