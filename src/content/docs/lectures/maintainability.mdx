@@ -5,8 +5,6 @@ sidebar:
   order: 10
 ---
 
-import Mermaid from "../../../components/Mermaid.astro";
-
 Software maintainability is a critical quality attribute that determines the long-term viability of any software system. It refers to the ease with which software can be **understood, modified, and extended throughout its lifecycle**. While initial development often captures the spotlight, studies show that maintenance activities account for 60-80% of total software costs over a system's lifetime.
 
 Maintainable software exhibits several key characteristics:
@@ -44,8 +42,7 @@ Technical debt occurs when development teams choose a quick, expedient solution 
 
 Technical debt [can be categorized into four quadrants](https://martinfowler.com/bliki/TechnicalDebtQuadrant.html) based on two axes: **reckless vs. prudent** and **inadvertent vs. deliberate**. This framework helps teams understand the nature of their technical debt and prioritize remediation efforts.
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 quadrantChart
   title Technical Debt Quadrants
   x-axis Reckless --> Prudent
@@ -66,7 +63,6 @@ quadrantChart
   that becomes apparent: [0.75, 0.3] radius: 0
   over time: [0.75, 0.25] radius: 0
 ```
-</Mermaid>
 
 #### Deliberate-Prudent
 

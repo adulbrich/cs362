@@ -5,8 +5,6 @@ sidebar:
   order: 9
 ---
 
-import Mermaid from "../../../components/Mermaid.astro";
-
 Code coverage is a measure of how much of your code is executed when you run your tests. It helps you identify untested parts of your codebase and can guide you in writing more comprehensive tests.
 
 Code coverage metrics can be interpreted in various ways, and expectations around coverage vary widely across teams and organizations.
@@ -92,8 +90,7 @@ Critical paths refer to the most important execution paths in a program that are
 
 Here's an example that has four possible execution paths and six branches:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 graph TD
   A[Start] --> B{isAdmin} 
   B -->|true| C[Grant full access] 
@@ -107,16 +104,15 @@ graph TD
   G ==> I 
   H --> I
 
-  linkStyle 2,3,5,9 stroke:#16a34a, color:#16a34a
+  linkStyle 2,3,5,9 stroke:#16a34a
 
-  classDef covered fill:#9f9,stroke:#484,stroke-width:2px 
-  classDef uncovered fill:#f99,stroke:#844,stroke-width:2px 
-  classDef partial fill:#ff9,stroke:#884,stroke-width:2px
+  classDef covered fill:#9f9,stroke:#484,stroke-width:2px,color:#333
+  classDef uncovered fill:#f99,stroke:#844,stroke-width:2px,color:#333
+  classDef partial fill:#ff9,stroke:#884,stroke-width:2px,color:#333
 
   class B,D,E,G covered
   class C,F,H uncovered
 ```
-</Mermaid>
 
 We outline one of the possible paths (in greenb bold) which will be executed if `isAdmin` is false, `isAuthor` is true, and `isPublished` is true.
 

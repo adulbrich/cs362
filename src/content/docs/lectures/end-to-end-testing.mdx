@@ -5,8 +5,6 @@ sidebar:
   order: 7
 ---
 
-import Mermaid from "../../../components/Mermaid.astro";
-
 End-to-end testing is crucial for verifying that complete software systems function correctly from the user's perspective.
 
 ## What are End-to-End Tests?
@@ -78,8 +76,7 @@ npm run start
 
 Here's what the process looks like for a Vite project like our Todo application:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 flowchart TD
     A[Source Code] -->|npm run build| B[Build Process]
     B --> C[Generated Build Files]
@@ -87,11 +84,10 @@ flowchart TD
     D --> E[Running Application]
     E -->|localhost:4173| F[Playwright Tests]
     
-    style B fill:#f9f,stroke:#333,stroke-width:2px
-    style D fill:#bbf,stroke:#333,stroke-width:2px
-    style F fill:#bfb,stroke:#333,stroke-width:2px
-    ```
-</Mermaid>
+    style B fill:#f9f,stroke:#333,stroke-width:2px,color:#333
+    style D fill:#bbf,stroke:#333,stroke-width:2px,color:#333
+    style F fill:#bfb,stroke:#333,stroke-width:2px,color:#333
+```
 
 Check your `package.json` file for the exact commands to build and start your server. 
 

@@ -5,7 +5,6 @@ sidebar:
   order: 8
 ---
 
-import Mermaid from "../../../components/Mermaid.astro";
 import { Steps } from '@astrojs/starlight/components';
 
 We've already explored how to use Git and GitHub from an individual perspective, covering the most common workflows for personal projects. However, the true power of Git and GitHub emerges when teams collaborate on shared code.
@@ -92,8 +91,7 @@ Here's an overview of the workflow. We'll dig in deeper into each step in the fo
 
 {/* TODO: change diagram by a normal TD one to illustrate steps above */}
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 flowchart TD
     B[main branch] --> C[Create feature branch]
     C --> D[Make changes in feature branch]
@@ -106,14 +104,13 @@ flowchart TD
     H --> I[Deploy changes]
     B -.pull from main.-> D
 ```
-</Mermaid>
+
 
 ## Understanding Git Branches
 
 Git's core purpose is to store a series of snapshots (commits) of your project over time, creating a **commit history**. Without branching, this history is linear—just one commit after another in the main branch:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 gitGraph
   commit id: "1"
   commit id: "2"
@@ -121,12 +118,11 @@ gitGraph
   commit id: "4"
   commit id: "5"
 ```
-</Mermaid>
+
 
 Branches allow the commit history to diverge into parallel paths, each with its own unique commits:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 gitGraph
   commit
   commit
@@ -148,7 +144,7 @@ gitGraph
   checkout main 
   commit
 ```
-</Mermaid>
+
 
 Key Branch Concepts:
 
@@ -271,8 +267,7 @@ ed1523e (origin/main, main) Add document title
 
 Visually, our repository now looks like:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 gitGraph
   commit id: "1"
   commit id: "2"
@@ -281,7 +276,7 @@ gitGraph
   checkout add-css
   commit id: "4"
 ```
-</Mermaid>
+
 
 The `origin/main` in our log indicates we have a remote repository. We can verify this:
 
@@ -373,8 +368,7 @@ git push --set-upstream origin handle-title-click
 
 Visually, our repository now looks like:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 gitGraph
   commit id: "1"
   commit id: "2"
@@ -388,7 +382,7 @@ gitGraph
   checkout handle-title-click
   commit id: "6"
 ```
-</Mermaid>
+
 
 Both features are now complete and ready to be considered for merging into the main branch. According to GitHub Flow, the next step is to create **pull requests** for each branch.
 
@@ -407,8 +401,7 @@ Unless conditions allow for a *fast-forward merge*, Git creates a special merge 
 
 For example, imagine we have a new `feature` branch that we want to merge into the `main` branch of our repo:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 gitGraph
   commit id: "1"
   commit id: "2"
@@ -423,12 +416,11 @@ gitGraph
   checkout main
   commit id: "7"
 ```
-</Mermaid>
+
 
 After merging the `feature` branch into `main`, a new merge commit will be added to main that incorporates the changes from the feature branch:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 gitGraph
   commit id: "1"
   commit id: "2"
@@ -444,7 +436,7 @@ gitGraph
   commit id: "7"
   merge feature id: "Merge Commit"
 ```
-</Mermaid>
+
 
 This process ensures the `main` branch now contains all code implemented in the feature branch.
 
@@ -457,8 +449,7 @@ A **fast-forward merge** is a special merge that doesn't create a merge commit. 
 
 Visually, this looks like:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 gitGraph
   commit id: "1"
   commit id: "2"
@@ -469,12 +460,11 @@ gitGraph
   commit id: "5"
   commit id: "6"
 ```
-</Mermaid>
+
 
 In this scenario, Git can simply "fast forward" the current branch pointer to the position of the target branch:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 gitGraph
   commit id: "1"
   commit id: "2"
@@ -487,7 +477,7 @@ gitGraph
   checkout main
   merge feature id: "Fast-Forward Merge"
 ```
-</Mermaid>
+
 
 If the branches have diverged in any way (both have unique commits), Git cannot perform a fast-forward merge and will instead create a merge commit using a **three-way merge** process, as discussed above.
 
@@ -921,8 +911,7 @@ Common columns include:
 - **In Review**: Issues that are ready for review
 - **Done**: Issues that have been completed and merged
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 kanban
   [Backlog]
     [Create issue templates]
@@ -939,7 +928,7 @@ kanban
     [Add basic styling]
     [Create an alert when clicking the title]
 ```
-</Mermaid>
+
 
 Every team and organization has its own workflow, so you can customize your project to fit your needs.
 
@@ -1042,8 +1031,7 @@ You can find other identifies such as `nightly` or `canary` in some projects. Th
 :::note[Canary Releases]
 A [**canary release**](https://martinfowler.com/bliki/CanaryRelease.html) is a deployment strategy where a new version of the software is gradually rolled out to a small subset of users before being released to the entire user base. This allows teams to monitor the new version for issues and gather feedback before a full rollout. The term "canary" comes from the practice of using canaries in coal mines to detect toxic gases--if the canary showed signs of distress, it was a warning to miners that conditions were unsafe.
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 flowchart TD
     Users -->|95% of traffic| Prod[Production Version]
     Users -->|5% of traffic| Canary[Canary Version]
@@ -1051,7 +1039,7 @@ flowchart TD
     Monitor -->|Issues detected| Rollback[Rollback Canary]
     Monitor -->|No issues| FullDeploy[Progressively increase traffic until 100%]
 ```
-</Mermaid>
+
 :::
 
 It is very common for software engineering teams to internally use their own software (also known as **dogfooding**) before releasing it to customers. This allows them to test the software in a real-world environment and gather early feedback. It helps developers identify bugs, improve usability, and ensure the product meets real-world needs by experiencing it as a user would. For example, a company building a messaging app might have its team use it for internal communication to catch issues early.

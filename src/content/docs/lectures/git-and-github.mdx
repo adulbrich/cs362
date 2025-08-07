@@ -5,7 +5,6 @@ sidebar:
   order: 1
 ---
 
-import Mermaid from "../../../components/Mermaid.astro";
 import { Steps } from '@astrojs/starlight/components';
 
 Git and GitHub are indispensable tools in modern software development, used in nearly every significant project worldwide.
@@ -35,12 +34,14 @@ Git optimizes storage by avoiding duplication. If a file remains unchanged, Git 
 
 This stream of snapshots is stored in a Git repository (repo) located within the project directory:
 
+{/* TODO: replace by mermaid diagram */}
 ![Git Repository Structure](https://git-scm.com/book/en/v2/images/snapshots.png)
 
 Representing data as snapshots enables powerful features like [branches](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell), which we will explore later.
 
 Another defining feature of Git is that it is a distributed VCS. Every location containing the version history is a complete mirror of the entire history, including every version, commit, and snapshot.
 
+{/* TODO: replace by mermaid diagram */}
 ![Distributed Version Control](https://git-scm.com/book/en/v2/images/distributed.png)
 
 This distributed nature has both advantages and challenges. A significant advantage is that every **clone** of the repository acts as a complete backup, increasing resilience to machine failures.
@@ -167,14 +168,12 @@ The working directory is where your files live. This is where you write code, ed
 
 In particular, as we work on a project, we may make changes to many files at once. At some point, we may decide that we are ready to commit some of those changes but not ready to commit others. This is what the staging area allows us to do. The working directory, the staging area, and the Git repository interact like this:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 sequenceDiagram
   .git Directory ->> Working Directory: Checkout the latest commit
   Working Directory ->> Staging Area: Add files to staging area
   Staging Area ->> .git Directory: Commit staged changes
 ```
-</Mermaid>
 
 Let's run through an example of this workflow.
 
@@ -676,8 +675,7 @@ Please commit your changes or stash them before you merge.
 Aborting
 ```
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 sequenceDiagram
     participant Developer
     participant Local Repository
@@ -687,7 +685,6 @@ sequenceDiagram
     Developer-xRemote Repository: git pull
     Remote Repository-->>Local Repository: Error
 ```
-</Mermaid>
 
 The error suggests two options: commit the changes or stash them. Let's explore both.
 
@@ -717,8 +714,7 @@ Note that the subcommand here is called `pop` because Git's stash functionality 
 
 Here's a visual representation of the resolution process using the stash:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 sequenceDiagram
     participant Developer
     participant Local Repository
@@ -732,7 +728,6 @@ sequenceDiagram
     Developer->>Local Repository: git stash pop
     Local Repository-->>Local Repository: Reapply stashed changes
 ```
-</Mermaid>
 
 #### Option 2: Committing Changes (Leads to Trouble)
 
@@ -857,8 +852,7 @@ Check the commit history with `git log` to confirm consistency across locations 
 
 Here's a visual representation of the merge conflict resolution process:
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 sequenceDiagram
     participant Developer
     participant Local Repository
@@ -875,7 +869,6 @@ sequenceDiagram
     Developer->>Local Repository: git commit
     Developer->>Remote Repository: git push
 ```
-</Mermaid>
 
 ## Cleaning Up Your Commit History
 

@@ -5,8 +5,6 @@ sidebar:
   order: 4
 ---
 
-import Mermaid from "../../../components/Mermaid.astro";
-
 In previous discussions, we explored the concept of **Test-Driven Development (TDD)**. Despite being a valuable modern development strategy, TDD can initially feel counterintuitive to many developers.
 
 To clarify how TDD works in practice, let's walk through a comprehensive example that will highlight its nuances and help you become comfortable applying this technique in your own projects.
@@ -19,20 +17,18 @@ But first, let's briefly review the core principles of TDD and its workflow.
 
 TDD is a software development approach that emphasizes writing tests before writing the code that needs to be tested. The primary goal of TDD is to ensure that the code meets its requirements and behaves as expected.
 
-<Mermaid showForPrint="true">
-```
+```mermaid
 flowchart TD
   B[Decide on a feature] ==> C[Write the test] 
   C ==>|Test Fails| D[Write code to make it pass]
   D ==>|Test Passes| E[Refactor the code]
   E ==>|Test Passes| B
-  style C fill:#f87171, stroke:#dc2626
-  linkStyle 1 stroke:#dc2626, color:#dc2626
-  linkStyle 2,3 stroke:#16a34a, color:#16a34a
-  style D fill:#4ade80, stroke:#16a34a
-  style E fill:#60a5fa, stroke:#2563eb
+  style C fill:#f87171, stroke:#dc2626,color:#333
+  linkStyle 1 stroke:#dc2626
+  linkStyle 2,3 stroke:#16a34a
+  style D fill:#4ade80, stroke:#16a34a,color:#333
+  style E fill:#60a5fa, stroke:#2563eb,color:#333
 ```
-</Mermaid>
 
 The TDD cycle consists of three key steps:
 
@@ -72,73 +68,72 @@ Importantly, TDD does not require implementing all tests upfront--in fact, this 
 
 The ROT13 cipher is a simple letter substitution cipher that replaces a letter with the letter 13 places down the alphabet. For example, 'A' becomes 'N', 'B' becomes 'O', and so on. The ROT13 cipher is its own inverse, meaning that applying it twice returns the original text.
 
-<Mermaid showForPrint="true"> 
-``` 
+```mermaid 
 block-beta
 columns 1
 block:top
   A
   B  
-  style B fill:#4ade80;
+  style B fill:#4ade80,color:#333;
   C  
   D  
   E  
-  style E fill:#60a5fa;
+  style E fill:#60a5fa,color:#333;
   F  
   G  
   H 
-  style H fill:#fb923c; 
+  style H fill:#fb923c,color:#333; 
   I  
   J  
   K  
   L  
-  style L fill:#facc15;
+  style L fill:#facc15,color:#333;
   M 
 end
 space
 block:bottom
   N 
   O 
-  style O fill:#4ade80;
+  style O fill:#4ade80,color:#333;
   P 
   Q 
   R 
-  style R fill:#60a5fa;
+  style R fill:#60a5fa,color:#333;
   S 
   T 
   U
-  style U fill:#fb923c; 
+  style U fill:#fb923c,color:#333; 
   V 
   W 
   X 
   Y 
-  style Y fill:#facc15;
+  style Y fill:#facc15,color:#333;
   Z
 end
 block:hello1
   H1["H"]
-  style H1 fill:#fb923c; 
+  style H1 fill:#fb923c,color:#333; 
   E1["E"] 
-  style E1 fill:#60a5fa; 
+  style E1 fill:#60a5fa,color:#333; 
   L1["L"]
-  style L1 fill:#facc15;
+  style L1 fill:#facc15,color:#333;
   L2["L"]
-  style L2 fill:#facc15;
+  style L2 fill:#facc15,color:#333;
   O1["O"]
-  style O1 fill:#4ade80;
+  style O1 fill:#4ade80,color:#333;
 end
 space
 block:hello2
   H2["U"]
-  style H2 fill:#fb923c; 
+  style H2 fill:#fb923c,color:#333; 
   E2["R"] 
-  style E2 fill:#60a5fa; 
+  style E2 fill:#60a5fa,color:#333; 
   L3["Y"]  
-  style L3 fill:#facc15;
+  style L3 fill:#facc15,color:#333;
   L4["Y"]  
-  style L4 fill:#facc15;
+  style L4 fill:#facc15,color:#333;
   O2["B"]
-  style O2 fill:#4ade80;
+  style O2 fill:#4ade80,color:#333;
 end
 A --> N 
 B --> O 
@@ -172,7 +167,6 @@ L1 -- "ROT13" --> L3
 L2 --> L4
 O1 --> O2
 ```
-</Mermaid>
 {/* TODO: consider a block diagram to reduce spacing between boxes and add an example with the word hello */}
 
 For our implementation, we'll follow these specific rules:

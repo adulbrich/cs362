@@ -2,20 +2,29 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
-import tailwind from "@astrojs/tailwind";
-
-import svelte from "@astrojs/svelte";
+import tailwindcss from "@tailwindcss/vite";
+import mermaid from 'astro-mermaid';
 
 // https://astro.build/config
 export default defineConfig({
+  vite: {
+    plugins: [tailwindcss()],
+  },
   site: "https://cs362.alexulbrich.com/",
   integrations: [
+    mermaid({
+      theme: 'dark',
+      autoTheme: true
+    }),
     sitemap(),
     starlight({
       title: "CS 362 Software Engineering II",
-      social: {
-        github: "https://github.com/adulbrich/cs362",
-      },
+      social: [
+        {
+          icon: "github",
+          label: "GitHub",
+          href: "https://github.com/adulbrich/cs362",
+      },],
       head: [
         {
           tag: "script",
@@ -49,9 +58,7 @@ export default defineConfig({
           autogenerate: { directory: "about" },
         },
       ],
-      customCss: ["./src/tailwind.css"],
+      customCss: ["./src/styles/global.css"],
     }),
-    tailwind({ applyBaseStyles: false }),
-    svelte(),
   ],
 });
