@@ -12,14 +12,14 @@ Maintainable software exhibits several key characteristics:
 - **Readability** (i.e., understandable): clear structure and consistent conventions that help new developers quickly grasp the codebase
 - **Modularity** (i.e., modifiable and extensible): allowing changes to be made with minimal risk of introducing unintended side effects and enabling new functionality to be added without architectural overhauls
 - **Testability**: well-defined components that can be verified independently
-- **Resiliency**: the ability handle and recover from problems effectively, avoiding cascading failures
+- **Resiliency**: the ability to handle and recover from problems effectively, avoiding cascading failures
 
 These characteristics are not just technical niceties; they have profound implications for team productivity, software quality, and business agility.
 
 :::note[The Epic Meltdown of TSB Bank]
 In April 2018, [TSB Bank migrated 5.4 million customer accounts](https://www.computerweekly.com/news/252528519/TSB-hit-with-huge-fine-after-IT-migration-disaster) from Lloyds Banking Group's legacy IT system to a new platform, Proteo4UK, provided by its parent company, Sabadell. The migration was rushed, with inadequate testing and poor due diligence on the supplier's capabilities. 
 
-[The new system lacked proper capacity management controls, and non-functional testing (e.g., performance and stress tests) was incomplete]((https://www.henricodolfing.com/2019/03/case-study-epic-meltdown-of-tsb-bank.html)). After the migration, the platform collapsed, locking 1.9 million customers out of online and mobile banking, exposing sensitive data, and causing some customers to see others' accounts.
+[The new system lacked proper capacity management controls, and non-functional testing (e.g., performance and stress tests) was incomplete](https://www.henricodolfing.com/2019/03/case-study-epic-meltdown-of-tsb-bank.html). After the migration, the platform collapsed, locking 1.9 million customers out of online and mobile banking, exposing sensitive data, and causing some customers to see others' accounts.
 
 It took up to 8 months to fully restore services. The incident resulted in a £48 million fine from the UK's Financial Conduct Authority (FCA) for breaching data protection regulations, and TSB's CEO resigned. The bank's reputation suffered, with customers losing trust in its ability to manage their data securely.
 :::
@@ -191,9 +191,9 @@ While addressing technical debt is crucial, there are times when it may not be t
 
 To effectively manage technical debt, teams should:
 
-- **Make Debt Visible:** Use code comments, documentation, and issue trackers to highlight areas of technical debt.
-- **Regular Debt Review:** Hold monthly "debt retrospectives" to review accumulating debt areas, celebrate successfully paid-down debt, and adjust debt allocation based on team velocity
-- **Educate the Team:** Train teams to recognize debt patterns and make informed trade-offs between speed and quality.
+- **Make Debt Visible**: Use code comments, documentation, and issue trackers to highlight areas of technical debt.
+- **Regular Debt Review**: Hold monthly "debt retrospectives" to review accumulating debt areas, celebrate successfully paid-down debt, and adjust debt allocation based on team velocity.
+- **Educate the Team**: Train teams to recognize debt patterns and make informed trade-offs between speed and quality.
 
 The key to managing technical debt is treating it as a business concern, not just a technical one. Like financial debt, some technical debt is strategic and manageable, while excessive debt can cripple an organization's ability to respond to market changes and customer needs.
 
@@ -207,6 +207,7 @@ Maintaining software effectively requires both technical practices and organizat
 4. Interface Segregation Principle (ISP)
 5. Dependency Inversion Principle (DIP)
 
+{/* FIX: This link is broken or the content is not what is expected. Consider replacing with a more reliable source or removing. */}
 {/* https://www.geeksforgeeks.org/solid-principle-in-programming-understand-with-real-life-examples/ */}
 
 ### Single Responsibility Principle (SRP)
@@ -545,7 +546,7 @@ const orderProcessor = new OrderProcessor(storage);
 ```
 :::
 
-{/* TODO: Observer Design Pattern */}
+{/* IMPROVE: Add a diagram illustrating the Observer pattern to make it easier to understand. */}
 
 ## Case Study: Pinnacle Insurance and the Legacy Mainframe Dilemma
 
@@ -597,6 +598,7 @@ After reading the case study, answer the following questions:
 
 Consider pros and cons, costs, developer experience, hiring, and risks. Use metrics to support your recommendations. Discuss the impact of technical debt on maintainability.
 
+{/* IMPROVE: Provide a brief summary of the actual outcome or a similar real-world scenario to close the loop on the case study. */}
 {/* Explain how the company ended up doing things and how long it took. */}
 
 ## Additional Resources

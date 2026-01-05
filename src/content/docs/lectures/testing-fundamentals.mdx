@@ -5,7 +5,9 @@ sidebar:
   order: 2
 ---
 
+{/* IMPROVE: Add a brief explanation of environments (development, staging, production) and how testing fits into each. */}
 {/* TODO: add something about environments */}
+{/* IMPROVE: Add a brief explanation of xUnit and its significance in the history of automated testing. */}
 {/* TODO: add an explanation of xUnit https://en.wikipedia.org/wiki/XUnit */}
 
 Testing has always been a vital part of software development.
@@ -35,6 +37,8 @@ In addition to functional and non-functional tests, tests can also be classified
 
 - **White Box Testing**: This approach involves testing the internal workings of the software. Testers have access to the code and can design tests based on the software's structure, algorithms, and logic. White box testing is often used for unit tests, where the focus is on individual functions or components.
 - **Black Box Testing**: This approach treats the software as a "black box", where the internal workings are not visible to the tester. Testers focus on the inputs and outputs of the software without knowledge of its internal code. Black box testing is commonly used for functional tests, where the emphasis is on verifying that the software meets its requirements.
+
+{/* IMPROVE: Add a note about Grey Box Testing as a hybrid approach. */}
 
 ### Waterfall vs Agile Testing
 
@@ -222,6 +226,8 @@ While this course focuses on unit, integration, and end-to-end tests, there are 
 - **Load Tests**: These tests evaluate whether an application can maintain its performance under heavy usage. Load tests often simulate a large number of users interacting with the application simultaneously. If the application slows down significantly or encounters errors during the test, it may indicate the need for code optimization or larger architectural changes, such as adding more servers.
 - **Static Tests**: These tests analyze the code without executing it. They can catch syntax, typos, type errors, style violations, security risks, and other issues before the code is run. Static tests are often performed by a linter integrated into the code editor, which provides immediate feedback to developers as they write code, or by a static analyzer.
 
+{/* IMPROVE: Add a section on Regression Testing and its importance in preventing old bugs from reappearing. */}
+
 ## Balancing Different Types Of Automated Tests
 
 Most production software projects benefit from a combination of unit, integration, and end-to-end tests. However, determining the ideal proportion of each type to balance their advantages and disadvantages has been a topic of debate.
@@ -251,9 +257,9 @@ The testing pyramid emphasizes that unit tests are the fastest and least expensi
 
 In summary, the pyramid suggests:
 
-- Unit Tests: The majority of your tests, as they are fast and cost-effective.
-- Integration Tests: A smaller proportion, focusing on interactions between components.
-- End-to-End Tests: The fewest, as they are the slowest and most expensive.
+- **Unit Tests**: The majority of your tests, as they are fast and cost-effective.
+- **Integration Tests**: A smaller proportion, focusing on interactions between components.
+- **End-to-End Tests**: The fewest, as they are the slowest and most expensive.
 
 ### The Testing Trophy
 

@@ -54,7 +54,7 @@ The GitHub flow is a streamlined workflow designed for team collaboration using 
 - Creates visibility across the team about ongoing development
 - Establishes a code review process that ensures quality before code reaches production
 
-Here's an overview of the workflow. We'll dig in deeper into each step in the following sections.
+Here's an overview of the workflow. We'll dig deeper into each step in the following sections.
 
 1. The `main` branch represents production code
     - code in the `main` branch should always be deployable
@@ -694,7 +694,7 @@ This should make your pull request automatically mergeable again. Once you recei
 While `git rebase` is a powerful tool for rewriting commit history, it can be complex and is often best avoided in favor of simpler alternatives like merging. Rebasing is particularly useful for:
 
 - Cleaning up commit history *before* merging (for example on your own feature branch), alternatively you can use a "squash and merge" approach (`git merge --squash`)
-- Integrating changes from one branch into another while maintaining a linear history (which might be prefered by some teams over merging)
+- Integrating changes from one branch into another while maintaining a linear history (which might be preferred by some teams over merging)
 
 However, it can lead to [confusion and conflicts](https://jvns.ca/blog/2023/11/06/rebasing-what-can-go-wrong-/) if not used carefully.
 
@@ -776,7 +776,7 @@ The copyleft licensing ensures that a work remains freely available for use, mod
 Check out [Choose an open source license
 ](https://choosealicense.com/) for a guide to selecting the right license for your project.
 
-If you project is not code, you can still use a license file to clarify how others can use your work. For example, if you have a blog or website, you might want to specify whether others can reuse your content, and under what conditions. See also the [Creative Commons licenses](https://creativecommons.org/) for non-code projects.
+If your project is not code, you can still use a license file to clarify how others can use your work. For example, if you have a blog or website, you might want to specify whether others can reuse your content, and under what conditions. See also the [Creative Commons licenses](https://creativecommons.org/) for non-code projects.
 
 ### `CONTRIBUTING.md`
 
@@ -822,7 +822,7 @@ Let's imagine that we want to add a colored background to our HTML document. We 
 ```markdown
 ## Description
 
-Add backgroudn color to the document. Apply the style to the `<body>` tag. Use color [#99ccff](https://www.colorhexa.com/99ccff).
+Add background color to the document. Apply the style to the `<body>` tag. Use color [#99ccff](https://www.colorhexa.com/99ccff).
 
 ## Acceptance Criteria
 
@@ -880,7 +880,7 @@ When opening a pull request, you can reference the issue by including `#<issue-n
 
 ![GitHub Issue Reference](./github-new-pr-with-issue.png)
 
-If you [use certain keywords such as "closes" or "fixes"](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword), GitHub will **automatically close the issue when the pull request is merged**.
+If you [use certain keywords such as 'closes' or 'fixes'](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword), GitHub will **automatically close the issue when the pull request is merged**.
 
 ![GitHub Issue Closed](./github-closed-issue.png)
 
@@ -894,7 +894,7 @@ Check open-source projects on GitHub to see how they use issues and labels. For 
 
 ### Projects
 
-Similarly to issues, the Projects tab can be toggled on or off in the repository Settings.
+Similar to issues, the Projects tab can be toggled on or off in the repository Settings.
 
 Projects are linked to the owner of the repository (either a user or an organization). One or more projects can be linked to a repository, and one or more repositories can be linked to a project.
 
@@ -983,7 +983,7 @@ git tag -a v1.0 -m "Version 1.0"
 
 Annotated tags are stored as full objects in the Git database and include a message, author, and date. They can be signed. This is useful for keeping track of important releases.
 
-A tag is thus asssociated with a specific commit, and you can use it to refer to that commit in the future. For example, if you want to check out the code from version 1.0, you can do:
+A tag is thus associated with a specific commit, and you can use it to refer to that commit in the future. For example, if you want to check out the code from version 1.0, you can do:
 
 ```sh
 git checkout v1.0

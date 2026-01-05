@@ -30,7 +30,7 @@ While there are solutions such as [Storybook](https://storybook.js.org/) and [Ch
 
 These tests are broader than unit tests because they validate interactions between different parts of the application, yet more focused than full end-to-end tests.
 
-In this lecture, we'll integration testing specifically for client-side web applications, using testing based on general UI testing principles. We'll leverage [Vitest](https://vitest.dev/) and [Testing Library](https://testing-library.com/) to create our tests, which will be run in a browser-like environment using [jsdom](https://github.com/jsdom/jsdom). This allows us to simulate user interactions and validate the expected outcomes. These tests don't rely on a real browser, nor do they render the CSS styles, but they do provide a good approximation of how the UI behaves in a real environment.
+In this lecture, we'll explore integration testing specifically for client-side web applications, using testing based on general UI testing principles. We'll leverage [Vitest](https://vitest.dev/) and [Testing Library](https://testing-library.com/) to create our tests, which will be run in a browser-like environment using [jsdom](https://github.com/jsdom/jsdom). This allows us to simulate user interactions and validate the expected outcomes. These tests don't rely on a real browser, nor do they render the CSS styles, but they do provide a good approximation of how the UI behaves in a real environment.
 
 :::note[What If I'm Not Doing Web Development?]
 Other programming languages have tools that mock or simulate the UI environment without using a full browser or rendering engine, similar to how jsdom emulates a DOM for web testing. Here's a non-exhaustive list:
@@ -168,6 +168,8 @@ Serve your files through a local web server instead of opening the HTML file dir
 
 CommonJS (or rather, non-module scripts) doesn't face the same local loading issue because it's not subject to the same modern module-loading rules.
 
+{/* IMPROVE: Add a note about why we are using type="module" and the benefits of ESM. */}
+
 You don't need to worry about this to test your application.
 :::
 
@@ -267,6 +269,7 @@ npm install --save-dev @testing-library/dom @testing-library/user-event @testing
 Now you can use the Testing Library to write your tests. Here's how to modify our previous test file to use the Testing Library:
 
 {/* TODO: check if I really need @testing-library/dom and what kind of methods are in @testing-library/jest-dom/vitest */}
+{/* FIX: Ensure the import paths and package names are correct and up-to-date. */}
 
 ```js
 // counter.test.js
@@ -509,7 +512,7 @@ This test follows a user-centric approach by:
 
 Note that we're again using `await` since user interactions are asynchronous operations consisting of multiple events. The `screen` object provides convenient access to query functions without needing to specify `document` as the search context.
 
-While it may seem that we're testing implementation wit the [`toHaveAttribute()`](https://vitest.dev/guide/browser/assertion-api.html#tohaveattribute) matcher, we're actually verifying the expected behavior of the application. The test checks that the photo card is created with the correct attributes and is visible to the user.
+While it may seem that we're testing implementation with the [`toHaveAttribute()`](https://vitest.dev/guide/browser/assertion-api.html#tohaveattribute) matcher, we're actually verifying the expected behavior of the application. The test checks that the photo card is created with the correct attributes and is visible to the user.
 
 [`toBeVisible()`](https://vitest.dev/guide/browser/assertion-api.html#tobevisible) is another custom matcher which checks if the element is visible in the DOM. This is important because an element may exist in the DOM but not be visible to users (e.g., `display:none`).
 
@@ -598,7 +601,7 @@ In the tests, we illustrate different ways of checking for the presence or absen
 
 Both somewhat rely on understanding the implementation details of the application, but they are still user-centric assertions. The tests focus on the expected behavior from a user's perspective, ensuring that the application behaves as intended.
 
-The second one is does nop rely on knowing that we have a list that encapsulates the photo cards. It simply checks that the image is not present in the DOM.
+The second one does not rely on knowing that we have a list that encapsulates the photo cards. It simply checks that the image is not present in the DOM.
 
 ## Snapshots
 

@@ -32,7 +32,7 @@ The goal is to identify potential points of failure before they impact real user
 
 The importance of reliability testing becomes clear when you consider its impact from multiple perspectives. Organizations that invest in comprehensive reliability testing see measurable benefits in their bottom line, customer satisfaction, and operational efficiency. Understanding these benefits helps justify the time and resources needed to implement effective reliability testing practices:
 
-- **Revenue Protection**: [Every minute of downtime costs amazon $220,000](https://www.gremlin.com/ecommerce-cost-of-downtime)
+- **Revenue Protection**: [Every minute of downtime costs Amazon $220,000](https://www.gremlin.com/ecommerce-cost-of-downtime)
 - **Customer Retention**: [Studies show that 88% of users won't return to a website after a bad user experience](https://www.zippia.com/advice/user-experience-statistics/)
 - **Brand Trust**: [Reliability issues](https://x.com/GergelyOrosz/status/1748990361660211264) [can damage brand reputation that takes years to rebuild](https://www.vendasta.com/blog/reputation-crisis/)
 
@@ -84,8 +84,8 @@ When conducting performance testing, you'll want to focus on several key metrics
 - **Throughput**: Operations completed per unit of time
 - **Resource Utilization**: CPU, memory, disk, and network usage
 
-:::note[Blue Brain Nexus Brenchmarks]
-Here's [an example of benchmarks for a data amanagement platform](https://bluebrainnexus.io/v1.8.x/docs/delta/benchmarks/v1.4.2.html) using [Gatling](https://gatling.io/). Note the intersection of performance testing with load testing, as it establishes the baseline performance under normal conditions before simulating higher loads (discussed next).
+:::note[Blue Brain Nexus Benchmarks]
+Here's [an example of benchmarks for a data management platform](https://bluebrainnexus.io/v1.8.x/docs/delta/benchmarks/v1.4.2.html) using [Gatling](https://gatling.io/). Note the intersection of performance testing with load testing, as it establishes the baseline performance under normal conditions before simulating higher loads (discussed next).
 :::
 
 ### Load Testing
@@ -286,10 +286,11 @@ Several strategies can help you bridge the gap between test and production envir
 
 In distributed systems, failures are inevitable. The question isn't whether components will fail, but when they will fail and how your system will respond. Circuit breakers and graceful degradation are two essential patterns that help your system maintain functionality even when individual components are experiencing problems.
 
+{/* IMPROVE: Add a diagram illustrating the circuit breaker pattern (Closed, Open, Half-Open states). */}
 [**Circuit breakers**](https://martinfowler.com/bliki/CircuitBreaker.html) prevent cascading failures by automatically stopping requests to failing services, while **graceful degradation** ensures your system continues to provide value even when components fail.
 
 - **Netflix**: [Uses circuit breakers for every external service call](https://github.com/Netflix/Hystrix/wiki/How-it-Works), falling back to cached content when services are unavailable
-- **Uber**: [Uber's safe approach to mobile network API migration](https://blog.droidchef.dev/shadow-calls-and-circuit-breakers-ubers-safe-approach-to-mobile-network-api-migration/) using shdow calls and circuit breakers to monitor issues
+- **Uber**: [Uber's safe approach to mobile network API migration](https://blog.droidchef.dev/shadow-calls-and-circuit-breakers-ubers-safe-approach-to-mobile-network-api-migration/) using shadow calls and circuit breakers to monitor issues
 {/* - **Amazon**: ... */}
 
 **Graceful degradation** strategies ensure that when something goes wrong, your users still get value from your application, even if it's not the full experience. This approach prioritizes core functionality over complete feature sets during problematic conditions:
@@ -433,6 +434,7 @@ Synthetic monitoring complements real user monitoring by continuously running au
 
 Synthetic monitoring involves running automated tests continuously to simulate user interactions.
 
+{/* FIX: This link seems to point to a generic blog post. Verify if it's the intended resource for Playwright synthetic monitoring. */}
 You can [achieve this with Playwright](https://techcommunity.microsoft.com/blog/azurearchitectureblog/synthetic-monitoring-in-application-insights-using-playwright-a-game-changer/4400509).
 
 Other tools also provide synthetic monitoring capabilities:

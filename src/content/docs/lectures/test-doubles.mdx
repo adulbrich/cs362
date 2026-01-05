@@ -14,6 +14,8 @@ Consider testing a function that fetches data from an external server and stores
 
 Test doubles offer a solution to these challenges by replacing production components with simplified versions during testing.
 
+{/* IMPROVE: Add a diagram showing the SUT, Collaborators, and how Test Doubles replace Collaborators. */}
+
 ## What Are Test Doubles?
 
 Test doubles replace one or more production software components with alternative implementations specifically designed for testing. When writing tests, we focus on the "system under test" (SUT)--the specific component being evaluated. Test doubles stand in for other components (called "collaborators" or "depended-on components" or DOCs) that interact with the SUT but aren't the focus of testing.
@@ -384,7 +386,7 @@ expect(userRecord.password).toHaveLength(60);
 expect(userRecord.password).toMatch(/^\$(2a|2b)\$/);
 ```
 
-These additional assertions confirm the password hash has [the expected length (60 characters for bcrypt) and the correct prefix (`$2a$` or `$2n$`)](https://www.npmjs.com/package/bcrypt#hash-info), which indicates the specific hashing algorithm used.
+These additional assertions confirm the password hash has [the expected length (60 characters for bcrypt) and the correct prefix (`$2a$` or `$2b$`)](https://www.npmjs.com/package/bcrypt#hash-info), which indicates the specific hashing algorithm used.
 
 Vitest's mock function API provides many more capabilities for inspecting and controlling function behavior during tests. We'll explore additional features in upcoming examples.
 
@@ -1003,6 +1005,8 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 ```
+
+{/* IMPROVE: Complete the code example for registerUser.fake.test.js to show how the fake database is used in the test. */}
 
 With this, instead of calling the real implementation of `Database.save()`, our tests will call the fake implementation we defined. This allows us to simulate different scenarios without relying on the actual database, making our tests faster and more reliable.
 

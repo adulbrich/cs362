@@ -19,7 +19,7 @@ However, frequent deployment requires well-established processes that both simpl
 
 According to [Martin Fowler's widely accepted definition](https://www.martinfowler.com/articles/continuousIntegration.html),
 
-> "Continuous Integration is a software development practice where each member of a team merges their changes into a codebase together with their colleagues changes at least daily. Each of these integrations is verified by an automated build (including test) to detect integration errors as quickly as possible. Teams find that this approach reduces the risk of delivery delays, reduces the effort of integration, and enables practices that foster a healthy codebase for rapid enhancement with new features."
+> "Continuous Integration is a software development practice where each member of a team merges their changes into a codebase together with their colleagues' changes at least daily. Each of these integrations is verified by an automated build (including test) to detect integration errors as quickly as possible. Teams find that this approach reduces the risk of delivery delays, reduces the effort of integration, and enables practices that foster a healthy codebase for rapid enhancement with new features."
 
 Two critical aspects of this definition deserve attention:
 
@@ -38,11 +38,11 @@ The second key aspect is **building** and **testing** the codebase each time new
 
 Testing code at each integration provides frequent feedback on new changes, helping maintain high code quality. Problems identified early are typically easier to fix.
 
-Modern tooling significantly aids this process, with many platforms designed to automatically run tests at various development stages--even as frequently as every commit.
+Modern tooling significantly aids this process, with many platforms designed to automatically run tests at various development stages, even as frequently as every commit.
 
 ## Continuous Delivery
 
-Continuous delivery complements continuous integration. In a robust continuous delivery practice, the software is not only built and tested with each code integration but can also be deployed at virtually any point in its lifecycle--for example, after every merge into the main branch.
+Continuous delivery complements continuous integration. In a robust continuous delivery practice, the software is not only built and tested with each code integration but can also be deployed at virtually any point in its lifecycle, for example, after every merge into the main branch.
 
 The practical implementation of continuous delivery varies based on project size and complexity:
 
@@ -67,7 +67,7 @@ Modern tooling continues to evolve to support these CI/CD practices, making them
 
 [GitHub Actions](https://github.com/features/actions) provides a powerful way to implement CI/CD directly within your GitHub repository. While many excellent tools exist for creating CI/CD pipelines (such as [Jenkins](https://www.jenkins.io/), [Travis CI](https://www.travis-ci.com/), or [CircleCI](https://circleci.com/)), GitHub Actions offers seamless integration with your GitHub repositories.
 
-GitHub Actions is a platform for automating workflows triggered by events in your GitHub repository. While it supports many automation scenarios--from welcoming new contributors to security scanning--we'll focus on its popular CI/CD capabilities.
+GitHub Actions is a platform for automating workflows triggered by events in your GitHub repository. While it supports many automation scenarios (from welcoming new contributors to security scanning), we'll focus on its popular CI/CD capabilities.
 
 ### Key Components of GitHub Actions
 
@@ -747,7 +747,7 @@ Dynamic scanning tools like [ZAP](https://www.zaproxy.org/) can automatically cr
 
 These tools can be integrated into your CI/CD pipeline to ensure that security testing is part of your development process. For example, you can set up a GitHub Actions workflow that runs a dynamic scanner against your application after it has been deployed to a staging environment.
 
-In the example below, we run our application aginast the live version of our application. This is a simple example, but you can customize it to suit your needs.
+In the example below, we run our application against the live version of our application. This is a simple example, but you can customize it to suit your needs.
 
 ```yaml
 //zap-scan.yaml
@@ -815,7 +815,7 @@ To set up Lefthook in your project, follow these steps:
     ```
 </Steps>
 
-Now everytime you commit, Lefthook will run the specified tasks. If any of the tasks fail, the commit will be aborted, allowing you to fix the issues before pushing your code. Same applies for the pre-push hook.
+Now every time you commit, Lefthook will run the specified tasks. If any of the tasks fail, the commit will be aborted, allowing you to fix the issues before pushing your code. Same applies for the pre-push hook.
 
 If you use the commit and push commands in your IDE, Lefthook will automatically run the hooks for you, but you won't see the output in the terminal. If you use the terminal, Lefthook will run the hooks and show you the output in the terminal.
 
@@ -851,9 +851,9 @@ Formatters are opinionated and automatically rewrite your code to match a specif
 
 All languages have their own linters and formatters, but in the JavaScript ecosystem, ESLint and Prettier are the most popular choices. 
 
-The crucial point is that you want **the whole team to agree on a single set of rules for both linting and formatting**. If you don', you might end up with many diffs in your pull requests that are just formatting changes, making it harder to review the actual code changes.
+The crucial point is that you want **the whole team to agree on a single set of rules for both linting and formatting**. If you don't, you might end up with many diffs in your pull requests that are just formatting changes, making it harder to review the actual code changes.
 
-Most of the time, your linter and formatter options will be configured in your reposiory and shared among all developers. 
+Most of the time, your linter and formatter options will be configured in your repository and shared among all developers. 
 
 To enforce it consistently, you can use a **pre-commit hook** to run the linter and formatter before each commit. This ensures that all code added to our git history adheres to the same standards.
 

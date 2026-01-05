@@ -29,7 +29,7 @@ Different coverage metrics measure different aspects of code execution. Understa
 
 ### Line Coverage
 
-Line coverage (sometimes called statement coverage, even though there are not an exact match) is the most basic and commonly used metric, reporting the percentage of code lines executed during testing. While intuitive, it has limitations—a line with complex logic might be "covered" even if only one code path through it is tested.
+Line coverage (sometimes called statement coverage, even though they are not an exact match) is the most basic and commonly used metric, reporting the percentage of code lines executed during testing. While intuitive, it has limitations—a line with complex logic might be "covered" even if only one code path through it is tested.
 
 Line coverage is often used as the default metric because it's easy to understand and communicate across technical and non-technical stakeholders. Many teams start with targets around 70-80% line coverage.
 
@@ -114,7 +114,7 @@ graph TD
   class C,F,H uncovered
 ```
 
-We outline one of the possible paths (in greenb bold) which will be executed if `isAdmin` is false, `isAuthor` is true, and `isPublished` is true.
+We outline one of the possible paths (in green bold) which will be executed if `isAdmin` is false, `isAuthor` is true, and `isPublished` is true.
 
 In this example, the path coverage is 25% (1 out of 4 paths) and the branch coverage is 50% (3 out of 6 branches).
 
@@ -270,7 +270,7 @@ Property-based testing is particularly useful for functions with complex input d
 
 Fuzzing is a related technique that involves generating random or semi-random inputs to test software, aiming to uncover crashes, bugs, or vulnerabilities by stressing the system in unexpected ways. Fuzzing is often used in security testing to identify vulnerabilities in software.
 
-A common property-based testing library for JavaScript is [fast-check](https://fast-check.dev/) which integrates with [Vitest](https://www.npmjs.com/package/@fast-check/vitest). It allows you to define properties and automatically generates test cases to verify them. It also support [fuzzing](https://fast-check.dev/docs/advanced/fuzzing/).
+A common property-based testing library for JavaScript is [fast-check](https://fast-check.dev/) which integrates with [Vitest](https://www.npmjs.com/package/@fast-check/vitest). It allows you to define properties and automatically generates test cases to verify them. It also supports [fuzzing](https://fast-check.dev/docs/advanced/fuzzing/).
 
 {/* TODO: test with previous assignments and mutation testing reports */}
 
@@ -306,9 +306,9 @@ Code coverage is an invaluable tool in the modern developer's toolkit, but its t
 
 ### Coverage as a Guide, Not a Goal
 
-In mature development organizations, coverage is viewed as a tool for identifying testing gaps rather than as an end in itself. This perspective shift is important--the goal isn't to achieve an arbitrary percentage but to use coverage data to guide testing efforts toward untested or under-tested code paths.
+In mature development organizations, coverage is viewed as a tool for identifying testing gaps rather than as an end in itself. This perspective shift is important: the goal isn't to achieve an arbitrary percentage but to use coverage data to guide testing efforts toward untested or under-tested code paths.
 
-Remember: high coverage doesn't guarantee high-quality tests. A test suite can achieve 100% coverage with tests that don't verify correct behavior--they simply execute code without meaningful assertions.
+Remember: high coverage doesn't guarantee high-quality tests. A test suite can achieve 100% coverage with tests that don't verify correct behavior, they simply execute code without meaningful assertions.
 
 ### Risk-Based Coverage Targets
 

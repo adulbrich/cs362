@@ -499,7 +499,7 @@ As the test suite grows, it becomes important to organize the tests in a way tha
 3. **Using test directories**: Organize tests into separate directories based on the functionality being tested. This is useful for larger projects with many tests.
 4. **Grouping tests**: Use `describe()` to group related tests together. This is useful for organizing tests that share a common setup or context.
 
-We already discussed briefly discussed 1, 2, and 3. Let's clarify them and look at 4 in more detail.
+We already briefly discussed 1, 2, and 3. Let's clarify them and look at 4 in more detail.
 
 The [`describe()` block](https://vitest.dev/api/#describe) is used to group related tests together. It takes two arguments: a string that describes the group and a callback function that contains the tests. 
 
@@ -554,7 +554,7 @@ We've already discussed one common antipattern which consists of writing tests t
 
 In that same vein, we should avoid writing tests that are tightly coupled to the **internal state** of the code (e.g., testing private methods or verifying internal state). We often say that we should test the **public API** of the code, i.e., the methods and properties that are exposed to the outside world. This is because the public API is what other code will interact with, and we want to ensure that it behaves as expected.
 
-We'll discuss a few others common anitpatterns below.
+We'll discuss a few other common antipatterns below.
 
 ### Logic in Tests
 
@@ -584,6 +584,8 @@ test("should navigate to albums page", () => {
 Remember that our goal is to write tests that should be trivially correct on quick inspection. If we have to think about the logic in the test, it becomes harder to understand what the test is doing and why it might be failing.
 
 ### Testing interactions
+
+{/* FIX: This section seems incomplete. Consider adding an example of interaction testing (e.g., checking if a function was called) vs state testing, or expanding on why state testing is preferred in this context. */}
 
 When testing, we want to focus on the **state** of the code rather than the **interactions**. This means that we want to test the final result of the code rather than the individual steps that lead to that result.
 

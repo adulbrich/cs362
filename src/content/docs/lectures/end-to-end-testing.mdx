@@ -210,7 +210,7 @@ test('has title', async ({ page }) => {
 
 There's a lot going on in this test, so let's break it down:
 
-- Similarly to other test frameworks such as Vitest,, the `import` statement imports the `test` and `expect` functions from the Playwright library. These functions are used to define tests and make assertions, respectively.
+- Similarly to other test frameworks such as Vitest, the `import` statement imports the `test` and `expect` functions from the Playwright library. These functions are used to define tests and make assertions, respectively.
 - The `test` function defines a test case. It takes two arguments: a **string** describing the test and an asynchronous **function** that contains the test logic.
 - The function passed to `test` is *asynchronous* because the framework interacts with web browsers, which involves inherently asynchronous operations such as navigating to pages, interacting with elements, and waiting for network requests or DOM changes.
 - The `page` object is a *built-in test fixture* provided by Playwright. It represents a new browser page that is created for each test. 
@@ -231,7 +231,7 @@ In this UI mode, the Playwright Test Runner will show you a visual representatio
 
 ![Playwright UI Mode](./playwright-ui-mode.png)
 
-You can run the test by clocking the "Run" button next to the test name. 
+You can run the test by clicking the "Run" button next to the test name. 
 
 ## Testing our Application
 
@@ -278,7 +278,7 @@ test('has title', async ({ page }) => {
 });
 ```
 
-You might remember from our UI-based integration testing lecture notes that we used Testing Library to mimic user interactions. Playwright provides a similar API, called [locators](https://playwright.dev/docs/locators) to find with elements on a page.
+You might remember from our UI-based integration testing lecture notes that we used Testing Library to mimic user interactions. Playwright provides a similar API, called [locators](https://playwright.dev/docs/locators) to find elements on a page.
 
 ### Creating New Todos
 
@@ -316,7 +316,7 @@ Users of assistive technologies navigate by roles and content, not by CSS classe
 By using role-based selectors, you're essentially testing your application the same way a screen reader user would experience it, which helps ensure your app remains accessible as it evolves. It tests the semantic meaning of elements rather than implementation details, making your tests robust against UI framework changes while still ensuring accessibility.
 :::
 
-We expect to also create todo by hitting the `Enter` key. This is a common pattern in many applications, and it improves the user experience by allowing users to quickly add todos without having to click the "Add" button.
+We expect to also create a todo by hitting the `Enter` key. This is a common pattern in many applications, and it improves the user experience by allowing users to quickly add todos without having to click the "Add" button.
 
 ```js
 // tests/todo.spec.js
@@ -352,7 +352,7 @@ test('mark todos as completed', async ({ page }) => {
 });
 ```
 
-This test capture the `todoItem` once it has been created. Playwright allows us to **chain locators** together, so we can use the `todoItem` locator to find the checkbox and click it. After that, we check if the checkbox is checked and if the todo item has a line-through style applied to it.
+This test captures the `todoItem` once it has been created. Playwright allows us to **chain locators** together, so we can use the `todoItem` locator to find the checkbox and click it. After that, we check if the checkbox is checked and if the todo item has a line-through style applied to it.
 
 The app does not implement additional accessibility best-practices for marking todos as completed. For example, it does not use the `aria-checked` attribute to indicate the state of the checkbox. This is something we should consider improving in our application.
 
@@ -411,7 +411,7 @@ test.describe('todos with hooks', () => {
 
 We're using a `describe` block to group our tests. The `beforeEach` hook runs before each test in the group, ensuring that we start with a clean state.
 
-Playwright's test fixtures allows us to create "named" fixtures that can be reused across different tests.
+Playwright's test fixtures allow us to create "named" fixtures that can be reused across different tests.
 
 Let's create two fixtures: 
 
@@ -483,7 +483,7 @@ Install the `@axe-core/playwright`:
 npm install --save-dev @axe-core/playwright
 ```
 
-Then we can write a test to check for accessibility issues on our website our application. 
+Then we can write a test to check for accessibility issues on our application. 
 
 ```js
 // tests/accessibility.spec.js
@@ -574,7 +574,7 @@ Remember that the "rules" for using snapshots are very similar to those mentione
 
 In addition to accessibility snapshots, Playwright also provides a way to take [visual snapshots](https://playwright.dev/docs/test-snapshots) of your web application.
 
-Let's test our handbook homepage:
+Let's test our online textbook homepage:
 
 ```js
 // tests/visual.spec.js
@@ -635,7 +635,7 @@ You can also run a specific project by using the `--project` flag:
 npx playwright test --project=firefox
 ```
 
-An important consideration in the modern web is to test your application on mobile devices. While Playwright provides a huge lists of supported devices, let's start simple:
+An important consideration in the modern web is to test your application on mobile devices. While Playwright provides a huge list of supported devices, let's start simple:
 
 ```ts
 // playwright.config.ts

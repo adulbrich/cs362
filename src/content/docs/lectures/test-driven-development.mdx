@@ -285,7 +285,7 @@ Our next step is to handle transforming letters that need to loop around the alp
 
 ```js
 // rot13.test.js
-test("transforms one lowercase letter with warping", () => {
+test("transforms one lowercase letter with wrapping", () => {
   const result = rot13("n");
   expect(result).toBe("a");
 });
@@ -331,7 +331,7 @@ Now let's address uppercase letters. Following our incremental approach, we'll f
 
 ```js
 // rot13.test.js
-test("transforms one uppercase letter without warping", () => {
+test("transforms one uppercase letter without wrapping", () => {
   expect(rot13("A")).toBe("N");
 });
 ```
@@ -354,7 +354,7 @@ Finally, let's handle uppercase letters that require looping:
 
 ```js
 // rot13.test.js
-test("transforms one uppercase letter with warping", () => {
+test("transforms one uppercase letter with wrapping", () => {
   expect(rot13("N")).toBe("A");
 });
 ```
